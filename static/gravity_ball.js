@@ -15,11 +15,12 @@ class GravityBall {
             radius: 8,
             trail: []
         };
-        this.gravity = 0.6;
-        this.friction = 0.985;
-        this.bounce = 0.75;
-        this.attractionStrength = 0.3;
-        this.magnetStrength = 0.4;
+        this.gravity = 0.8;
+        this.friction = 0.98;
+        this.bounce = 0.7;
+        this.attractionStrength = 0.4;
+        this.magnetStrength = 0.6;
+        this.heavyGravity = 1.2;
         
         this.mouse = { x: 0, y: 0, down: false };
         this.blackHoles = [];
@@ -230,14 +231,15 @@ class GravityBall {
     }
 
     createBlackHole(x, y) {
-        // Create small magnetic points that don't interfere with screen
-        const types = ['attract', 'repel', 'magnet'];
+        // Create magnetic coils and polarized magnets
+        const types = ['attract', 'repel', 'magnet', 'coil', 'heavy'];
         this.blackHoles.push({
             x: x,
             y: y,
             radius: 15,
             strength: this.magnetStrength,
-            type: types[Math.floor(Math.random() * types.length)]
+            type: types[Math.floor(Math.random() * types.length)],
+            rotation: 0
         });
     }
     
@@ -254,32 +256,46 @@ class GravityBall {
             }
         }
         
-        // Magnetic interactions like pool table physics
+        // Complex magnetic interactions with coils and heavy gravity
         this.blackHoles.forEach(hole => {
             const dx = hole.x - this.ball.x;
             const dy = hole.y - this.ball.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             
-            if (distance > 0 && distance < 120) {
-                const force = hole.strength / (distance * 0.02);
+            // Update coil rotation
+            if (hole.type === 'coil') {
+                hole.rotation += 0.1;
+            }
+            
+            if (distance > 0 && distance < 150) {
+                const force = hole.strength / (distance * 0.015);
                 const forceX = (dx / distance) * force;
                 const forceY = (dy / distance) * force;
                 
                 if (hole.type === 'attract') {
                     // Strong magnetic pull - North pole
-                    this.ball.vx += forceX * 0.2;
-                    this.ball.vy += forceY * 0.2;
+                    this.ball.vx += forceX * 0.25;
+                    this.ball.vy += forceY * 0.25;
                 } else if (hole.type === 'repel') {
                     // Push away like same poles - South pole
-                    this.ball.vx -= forceX * 0.18;
-                    this.ball.vy -= forceY * 0.18;
+                    this.ball.vx -= forceX * 0.22;
+                    this.ball.vy -= forceY * 0.22;
                 } else if (hole.type === 'magnet') {
                     // Polarized sideways force - creates spin
-                    this.ball.vx += forceY * 0.15;
-                    this.ball.vy -= forceX * 0.15;
+                    this.ball.vx += forceY * 0.18;
+                    this.ball.vy -= forceX * 0.18;
                     // Add rotational effect
-                    this.ball.vx += Math.sin(distance * 0.1) * 0.1;
-                    this.ball.vy += Math.cos(distance * 0.1) * 0.1;
+                    this.ball.vx += Math.sin(distance * 0.15) * 0.12;
+                    this.ball.vy += Math.cos(distance * 0.15) * 0.12;
+                } else if (hole.type === 'coil') {
+                    // Electromagnetic coil creates circular motion
+                    const coilForce = 0.15;
+                    this.ball.vx += Math.sin(hole.rotation + distance * 0.1) * coilForce;
+                    this.ball.vy += Math.cos(hole.rotation + distance * 0.1) * coilForce;
+                } else if (hole.type === 'heavy') {
+                    // Heavy gravity well
+                    this.ball.vx += forceX * 0.3;
+                    this.ball.vy += forceY * 0.3 + this.heavyGravity * 0.1;
                 }
             }
         });
@@ -292,8 +308,13 @@ class GravityBall {
             this.ball.vy -= this.deviceMotion.y * this.motionSensitivity;
         }
         
-        // Apply gravity
+        // Apply heavier gravity - harder to move ball upward
         this.ball.vy += this.gravity;
+        
+        // Additional heavy gravity when ball is moving down
+        if (this.ball.vy > 0) {
+            this.ball.vy += this.heavyGravity * 0.3;
+        }
         
         // Apply friction
         this.ball.vx *= this.friction;
@@ -366,30 +387,55 @@ class GravityBall {
         });
         this.ctx.stroke();
         
-        // Draw magnetic points like pool table elements
+        // Draw complex magnetic elements - coils, polarized magnets, gravity wells
         this.blackHoles.forEach(hole => {
             this.ctx.beginPath();
             this.ctx.arc(hole.x, hole.y, hole.radius, 0, Math.PI * 2);
             
             if (hole.type === 'attract') {
-                // Blue magnet - pulls ball in
-                this.ctx.fillStyle = 'rgba(0, 100, 255, 0.7)';
+                // Blue magnet - North pole
+                this.ctx.fillStyle = 'rgba(0, 100, 255, 0.8)';
             } else if (hole.type === 'repel') {
-                // Red magnet - pushes ball away
-                this.ctx.fillStyle = 'rgba(255, 50, 50, 0.7)';
-            } else {
-                // Green magnet - sideways force
-                this.ctx.fillStyle = 'rgba(50, 255, 100, 0.7)';
+                // Red magnet - South pole
+                this.ctx.fillStyle = 'rgba(255, 50, 50, 0.8)';
+            } else if (hole.type === 'magnet') {
+                // Green magnet - polarized sideways
+                this.ctx.fillStyle = 'rgba(50, 255, 100, 0.8)';
+            } else if (hole.type === 'coil') {
+                // Purple electromagnetic coil
+                this.ctx.fillStyle = 'rgba(150, 50, 255, 0.8)';
+            } else if (hole.type === 'heavy') {
+                // Dark gravity well
+                this.ctx.fillStyle = 'rgba(50, 50, 50, 0.9)';
             }
             this.ctx.fill();
             
-            // Draw magnetic field effect
-            this.ctx.beginPath();
-            this.ctx.arc(hole.x, hole.y, hole.radius + 8, 0, Math.PI * 2);
-            this.ctx.strokeStyle = hole.type === 'attract' ? 'rgba(0, 100, 255, 0.4)' : 
-                                  hole.type === 'repel' ? 'rgba(255, 50, 50, 0.4)' : 'rgba(50, 255, 100, 0.4)';
-            this.ctx.lineWidth = 2;
-            this.ctx.stroke();
+            // Draw specific effects for each type
+            if (hole.type === 'coil') {
+                // Rotating coil effect
+                this.ctx.beginPath();
+                this.ctx.arc(hole.x, hole.y, hole.radius + 5, hole.rotation, hole.rotation + Math.PI);
+                this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+                this.ctx.lineWidth = 3;
+                this.ctx.stroke();
+            } else if (hole.type === 'heavy') {
+                // Heavy gravity rings
+                for (let i = 1; i <= 3; i++) {
+                    this.ctx.beginPath();
+                    this.ctx.arc(hole.x, hole.y, hole.radius + (i * 6), 0, Math.PI * 2);
+                    this.ctx.strokeStyle = `rgba(50, 50, 50, ${0.3 / i})`;
+                    this.ctx.lineWidth = 2;
+                    this.ctx.stroke();
+                }
+            } else {
+                // Standard magnetic field
+                this.ctx.beginPath();
+                this.ctx.arc(hole.x, hole.y, hole.radius + 8, 0, Math.PI * 2);
+                this.ctx.strokeStyle = hole.type === 'attract' ? 'rgba(0, 100, 255, 0.5)' : 
+                                      hole.type === 'repel' ? 'rgba(255, 50, 50, 0.5)' : 'rgba(50, 255, 100, 0.5)';
+                this.ctx.lineWidth = 2;
+                this.ctx.stroke();
+            }
         });
         
         // Draw ball
