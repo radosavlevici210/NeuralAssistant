@@ -1,43 +1,38 @@
 /**
- * ALPHA CORE: Interactive Gravity Ball Game
- * A fun bouncing ball with realistic physics for entertainment
+ * ALPHA CORE: Gravity Game
+ * Navigate the triangle through gravity wells to reach particle targets
  */
 
-class GravityBall {
+class GravityGame {
     constructor() {
         this.canvas = null;
         this.ctx = null;
-        this.ball = {
-            x: 200,
+        this.player = {
+            x: 100,
             y: 100,
             vx: 0,
             vy: 0,
-            radius: 8,
-            color: '#00aaff',
-            trail: []
+            size: 8,
+            angle: 0
         };
-        this.gravity = 0.5;
-        this.friction = 0.999;
-        this.bounce = 0.8;
-        this.centerX = 0;
-        this.centerY = 0;
-        this.returnForce = 0.02;
-        this.boundaries = {
-            left: 50,
-            right: 0,
-            top: 50,
-            bottom: 0
-        };
+        this.gravityWells = [];
+        this.targets = [];
+        this.particles = [];
+        this.level = 1;
+        this.score = 0;
+        this.gameState = 'playing'; // 'playing', 'won', 'lost'
         this.mouse = { x: 0, y: 0, down: false };
         this.animationId = null;
         this.isActive = false;
+        this.thrust = false;
+        this.keys = {};
         
         this.init();
     }
     
     init() {
         this.createCanvas();
-        this.createPhysicsObjects();
+        this.createLevel();
         this.bindEvents();
         this.startGame();
     }
@@ -66,14 +61,62 @@ class GravityBall {
         this.createToggleButton();
     }
     
-    createPhysicsObjects() {
-        // Set screen center for return force
-        this.centerX = this.canvas.width / 2;
-        this.centerY = this.canvas.height / 2;
+    createLevel() {
+        // Reset game state
+        this.gameState = 'playing';
+        this.player.x = 100;
+        this.player.y = 100;
+        this.player.vx = 0;
+        this.player.vy = 0;
+        this.player.angle = 0;
         
-        // Set boundaries to prevent getting stuck in corners
-        this.boundaries.right = this.canvas.width - 50;
-        this.boundaries.bottom = this.canvas.height - 50;
+        // Create level-specific elements
+        this.gravityWells = [];
+        this.targets = [];
+        this.particles = [];
+        
+        // Level 1 - Simple introduction
+        if (this.level === 1) {
+            this.targets.push({ x: 400, y: 200, radius: 15, collected: false });
+            this.gravityWells.push({ x: 250, y: 150, radius: 30, strength: 50 });
+        }
+        // Level 2 - More challenging
+        else if (this.level === 2) {
+            this.targets.push({ x: 500, y: 100, radius: 15, collected: false });
+            this.targets.push({ x: 450, y: 300, radius: 15, collected: false });
+            this.gravityWells.push({ x: 200, y: 150, radius: 25, strength: 40 });
+            this.gravityWells.push({ x: 350, y: 200, radius: 25, strength: 40 });
+        }
+        // Level 3 - Multiple wells
+        else if (this.level === 3) {
+            this.targets.push({ x: 600, y: 200, radius: 15, collected: false });
+            this.gravityWells.push({ x: 150, y: 100, radius: 20, strength: 35 });
+            this.gravityWells.push({ x: 300, y: 200, radius: 20, strength: 35 });
+            this.gravityWells.push({ x: 450, y: 300, radius: 20, strength: 35 });
+        }
+        // Default for other levels
+        else {
+            const numTargets = Math.min(this.level, 5);
+            const numWells = Math.min(this.level + 1, 8);
+            
+            for (let i = 0; i < numTargets; i++) {
+                this.targets.push({
+                    x: 300 + Math.random() * 400,
+                    y: 100 + Math.random() * 300,
+                    radius: 15,
+                    collected: false
+                });
+            }
+            
+            for (let i = 0; i < numWells; i++) {
+                this.gravityWells.push({
+                    x: 150 + Math.random() * 500,
+                    y: 100 + Math.random() * 300,
+                    radius: 20 + Math.random() * 15,
+                    strength: 30 + Math.random() * 25
+                });
+            }
+        }
     }
     
     createToggleButton() {
