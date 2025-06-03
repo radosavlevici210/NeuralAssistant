@@ -815,4 +815,4 @@ if __name__ == '__main__':
     print("=" * 60)
     
     # Run the Flask-SocketIO app
-    socketio.run(app, host='0.0.0.0', port=5000, debug=False, allow_unsafe_werkzeug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=False, allow_unsafe_werkzeug=True, use_reloader=False, log_output=False)

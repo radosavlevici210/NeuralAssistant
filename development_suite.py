@@ -119,7 +119,7 @@ class SecretManager:
             decrypted_secret = self.cipher_suite.decrypt(encrypted_secret).decode()
             return decrypted_secret
         
-        return None
+        return ""
     
     def list_secrets(self) -> List[Dict]:
         """List all stored secrets (without values)"""
