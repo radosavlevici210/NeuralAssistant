@@ -12,7 +12,7 @@ class GravityBall {
             y: 100,
             vx: 0,
             vy: 0,
-            radius: 12,
+            radius: 8,
             trail: []
         };
         this.gravity = 0.6;
@@ -47,9 +47,10 @@ class GravityBall {
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: 100;
+            z-index: 10;
             pointer-events: none;
             display: none;
+            user-select: none;
         `;
         this.ctx = this.canvas.getContext('2d');
         document.body.appendChild(this.canvas);
@@ -111,46 +112,62 @@ class GravityBall {
     setupEventListeners() {
         window.addEventListener('resize', () => this.resizeCanvas());
         
-        // Mouse events for finger attraction
+        // Mouse events for finger attraction - only when active
         this.canvas.addEventListener('mousemove', (e) => {
-            this.mouse.x = e.clientX;
-            this.mouse.y = e.clientY;
+            if (this.isActive) {
+                this.mouse.x = e.clientX;
+                this.mouse.y = e.clientY;
+            }
         });
         
         this.canvas.addEventListener('mousedown', (e) => {
-            this.mouse.down = true;
-            this.mouse.x = e.clientX;
-            this.mouse.y = e.clientY;
+            if (this.isActive) {
+                this.mouse.down = true;
+                this.mouse.x = e.clientX;
+                this.mouse.y = e.clientY;
+                e.preventDefault(); // Don't interfere with page
+            }
         });
         
         this.canvas.addEventListener('mouseup', () => {
-            this.mouse.down = false;
+            if (this.isActive) {
+                this.mouse.down = false;
+            }
         });
         
-        // Touch events for mobile
+        // Touch events for mobile - only when active
         this.canvas.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            const touch = e.touches[0];
-            this.mouse.x = touch.clientX;
-            this.mouse.y = touch.clientY;
+            if (this.isActive) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                this.mouse.x = touch.clientX;
+                this.mouse.y = touch.clientY;
+            }
         });
         
         this.canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            this.mouse.down = true;
-            const touch = e.touches[0];
-            this.mouse.x = touch.clientX;
-            this.mouse.y = touch.clientY;
+            if (this.isActive) {
+                e.preventDefault();
+                this.mouse.down = true;
+                const touch = e.touches[0];
+                this.mouse.x = touch.clientX;
+                this.mouse.y = touch.clientY;
+            }
         });
         
         this.canvas.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            this.mouse.down = false;
+            if (this.isActive) {
+                e.preventDefault();
+                this.mouse.down = false;
+            }
         });
         
-        // Double-click to create black holes
+        // Double-click to create magnetic points - only when active
         this.canvas.addEventListener('dblclick', (e) => {
-            this.createBlackHole(e.clientX, e.clientY);
+            if (this.isActive) {
+                this.createBlackHole(e.clientX, e.clientY);
+                e.preventDefault();
+            }
         });
         
         // Device motion for phone tilting
@@ -213,12 +230,12 @@ class GravityBall {
     }
 
     createBlackHole(x, y) {
-        // Create magnetic points like pool table bumpers
+        // Create small magnetic points that don't interfere with screen
         const types = ['attract', 'repel', 'magnet'];
         this.blackHoles.push({
             x: x,
             y: y,
-            radius: 20,
+            radius: 15,
             strength: this.magnetStrength,
             type: types[Math.floor(Math.random() * types.length)]
         });
