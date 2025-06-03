@@ -899,32 +899,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 
                 .floating-panel-content {
-                    padding: 18px;
-                    max-height: 55vh;
+                    padding: 20px;
+                    max-height: 60vh;
                     overflow-y: auto;
                 }
                 
-                .control-section {
-                    margin-bottom: 18px;
-                }
-                
-                .control-section:last-child {
-                    margin-bottom: 0;
-                }
-                
-                .control-section h4 {
-                    color: #60a5fa;
-                    font-size: 12px;
-                    font-weight: 600;
-                    margin: 0 0 10px 0;
-                    text-transform: uppercase;
-                    letter-spacing: 1px;
-                }
-                
-                .control-row {
+                .unified-controls {
                     display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-                    gap: 8px;
+                    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+                    gap: 10px;
                 }
                 
                 .control-btn {
