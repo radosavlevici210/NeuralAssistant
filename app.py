@@ -16,6 +16,7 @@ from flask_socketio import SocketIO, emit
 import logging
 
 from voice_assistant import VoiceAssistant
+from network_discovery import NetworkDiscovery
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -121,8 +122,9 @@ class WebVoiceAssistant:
         self.is_active = False
         self.status_update("stopped", "AVA CORE has been stopped")
 
-# Initialize web voice assistant
+# Initialize web voice assistant and network discovery
 web_assistant = WebVoiceAssistant(socketio)
+network_discovery = NetworkDiscovery(ava_port=5000)
 
 @app.route('/')
 def index():
@@ -283,6 +285,53 @@ def get_capabilities():
         logger.error(f"Failed to get capabilities: {str(e)}")
         return jsonify({'error': f'Failed to get capabilities: {str(e)}'}), 500
 
+@app.route('/api/network/discovery/start', methods=['POST'])
+def start_network_discovery():
+    """Start automatic network discovery"""
+    try:
+        result = network_discovery.start_discovery()
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Network discovery start error: {str(e)}")
+        return jsonify({'error': f'Failed to start discovery: {str(e)}'}), 500
+
+@app.route('/api/network/discovery/stop', methods=['POST'])
+def stop_network_discovery():
+    """Stop network discovery"""
+    try:
+        result = network_discovery.stop_discovery()
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"Network discovery stop error: {str(e)}")
+        return jsonify({'error': f'Failed to stop discovery: {str(e)}'}), 500
+
+@app.route('/api/network/status')
+def get_network_status():
+    """Get network discovery status and discovered devices"""
+    try:
+        status = network_discovery.get_discovery_status()
+        return jsonify(status)
+    except Exception as e:
+        logger.error(f"Network status error: {str(e)}")
+        return jsonify({'error': f'Failed to get network status: {str(e)}'}), 500
+
+@app.route('/api/network/connect', methods=['POST'])
+def connect_to_device():
+    """Connect to discovered network device"""
+    try:
+        data = request.get_json()
+        ip_address = data.get('ip_address', '')
+        
+        if not ip_address:
+            return jsonify({'error': 'No IP address provided'}), 400
+        
+        result = network_discovery.connect_to_device(ip_address)
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Device connection error: {str(e)}")
+        return jsonify({'error': f'Failed to connect to device: {str(e)}'}), 500
+
 @socketio.on('connect')
 def handle_connect():
     """Handle client connection"""
@@ -306,6 +355,20 @@ if __name__ == '__main__':
     print(f"Starting web interface on http://0.0.0.0:5000")
     print("Dashboard: http://0.0.0.0:5000")
     print("Monitor: http://0.0.0.0:5000/monitor")
+    print("=" * 60)
+    
+    # Start network discovery automatically
+    try:
+        print("Starting automatic network discovery...")
+        discovery_result = network_discovery.start_discovery()
+        if discovery_result['success']:
+            print("✓ Network discovery active - AVA CORE is now discoverable on your network")
+            print("✓ Devices on your network can now connect without installation")
+        else:
+            print("! Network discovery failed to start")
+    except Exception as e:
+        print(f"! Network discovery error: {str(e)}")
+    
     print("=" * 60)
     
     # Run the Flask-SocketIO app
