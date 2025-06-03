@@ -179,6 +179,69 @@
                 </div>
             </div>
 
+            <!-- Network Discovery & Connection -->
+            <div class="card">
+                <h2>
+                    <i data-feather="wifi"></i>
+                    Network Discovery
+                </h2>
+                
+                <div class="controls">
+                    <button id="networkDiscoveryBtn" class="btn btn-secondary">
+                        <i data-feather="search"></i>
+                        Start Network Discovery
+                    </button>
+                    <button id="refreshNetworkBtn" class="btn btn-secondary">
+                        <i data-feather="refresh-cw"></i>
+                        Refresh Devices
+                    </button>
+                </div>
+                
+                <div id="networkStatus" class="status-display">
+                    <span class="status-text">Network discovery inactive</span>
+                </div>
+                
+                <div id="discoveredDevices" class="device-list" style="display: none;">
+                    <h4>Discovered Devices</h4>
+                    <div id="devicesList"></div>
+                </div>
+                
+                <div class="usage-instructions">
+                    <h3>How to Connect Other Devices</h3>
+                    <div class="instruction-grid">
+                        <div class="instruction-item">
+                            <h4><i data-feather="smartphone"></i> Phones & Tablets</h4>
+                            <ol>
+                                <li>Connect to same WiFi network</li>
+                                <li>Open browser (Safari/Chrome)</li>
+                                <li>Go to: <span id="connectionUrl" class="connection-url">http://[getting-ip]:5000</span></li>
+                                <li>Bookmark for easy access</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="instruction-item">
+                            <h4><i data-feather="monitor"></i> Computers</h4>
+                            <ol>
+                                <li>Ensure same network connection</li>
+                                <li>Open any web browser</li>
+                                <li>Navigate to the address above</li>
+                                <li>Full AVA features available instantly</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="instruction-item">
+                            <h4><i data-feather="tv"></i> Smart TVs & Other Devices</h4>
+                            <ol>
+                                <li>Connect to home WiFi</li>
+                                <li>Open web browser app</li>
+                                <li>Enter the connection address</li>
+                                <li>No installation required</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- System Information -->
             <div class="card">
                 <h2>
@@ -204,25 +267,25 @@
                             </li>
                             <li style="padding: 0.25rem 0;">
                                 <i data-feather="wifi" style="width: 16px; height: 16px; color: hsl(220 70% 50%);"></i>
-                                Real-time WebSocket Updates
+                                Network Auto-Discovery
                             </li>
                         </ul>
                     </div>
                     
                     <div>
-                        <h3>Controls</h3>
+                        <h3>Network Capabilities</h3>
                         <ul style="list-style: none; padding: 0;">
                             <li style="padding: 0.25rem 0;">
-                                <strong>Start/Stop:</strong> Control voice listening
+                                <strong>Zero Installation:</strong> Works on any device with browser
                             </li>
                             <li style="padding: 0.25rem 0;">
-                                <strong>Manual Speech:</strong> Make AVA speak any text
+                                <strong>Auto-Discovery:</strong> Finds all network devices
                             </li>
                             <li style="padding: 0.25rem 0;">
-                                <strong>Monitor:</strong> View detailed conversation history
+                                <strong>Cross-Platform:</strong> Phones, computers, smart devices
                             </li>
                             <li style="padding: 0.25rem 0;">
-                                <strong>Real-time:</strong> Live status and conversation updates
+                                <strong>Real-time:</strong> Live updates across all connections
                             </li>
                         </ul>
                     </div>
