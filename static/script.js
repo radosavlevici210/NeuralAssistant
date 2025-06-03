@@ -761,6 +761,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.handleExternalWork();
             });
         }
+        
+        // Dev button - enhanced with development suite
+        const devBtnEnhanced = document.getElementById('devBtn');
+        if (devBtnEnhanced) {
+            devBtnEnhanced.addEventListener('click', () => {
+                this.openDevelopmentSuite();
+            });
+        }
     }
     
     addWaterEffects() {
@@ -1140,6 +1148,255 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.showNotification('Work request failed', 'error');
             });
         }
+    }
+    
+    openDevelopmentSuite() {
+        const options = [
+            'Start Development Session',
+            'Create New Project', 
+            'Manage Secrets',
+            'View Development Stats',
+            'Git Operations',
+            'Run Tests',
+            'Deploy Project'
+        ];
+        
+        const choice = prompt(`Development Suite Options:\n${options.map((opt, i) => `${i+1}. ${opt}`).join('\n')}\n\nEnter number (1-${options.length}):`);
+        
+        if (choice) {
+            const index = parseInt(choice) - 1;
+            if (index >= 0 && index < options.length) {
+                switch(index) {
+                    case 0: this.startDevSession(); break;
+                    case 1: this.createProject(); break;
+                    case 2: this.manageSecrets(); break;
+                    case 3: this.viewDevStats(); break;
+                    case 4: this.gitOperations(); break;
+                    case 5: this.runTests(); break;
+                    case 6: this.deployProject(); break;
+                }
+            }
+        }
+    }
+    
+    startDevSession() {
+        fetch('/api/development/session/start', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.showNotification(`Development session started - ${data.tools_available?.length || 0} tools available`, 'success');
+                } else {
+                    this.showNotification('Failed to start development session', 'error');
+                }
+            });
+    }
+    
+    createProject() {
+        const projectName = prompt('Enter project name:');
+        if (!projectName) return;
+        
+        const projectType = prompt('Enter project type (python/javascript/web/generic):') || 'generic';
+        
+        fetch('/api/development/project/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                project_name: projectName,
+                project_type: projectType
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                this.showNotification(`Project "${projectName}" created successfully`, 'success');
+            } else {
+                this.showNotification(`Failed to create project: ${data.error}`, 'error');
+            }
+        });
+    }
+    
+    manageSecrets() {
+        const actions = ['List Secrets', 'Add Secret', 'Delete Secret'];
+        const action = prompt(`Secret Management:\n${actions.map((a, i) => `${i+1}. ${a}`).join('\n')}\n\nEnter number:`);
+        
+        if (!action) return;
+        
+        const index = parseInt(action) - 1;
+        switch(index) {
+            case 0: this.listSecrets(); break;
+            case 1: this.addSecret(); break;
+            case 2: this.deleteSecret(); break;
+        }
+    }
+    
+    listSecrets() {
+        fetch('/api/development/secrets')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const secrets = data.secrets;
+                    if (secrets.length === 0) {
+                        this.showNotification('No secrets stored', 'info');
+                    } else {
+                        const secretList = secrets.map(s => `${s.service_name} (${s.category})`).join('\n');
+                        alert(`Stored Secrets:\n\n${secretList}`);
+                    }
+                } else {
+                    this.showNotification('Failed to list secrets', 'error');
+                }
+            });
+    }
+    
+    addSecret() {
+        const serviceName = prompt('Enter service name (e.g., GITHUB_TOKEN):');
+        if (!serviceName) return;
+        
+        const secretValue = prompt('Enter secret value:');
+        if (!secretValue) return;
+        
+        const description = prompt('Enter description (optional):') || '';
+        const category = prompt('Enter category (git/deployment/ai/cloud):') || 'general';
+        
+        fetch('/api/development/secrets', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                service_name: serviceName,
+                secret_value: secretValue,
+                description: description,
+                category: category
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                this.showNotification(`Secret "${serviceName}" stored securely`, 'success');
+            } else {
+                this.showNotification(`Failed to store secret: ${data.error}`, 'error');
+            }
+        });
+    }
+    
+    deleteSecret() {
+        this.listSecrets();
+        const serviceName = prompt('Enter service name to delete:');
+        if (!serviceName) return;
+        
+        if (confirm(`Delete secret "${serviceName}"? This cannot be undone.`)) {
+            fetch(`/api/development/secrets/${serviceName}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        this.showNotification(`Secret "${serviceName}" deleted`, 'success');
+                    } else {
+                        this.showNotification(`Failed to delete secret: ${data.error}`, 'error');
+                    }
+                });
+        }
+    }
+    
+    viewDevStats() {
+        const days = prompt('Enter number of days (default 30):') || '30';
+        
+        fetch(`/api/development/stats?days=${days}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const stats = data.stats;
+                    const summary = `Development Stats (${days} days):
+                    
+Sessions: ${stats.total_sessions}
+Hours: ${stats.total_hours}
+Commits: ${stats.total_commits}
+Avg Productivity: ${stats.average_productivity}%`;
+                    
+                    alert(summary);
+                } else {
+                    this.showNotification('Failed to get development stats', 'error');
+                }
+            });
+    }
+    
+    gitOperations() {
+        const message = prompt('Enter commit message:') || 'AVA CORE development update';
+        const projectPath = prompt('Enter project path (default current):') || '.';
+        
+        fetch('/api/development/git/commit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: message,
+                project_path: projectPath
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                this.showNotification(`Changes committed: ${data.commit_hash}`, 'success');
+            } else {
+                this.showNotification(`Commit failed: ${data.error}`, 'error');
+            }
+        });
+    }
+    
+    runTests() {
+        const projectPath = prompt('Enter project path (default current):') || '.';
+        
+        this.showNotification('Running tests...', 'info');
+        
+        fetch('/api/development/test/run', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ project_path: projectPath })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                this.showNotification(`Tests completed successfully with ${data.command}`, 'success');
+            } else {
+                this.showNotification(`Tests failed: ${data.error}`, 'error');
+            }
+        });
+    }
+    
+    deployProject() {
+        const targets = ['heroku', 'vercel', 'github_pages'];
+        const target = prompt(`Deploy to:\n${targets.map((t, i) => `${i+1}. ${t}`).join('\n')}\n\nEnter number:`);
+        
+        if (!target) return;
+        
+        const targetIndex = parseInt(target) - 1;
+        if (targetIndex < 0 || targetIndex >= targets.length) return;
+        
+        const deploymentTarget = targets[targetIndex];
+        const projectPath = prompt('Enter project path (default current):') || '.';
+        
+        this.showNotification(`Deploying to ${deploymentTarget}...`, 'info');
+        
+        fetch('/api/development/deploy', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                project_path: projectPath,
+                target: deploymentTarget
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                if (data.next_steps) {
+                    alert(`Deployment configured!\n\nNext steps:\n${data.next_steps.join('\n')}`);
+                } else {
+                    this.showNotification(`Deployment to ${deploymentTarget} successful`, 'success');
+                }
+            } else {
+                if (data.action_required) {
+                    this.showNotification(`${data.error} - ${data.action_required}`, 'warning');
+                } else {
+                    this.showNotification(`Deployment failed: ${data.error}`, 'error');
+                }
+            }
+        });
     }
 }
 

@@ -21,6 +21,7 @@ from chat_manager import AutoChatManager
 from cloud_deploy import CloudDeploymentManager
 from automation_controller import AutomationController
 from self_management import AVACoreSelfManagement
+from development_suite import AdvancedDevelopmentSuite
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -126,13 +127,14 @@ class WebVoiceAssistant:
         self.is_active = False
         self.status_update("stopped", "AVA CORE has been stopped")
 
-# Initialize web voice assistant, network discovery, secure chat manager, cloud deployment, automation, and self-management
+# Initialize web voice assistant, network discovery, secure chat manager, cloud deployment, automation, self-management, and development suite
 web_assistant = WebVoiceAssistant(socketio)
 network_discovery = NetworkDiscovery(ava_port=5000)
 chat_manager = AutoChatManager(socketio)
 cloud_deployer = CloudDeploymentManager()
 automation_controller = AutomationController()
 self_management = AVACoreSelfManagement("ervin210@icloud.com")
+development_suite = AdvancedDevelopmentSuite()
 
 @app.route('/')
 def index():
@@ -623,6 +625,148 @@ def learn_behavior():
         
         self_management.memory.learn_behavior(pattern, context, effectiveness)
         return jsonify({'success': True, 'message': 'Behavior pattern learned'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/development/status')
+def get_development_status():
+    """Get development suite status"""
+    try:
+        status = development_suite.get_suite_status()
+        return jsonify({
+            'success': True,
+            'status': status
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/development/secrets', methods=['GET'])
+def list_secrets():
+    """List all stored secrets"""
+    try:
+        secrets = development_suite.secret_manager.list_secrets()
+        return jsonify({
+            'success': True,
+            'secrets': secrets
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/development/secrets', methods=['POST'])
+def store_secret():
+    """Store a new secret"""
+    try:
+        data = request.get_json()
+        service_name = data.get('service_name', '')
+        secret_value = data.get('secret_value', '')
+        description = data.get('description', '')
+        category = data.get('category', 'general')
+        
+        development_suite.secret_manager.store_secret(service_name, secret_value, description, category)
+        return jsonify({
+            'success': True,
+            'message': f'Secret stored for {service_name}'
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/development/secrets/<service_name>', methods=['DELETE'])
+def delete_secret(service_name):
+    """Delete a secret"""
+    try:
+        deleted = development_suite.secret_manager.delete_secret(service_name)
+        if deleted:
+            return jsonify({
+                'success': True,
+                'message': f'Secret {service_name} deleted'
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Secret not found'
+            }), 404
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/development/session/start', methods=['POST'])
+def start_dev_session():
+    """Start development session"""
+    try:
+        result = development_suite.workflow.start_development_session()
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/development/session/end', methods=['POST'])
+def end_dev_session():
+    """End development session"""
+    try:
+        result = development_suite.workflow.end_development_session()
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/development/project/create', methods=['POST'])
+def create_project():
+    """Create new development project"""
+    try:
+        data = request.get_json()
+        project_name = data.get('project_name', '')
+        project_type = data.get('project_type', 'generic')
+        
+        result = development_suite.workflow.create_project(project_name, project_type)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/development/git/commit', methods=['POST'])
+def commit_changes():
+    """Commit changes to git"""
+    try:
+        data = request.get_json()
+        message = data.get('message', 'AVA CORE auto-commit')
+        project_path = data.get('project_path', '.')
+        
+        result = development_suite.workflow.commit_changes(message, project_path)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/development/test/run', methods=['POST'])
+def run_tests():
+    """Run project tests"""
+    try:
+        data = request.get_json()
+        project_path = data.get('project_path', '.')
+        
+        result = development_suite.workflow.run_tests(project_path)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/development/deploy', methods=['POST'])
+def deploy_project():
+    """Deploy project"""
+    try:
+        data = request.get_json()
+        project_path = data.get('project_path', '.')
+        deployment_target = data.get('target', 'heroku')
+        
+        result = development_suite.workflow.deploy_project(project_path, deployment_target)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/development/stats')
+def get_dev_stats():
+    """Get development statistics"""
+    try:
+        days = int(request.args.get('days', 30))
+        stats = development_suite.workflow.get_development_stats(days)
+        return jsonify({
+            'success': True,
+            'stats': stats
+        })
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
