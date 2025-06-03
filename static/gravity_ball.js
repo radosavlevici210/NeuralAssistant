@@ -66,22 +66,25 @@ class GravityBall {
     
     createToggleButton() {
         const toggleBtn = document.createElement('button');
-        toggleBtn.innerHTML = '⚫';
+        toggleBtn.innerHTML = '●';
         toggleBtn.style.cssText = `
             position: fixed;
             top: 15px;
             right: 15px;
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(0, 170, 255, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            background: rgba(0, 170, 255, 0.8);
             color: white;
-            font-size: 12px;
+            font-size: 16px;
             cursor: pointer;
-            z-index: 10;
+            z-index: 1000;
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         `;
         
         toggleBtn.addEventListener('click', () => this.toggleGame());
