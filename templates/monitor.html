@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVA CORE - Conversation Monitor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+    
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1>
+                    <i data-feather="monitor" style="width: 40px; height: 40px; vertical-align: middle; margin-right: 12px;"></i>
+                    AVA Monitor
+                </h1>
+                <p>Real-time Conversation Monitoring & Analytics</p>
+                <p class="copyright">Copyright and Trademark: Ervin Radosavlevici</p>
+                
+                <!-- Navigation -->
+                <nav class="nav">
+                    <a href="/" class="nav-link">
+                        <i data-feather="home"></i>
+                        Dashboard
+                    </a>
+                    <a href="/monitor" class="nav-link">
+                        <i data-feather="monitor"></i>
+                        Monitor
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Live Status Bar -->
+            <div class="card">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-md">
+                        <h2 class="mb-0">
+                            <i data-feather="radio"></i>
+                            Live Status
+                        </h2>
+                        <span id="statusIndicator" class="status offline">
+                            <span class="status-dot"></span>
+                            Offline
+                        </span>
+                    </div>
+                    
+                    <div class="flex items-center gap-sm">
+                        <button id="refreshBtn" class="btn btn-secondary">
+                            <i data-feather="refresh-cw"></i>
+                            Refresh
+                        </button>
+                        
+                        <button id="clearBtn" class="btn btn-secondary">
+                            <i data-feather="trash-2"></i>
+                            Clear
+                        </button>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 1rem;">
+                    <strong>Current Activity:</strong>
+                    <span id="currentStatus" class="text-muted">System ready</span>
+                </div>
+            </div>
+
+            <!-- Conversation Monitor -->
+            <div class="card">
+                <h2>
+                    <i data-feather="message-circle"></i>
+                    Live Conversation
+                </h2>
+                
+                <div id="conversation" class="conversation" style="max-height: 500px;">
+                    <div class="conversation-empty">
+                        Waiting for conversation data...
+                    </div>
+                </div>
+                
+                <!-- Conversation Controls -->
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid hsl(var(--border));">
+                    <form id="speakForm" class="flex gap-md items-end">
+                        <div class="input-group" style="flex: 1; margin-bottom: 0;">
+                            <label for="speakText">Quick Speech:</label>
+                            <input 
+                                type="text" 
+                                id="speakText" 
+                                placeholder="Enter text for AVA to speak..."
+                                maxlength="200"
+                            >
+                        </div>
+                        
+                        <button type="submit" id="speakBtn" class="btn btn-primary">
+                            <i data-feather="volume-2"></i>
+                            Speak
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Analytics Dashboard -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
+                <!-- Activity Timeline -->
+                <div class="card">
+                    <h2>
+                        <i data-feather="trending-up"></i>
+                        Activity Timeline
+                    </h2>
+                    
+                    <canvas id="activityChart" width="400" height="200"></canvas>
+                </div>
+
+                <!-- Statistics -->
+                <div class="card">
+                    <h2>
+                        <i data-feather="bar-chart-2"></i>
+                        Session Statistics
+                    </h2>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="stat-item">
+                            <span class="stat-value" id="totalMessages">0</span>
+                            <div class="stat-label">Total Messages</div>
+                        </div>
+                        
+                        <div class="stat-item">
+                            <span class="stat-value" id="userMessages">0</span>
+                            <div class="stat-label">User Messages</div>
+                        </div>
+                        
+                        <div class="stat-item">
+                            <span class="stat-value" id="avaMessages">0</span>
+                            <div class="stat-label">AVA Responses</div>
+                        </div>
+                        
+                        <div class="stat-item">
+                            <span class="stat-value" id="sessionDuration">0m</span>
+                            <div class="stat-label">Session Duration</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Response Time Chart -->
+                    <div style="margin-top: 1.5rem;">
+                        <h3>Response Times</h3>
+                        <canvas id="responseChart" width="300" height="150"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Activity Log -->
+            <div class="card">
+                <h2>
+                    <i data-feather="file-text"></i>
+                    Detailed Activity Log
+                </h2>
+                
+                <div style="margin-bottom: 1rem;">
+                    <div class="flex items-center gap-md">
+                        <label>
+                            <input type="checkbox" id="autoScroll" checked>
+                            Auto-scroll to latest
+                        </label>
+                        
+                        <select id="logFilter" class="btn btn-secondary" style="min-width: auto; padding: 0.25rem 0.5rem;">
+                            <option value="all">All Events</option>
+                            <option value="conversation">Conversation Only</option>
+                            <option value="system">System Events</option>
+                            <option value="errors">Errors Only</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="activityLog" class="activity-log" style="max-height: 400px;">
+                    <!-- Log entries will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Advanced Controls -->
+            <div class="card">
+                <h2>
+                    <i data-feather="settings"></i>
+                    Advanced Controls
+                </h2>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                    <div>
+                        <h3>Voice Control</h3>
+                        <div class="controls">
+                            <button id="startBtn" class="btn btn-success">
+                                <i data-feather="play"></i>
+                                Start Listening
+                            </button>
+                            
+                            <button id="stopBtn" class="btn btn-error" disabled>
+                                <i data-feather="stop"></i>
+                                Stop Assistant
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3>Data Management</h3>
+                        <div class="controls">
+                            <button id="exportBtn" class="btn btn-secondary">
+                                <i data-feather="download"></i>
+                                Export Data
+                            </button>
+                            
+                            <button id="resetBtn" class="btn btn-secondary">
+                                <i data-feather="rotate-ccw"></i>
+                                Reset Session
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3>System Info</h3>
+                        <div style="font-family: var(--font-mono); font-size: 0.875rem; color: hsl(var(--text-muted));">
+                            <div>WebSocket: <span id="wsStatus">Disconnected</span></div>
+                            <div>API Status: <span id="apiStatus">Unknown</span></div>
+                            <div>Uptime: <span id="uptime">0s</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        // Initialize Feather icons
+        feather.replace();
+        
+        // Monitor-specific functionality
+        class AVAMonitor extends AVAInterface {
+            constructor() {
+                super();
+                this.sessionStart = Date.now();
+                this.messageCount = { total: 0, user: 0, ava: 0 };
+                this.responseTimes = [];
+                this.activityData = [];
+                this.charts = {};
+                
+                this.initCharts();
+                this.bindMonitorEvents();
+                this.startSessionTimer();
+            }
+            
+            initCharts() {
+                // Activity Timeline Chart
+                const activityCtx = document.getElementById('activityChart');
+                if (activityCtx) {
+                    this.charts.activity = new Chart(activityCtx, {
+                        type: 'line',
+                        data: {
+                            labels: [],
+                            datasets: [{
+                                label: 'Messages per minute',
+                                data: [],
+                                borderColor: 'hsl(220, 70%, 50%)',
+                                backgroundColor: 'hsl(220, 70%, 50%, 0.1)',
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: { stepSize: 1 }
+                                }
+                            }
+                        }
+                    });
+                }
+                
+                // Response Time Chart
+                const responseCtx = document.getElementById('responseChart');
+                if (responseCtx) {
+                    this.charts.response = new Chart(responseCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: [],
+                            datasets: [{
+                                label: 'Response Time (ms)',
+                                data: [],
+                                backgroundColor: 'hsl(270, 60%, 50%)',
+                                borderColor: 'hsl(270, 60%, 40%)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+            
+            bindMonitorEvents() {
+                // Clear conversation
+                const clearBtn = document.getElementById('clearBtn');
+                if (clearBtn) {
+                    clearBtn.addEventListener('click', () => this.clearConversation());
+                }
+                
+                // Export data
+                const exportBtn = document.getElementById('exportBtn');
+                if (exportBtn) {
+                    exportBtn.addEventListener('click', () => this.exportData());
+                }
+                
+                // Reset session
+                const resetBtn = document.getElementById('resetBtn');
+                if (resetBtn) {
+                    resetBtn.addEventListener('click', () => this.resetSession());
+                }
+                
+                // Log filter
+                const logFilter = document.getElementById('logFilter');
+                if (logFilter) {
+                    logFilter.addEventListener('change', () => this.filterActivityLog());
+                }
+            }
+            
+            addConversationMessage(message) {
+                super.addConversationMessage(message);
+                
+                // Update statistics
+                this.messageCount.total++;
+                if (message.speaker.toLowerCase() === 'user') {
+                    this.messageCount.user++;
+                } else if (message.speaker.toLowerCase() === 'ava') {
+                    this.messageCount.ava++;
+                }
+                
+                this.updateStatistics();
+                this.updateCharts();
+            }
+            
+            updateStatistics() {
+                const totalEl = document.getElementById('totalMessages');
+                const userEl = document.getElementById('userMessages');
+                const avaEl = document.getElementById('avaMessages');
+                
+                if (totalEl) totalEl.textContent = this.messageCount.total;
+                if (userEl) userEl.textContent = this.messageCount.user;
+                if (avaEl) avaEl.textContent = this.messageCount.ava;
+            }
+            
+            updateCharts() {
+                // Update activity chart data
+                const now = new Date();
+                const timeLabel = now.toLocaleTimeString();
+                
+                if (this.charts.activity) {
+                    const chart = this.charts.activity;
+                    chart.data.labels.push(timeLabel);
+                    chart.data.datasets[0].data.push(this.messageCount.total);
+                    
+                    // Keep only last 20 data points
+                    if (chart.data.labels.length > 20) {
+                        chart.data.labels.shift();
+                        chart.data.datasets[0].data.shift();
+                    }
+                    
+                    chart.update('none');
+                }
+            }
+            
+            startSessionTimer() {
+                setInterval(() => {
+                    const duration = Math.floor((Date.now() - this.sessionStart) / 1000);
+                    const minutes = Math.floor(duration / 60);
+                    const seconds = duration % 60;
+                    
+                    const durationEl = document.getElementById('sessionDuration');
+                    if (durationEl) {
+                        durationEl.textContent = `${minutes}m ${seconds}s`;
+                    }
+                    
+                    const uptimeEl = document.getElementById('uptime');
+                    if (uptimeEl) {
+                        uptimeEl.textContent = `${duration}s`;
+                    }
+                }, 1000);
+            }
+            
+            updateConnectionStatus(status) {
+                super.updateConnectionStatus(status);
+                
+                const wsStatusEl = document.getElementById('wsStatus');
+                if (wsStatusEl) {
+                    wsStatusEl.textContent = status === 'connected' ? 'Connected' : 'Disconnected';
+                    wsStatusEl.style.color = status === 'connected' ? 'hsl(120, 60%, 50%)' : 'hsl(0, 65%, 55%)';
+                }
+            }
+            
+            clearConversation() {
+                const conversationDiv = document.getElementById('conversation');
+                if (conversationDiv) {
+                    conversationDiv.innerHTML = '<div class="conversation-empty">Conversation cleared</div>';
+                }
+                
+                this.messageCount = { total: 0, user: 0, ava: 0 };
+                this.updateStatistics();
+                this.showNotification('Conversation cleared', 'info');
+            }
+            
+            exportData() {
+                const data = {
+                    timestamp: new Date().toISOString(),
+                    session_duration: Math.floor((Date.now() - this.sessionStart) / 1000),
+                    statistics: this.messageCount,
+                    activity_log: this.activityLog.slice(0, 100), // Last 100 entries
+                    conversation: Array.from(document.querySelectorAll('.message')).map(msg => ({
+                        speaker: msg.querySelector('.message-speaker')?.textContent,
+                        text: msg.querySelector('.message-text')?.textContent,
+                        timestamp: msg.querySelector('.message-time')?.textContent
+                    }))
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `ava-session-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                this.showNotification('Session data exported', 'success');
+            }
+            
+            resetSession() {
+                if (confirm('Reset the current session? This will clear all statistics and conversation history.')) {
+                    this.sessionStart = Date.now();
+                    this.messageCount = { total: 0, user: 0, ava: 0 };
+                    this.responseTimes = [];
+                    this.activityLog = [];
+                    
+                    this.clearConversation();
+                    this.updateStatistics();
+                    this.updateActivityLog();
+                    
+                    // Reset charts
+                    Object.values(this.charts).forEach(chart => {
+                        chart.data.labels = [];
+                        chart.data.datasets.forEach(dataset => {
+                            dataset.data = [];
+                        });
+                        chart.update();
+                    });
+                    
+                    this.showNotification('Session reset successfully', 'success');
+                }
+            }
+            
+            filterActivityLog() {
+                const filter = document.getElementById('logFilter')?.value || 'all';
+                const entries = document.querySelectorAll('.log-entry');
+                
+                entries.forEach(entry => {
+                    const status = entry.querySelector('.log-status')?.textContent?.toLowerCase();
+                    let show = true;
+                    
+                    switch (filter) {
+                        case 'conversation':
+                            show = ['user', 'ava', 'manual'].some(type => status?.includes(type));
+                            break;
+                        case 'system':
+                            show = ['started', 'stopped', 'listening', 'processing'].some(type => status?.includes(type));
+                            break;
+                        case 'errors':
+                            show = status?.includes('error');
+                            break;
+                    }
+                    
+                    entry.style.display = show ? 'flex' : 'none';
+                });
+            }
+        }
+        
+        // Initialize monitor when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.avaInterface = new AVAMonitor();
+        });
+    </script>
+</body>
+</html>
