@@ -18,16 +18,30 @@ class VoiceAssistant:
     def __init__(self):
         # Initialize speech recognition
         self.recognizer = sr.Recognizer()
-        self.microphone = sr.Microphone()
+        self.microphone = None
+        self.audio_available = False
         
-        # Configure recognizer settings
-        self.recognizer.energy_threshold = 300
-        self.recognizer.dynamic_energy_threshold = True
-        self.recognizer.pause_threshold = 0.8
+        # Try to initialize audio components
+        try:
+            self.microphone = sr.Microphone()
+            # Configure recognizer settings
+            self.recognizer.energy_threshold = 300
+            self.recognizer.dynamic_energy_threshold = True
+            self.recognizer.pause_threshold = 0.8
+            self.audio_available = True
+            logger.info("Audio hardware initialized successfully")
+        except Exception as e:
+            logger.warning(f"Audio hardware not available: {str(e)}")
+            logger.info("Running in text-only mode")
         
         # Initialize text-to-speech engine
-        self.tts_engine = pyttsx3.init()
-        self._configure_tts()
+        self.tts_engine = None
+        try:
+            self.tts_engine = pyttsx3.init()
+            self._configure_tts()
+            logger.info("Text-to-speech initialized successfully")
+        except Exception as e:
+            logger.warning(f"Text-to-speech not available: {str(e)}")
         
         # Initialize OpenAI client
         self.openai_client = None
@@ -41,6 +55,9 @@ class VoiceAssistant:
         
     def _configure_tts(self):
         """Configure text-to-speech engine settings"""
+        if not self.tts_engine:
+            return
+            
         try:
             # Set voice properties
             voices = self.tts_engine.getProperty('voices')
@@ -84,6 +101,10 @@ class VoiceAssistant:
         Returns:
             str: Recognized speech text or None if no speech detected
         """
+        if not self.audio_available or not self.microphone:
+            logger.warning("Audio hardware not available for speech recognition")
+            return None
+            
         try:
             with self.microphone as source:
                 # Adjust for ambient noise
@@ -238,9 +259,12 @@ class VoiceAssistant:
             
             logger.info(f"Speaking: {text[:50]}...")
             
-            # Use text-to-speech engine
-            self.tts_engine.say(text)
-            self.tts_engine.runAndWait()
+            # Use text-to-speech engine if available
+            if self.tts_engine:
+                self.tts_engine.say(text)
+                self.tts_engine.runAndWait()
+            else:
+                logger.warning("Text-to-speech engine not available")
             
         except Exception as e:
             logger.error(f"Text-to-speech error: {str(e)}")
