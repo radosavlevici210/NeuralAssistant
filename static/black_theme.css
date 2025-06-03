@@ -61,13 +61,35 @@ body {
     min-width: 80px !important;
 }
 
-/* Text elements */
-h1, h2, h3, h4, h5, h6 {
+/* Text elements - smaller sizes */
+h1 {
+    font-size: 18px !important;
+    color: #E0F2FF !important;
+}
+
+h2 {
+    font-size: 16px !important;
+    color: #E0F2FF !important;
+}
+
+h3 {
+    font-size: 14px !important;
+    color: #E0F2FF !important;
+}
+
+h4, h5, h6 {
+    font-size: 12px !important;
     color: #E0F2FF !important;
 }
 
 p, span, div, label {
+    font-size: 11px !important;
     color: #B3D9FF !important;
+}
+
+/* Make all text smaller */
+* {
+    font-size: 11px !important;
 }
 
 /* Input fields */
@@ -274,4 +296,35 @@ td {
 .dropdown-item:hover {
     background: rgba(0, 100, 200, 0.3) !important;
     color: #E0F2FF !important;
+}
+
+/* Very small copyright at bottom */
+.copyright {
+    position: fixed !important;
+    bottom: 2px !important;
+    right: 4px !important;
+    font-size: 8px !important;
+    color: rgba(180, 200, 255, 0.3) !important;
+    z-index: 1000 !important;
+    pointer-events: none !important;
+}
+
+/* Hide or make very small any existing copyright */
+.footer, footer, .copyright-text, .brand-text {
+    font-size: 8px !important;
+    opacity: 0.3 !important;
+}
+
+/* Make conversation text smaller */
+.conversation .message {
+    font-size: 10px !important;
+}
+
+.conversation .message-time {
+    font-size: 8px !important;
+}
+
+/* Smaller status text */
+.status, .status-text, .info-text {
+    font-size: 9px !important;
 }
