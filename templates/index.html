@@ -81,22 +81,47 @@
                     <span id="currentStatus" class="text-muted">System ready</span>
                 </div>
                 
-                <!-- Control Panel -->
-                <div class="controls">
-                    <button id="startBtn" class="btn btn-success">
-                        <i data-feather="play"></i>
-                        Start Listening
+                <!-- Main Control Panel -->
+                <div id="mainControls" class="controls-compact">
+                    <button id="toggleControlsBtn" class="btn-control-toggle">
+                        <i data-feather="settings"></i>
+                        Controls
                     </button>
-                    
-                    <button id="stopBtn" class="btn btn-error" disabled>
-                        <i data-feather="stop"></i>
-                        Stop Assistant
-                    </button>
-                    
-                    <button id="refreshBtn" class="btn btn-secondary">
-                        <i data-feather="refresh-cw"></i>
-                        Refresh
-                    </button>
+                </div>
+                
+                <!-- Hidden Control Panel -->
+                <div id="controlPanel" class="control-panel-hidden">
+                    <div class="controls-grid">
+                        <button id="startBtn" class="btn-compact btn-success">
+                            <i data-feather="play"></i>
+                            Start
+                        </button>
+                        
+                        <button id="stopBtn" class="btn-compact btn-error" disabled>
+                            <i data-feather="square"></i>
+                            Stop
+                        </button>
+                        
+                        <button id="refreshBtn" class="btn-compact btn-secondary">
+                            <i data-feather="refresh-cw"></i>
+                            Refresh
+                        </button>
+                        
+                        <button id="networkBtn" class="btn-compact btn-info">
+                            <i data-feather="wifi"></i>
+                            Network
+                        </button>
+                        
+                        <button id="devBtn" class="btn-compact btn-warning">
+                            <i data-feather="code"></i>
+                            Dev
+                        </button>
+                        
+                        <button id="hideControlsBtn" class="btn-compact btn-muted">
+                            <i data-feather="eye-off"></i>
+                            Hide
+                        </button>
+                    </div>
                 </div>
             </div>
 
