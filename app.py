@@ -19,6 +19,7 @@ from voice_assistant import VoiceAssistant
 from network_discovery import NetworkDiscovery
 from chat_manager import AutoChatManager
 from cloud_deploy import CloudDeploymentManager
+from automation_controller import AutomationController
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -124,11 +125,12 @@ class WebVoiceAssistant:
         self.is_active = False
         self.status_update("stopped", "AVA CORE has been stopped")
 
-# Initialize web voice assistant, network discovery, secure chat manager, and cloud deployment
+# Initialize web voice assistant, network discovery, secure chat manager, cloud deployment, and automation
 web_assistant = WebVoiceAssistant(socketio)
 network_discovery = NetworkDiscovery(ava_port=5000)
 chat_manager = AutoChatManager(socketio)
 cloud_deployer = CloudDeploymentManager()
+automation_controller = AutomationController()
 
 @app.route('/')
 def index():
@@ -238,10 +240,38 @@ def chat_with_ava():
                 'session_id': session_id
             }), 403
         
-        # Get AI response using secure chat manager
-        from advanced_ai import AdvancedAI
-        advanced_ai = AdvancedAI()
-        result = chat_manager.process_user_message(session_id, message, advanced_ai)
+        # Check if this is an automation command
+        automation_keywords = ['fix', 'setup', 'control', 'take control', 'do this', 'navigate', 'open', 'close', 'install', 'create', 'run', 'execute']
+        is_automation_request = any(keyword in message.lower() for keyword in automation_keywords)
+        
+        if is_automation_request:
+            # Execute automation task
+            automation_result = automation_controller.execute_computer_task(message, session_id)
+            
+            if automation_result.get('success'):
+                ai_response = f"I've completed your automation task: {message}\n\nResult: {automation_result.get('result', {}).get('message', 'Task completed successfully')}"
+            else:
+                error_msg = automation_result.get('error', 'Unknown error')
+                if 'permission' in error_msg.lower():
+                    ai_response = f"I need permission to control your computer for this task: {message}\n\nTo enable computer control, please confirm you want AVA to have automation access."
+                else:
+                    ai_response = f"I encountered an issue with your automation task: {error_msg}\n\nLet me know if you'd like me to try a different approach."
+            
+            # Add to session
+            session.add_message("User", message)
+            ai_msg = session.add_message("AVA", ai_response)
+            
+            result = {
+                'user_message': {'message': message},
+                'ai_response': ai_msg,
+                'automation_executed': True,
+                'automation_result': automation_result
+            }
+        else:
+            # Regular AI conversation
+            from advanced_ai import AdvancedAI
+            advanced_ai = AdvancedAI()
+            result = chat_manager.process_user_message(session_id, message, advanced_ai)
         
         if result and 'error' not in result:
             # Also log for main system
@@ -408,6 +438,71 @@ def connect_to_device():
     except Exception as e:
         logger.error(f"Device connection error: {str(e)}")
         return jsonify({'error': f'Failed to connect to device: {str(e)}'}), 500
+
+@app.route('/api/automation/execute', methods=['POST'])
+def execute_automation_task():
+    """Execute computer automation task"""
+    try:
+        data = request.get_json()
+        task_description = data.get('task', '').strip()
+        user_id = data.get('user_id', 'default_user')
+        
+        if not task_description:
+            return jsonify({'error': 'No task description provided'}), 400
+        
+        # Execute the automation task
+        result = automation_controller.execute_computer_task(task_description, user_id)
+        
+        # Log the automation task
+        web_assistant.log_conversation("User", f"Automation request: {task_description}")
+        if result.get('success'):
+            web_assistant.log_conversation("AVA", f"Task completed successfully")
+        else:
+            web_assistant.log_conversation("AVA", f"Task failed: {result.get('error', 'Unknown error')}")
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Automation execution error: {str(e)}")
+        return jsonify({'error': f'Automation failed: {str(e)}'}), 500
+
+@app.route('/api/automation/permissions', methods=['POST'])
+def request_automation_permissions():
+    """Request automation permissions"""
+    try:
+        data = request.get_json()
+        user_id = data.get('user_id', 'default_user')
+        permissions = data.get('permissions', [])
+        
+        result = automation_controller.request_permissions(user_id, permissions)
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Permission request error: {str(e)}")
+        return jsonify({'error': f'Permission request failed: {str(e)}'}), 500
+
+@app.route('/api/automation/capabilities')
+def get_automation_capabilities():
+    """Get available automation capabilities"""
+    try:
+        capabilities = automation_controller.get_automation_capabilities()
+        return jsonify(capabilities)
+        
+    except Exception as e:
+        logger.error(f"Get capabilities error: {str(e)}")
+        return jsonify({'error': f'Failed to get capabilities: {str(e)}'}), 500
+
+@app.route('/api/automation/history')
+def get_automation_history():
+    """Get automation task history"""
+    try:
+        user_id = request.args.get('user_id')
+        history = automation_controller.get_automation_history(user_id)
+        return jsonify({'history': history})
+        
+    except Exception as e:
+        logger.error(f"Get history error: {str(e)}")
+        return jsonify({'error': f'Failed to get history: {str(e)}'}), 500
 
 @socketio.on('connect')
 def handle_connect():
