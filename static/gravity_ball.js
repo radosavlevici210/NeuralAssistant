@@ -10,17 +10,24 @@ class GravityBall {
         this.ball = {
             x: 200,
             y: 100,
-            vx: 5,
+            vx: 0,
             vy: 0,
             radius: 8,
             color: '#00aaff',
             trail: []
         };
-        this.gravity = 0.3;
-        this.friction = 0.995;
-        this.bounce = 0.9;
-        this.blackHoles = [];
-        this.magnets = [];
+        this.gravity = 0.5;
+        this.friction = 0.999;
+        this.bounce = 0.8;
+        this.centerX = 0;
+        this.centerY = 0;
+        this.returnForce = 0.02;
+        this.boundaries = {
+            left: 50,
+            right: 0,
+            top: 50,
+            bottom: 0
+        };
         this.mouse = { x: 0, y: 0, down: false };
         this.animationId = null;
         this.isActive = false;
@@ -60,17 +67,13 @@ class GravityBall {
     }
     
     createPhysicsObjects() {
-        // Create small black holes
-        this.blackHoles = [
-            { x: 150, y: 150, radius: 12, strength: 0.8 },
-            { x: window.innerWidth - 150, y: window.innerHeight - 150, radius: 12, strength: 0.8 }
-        ];
+        // Set screen center for return force
+        this.centerX = this.canvas.width / 2;
+        this.centerY = this.canvas.height / 2;
         
-        // Create small magnets that push
-        this.magnets = [
-            { x: window.innerWidth - 100, y: 100, radius: 10, strength: -1.2, type: 'repel' },
-            { x: 100, y: window.innerHeight - 100, radius: 10, strength: -1.2, type: 'repel' }
-        ];
+        // Set boundaries to prevent getting stuck in corners
+        this.boundaries.right = this.canvas.width - 50;
+        this.boundaries.bottom = this.canvas.height - 50;
     }
     
     createToggleButton() {
@@ -204,33 +207,18 @@ class GravityBall {
     
     updatePhysics() {
         if (!this.ballGrabbed) {
-            // Apply black hole forces
-            this.blackHoles.forEach(hole => {
-                const dx = hole.x - this.ball.x;
-                const dy = hole.y - this.ball.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                if (distance > 5 && distance < 100) {
-                    const force = hole.strength / (distance * 0.1);
-                    this.ball.vx += (dx / distance) * force;
-                    this.ball.vy += (dy / distance) * force;
-                }
-            });
+            // Natural return force towards center (like elastic band)
+            const dx = this.centerX - this.ball.x;
+            const dy = this.centerY - this.ball.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
             
-            // Apply magnet forces (repelling)
-            this.magnets.forEach(magnet => {
-                const dx = this.ball.x - magnet.x;
-                const dy = this.ball.y - magnet.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                if (distance > 0 && distance < 80) {
-                    const force = magnet.strength / (distance * 0.05);
-                    this.ball.vx += (dx / distance) * force;
-                    this.ball.vy += (dy / distance) * force;
-                }
-            });
+            if (distance > 50) {
+                const returnStrength = this.returnForce * (distance / 100);
+                this.ball.vx += (dx / distance) * returnStrength;
+                this.ball.vy += (dy / distance) * returnStrength;
+            }
             
-            // Apply gravity
+            // Apply gravity downwards
             this.ball.vy += this.gravity;
             
             // Apply friction
@@ -241,30 +229,24 @@ class GravityBall {
             this.ball.x += this.ball.vx;
             this.ball.y += this.ball.vy;
             
-            // Bounce off walls
-            if (this.ball.x - this.ball.radius < 0) {
-                this.ball.x = this.ball.radius;
+            // Bounce off boundaries (not corners)
+            if (this.ball.x - this.ball.radius < this.boundaries.left) {
+                this.ball.x = this.boundaries.left + this.ball.radius;
                 this.ball.vx *= -this.bounce;
             }
-            if (this.ball.x + this.ball.radius > this.canvas.width) {
-                this.ball.x = this.canvas.width - this.ball.radius;
+            if (this.ball.x + this.ball.radius > this.boundaries.right) {
+                this.ball.x = this.boundaries.right - this.ball.radius;
                 this.ball.vx *= -this.bounce;
             }
             
-            // Bounce off floor
-            if (this.ball.y + this.ball.radius > this.canvas.height) {
-                this.ball.y = this.canvas.height - this.ball.radius;
+            // Bounce off floor and ceiling
+            if (this.ball.y + this.ball.radius > this.boundaries.bottom) {
+                this.ball.y = this.boundaries.bottom - this.ball.radius;
                 this.ball.vy *= -this.bounce;
-                
-                // Add some random energy occasionally
-                if (Math.random() < 0.1) {
-                    this.ball.vy -= 2;
-                }
             }
             
-            // Bounce off ceiling
-            if (this.ball.y - this.ball.radius < 0) {
-                this.ball.y = this.ball.radius;
+            if (this.ball.y - this.ball.radius < this.boundaries.top) {
+                this.ball.y = this.boundaries.top + this.ball.radius;
                 this.ball.vy *= -this.bounce;
             }
         }
@@ -280,31 +262,11 @@ class GravityBall {
         // Clear canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
-        // Draw black holes
-        this.blackHoles.forEach(hole => {
-            const gradient = this.ctx.createRadialGradient(hole.x, hole.y, 0, hole.x, hole.y, hole.radius);
-            gradient.addColorStop(0, 'rgba(20, 20, 20, 1)');
-            gradient.addColorStop(0.7, 'rgba(60, 60, 60, 0.8)');
-            gradient.addColorStop(1, 'rgba(100, 100, 100, 0.2)');
-            
-            this.ctx.fillStyle = gradient;
-            this.ctx.beginPath();
-            this.ctx.arc(hole.x, hole.y, hole.radius, 0, Math.PI * 2);
-            this.ctx.fill();
-        });
-        
-        // Draw magnets (repellers)
-        this.magnets.forEach(magnet => {
-            const gradient = this.ctx.createRadialGradient(magnet.x, magnet.y, 0, magnet.x, magnet.y, magnet.radius);
-            gradient.addColorStop(0, 'rgba(255, 100, 100, 0.8)');
-            gradient.addColorStop(0.7, 'rgba(255, 150, 150, 0.5)');
-            gradient.addColorStop(1, 'rgba(255, 200, 200, 0.1)');
-            
-            this.ctx.fillStyle = gradient;
-            this.ctx.beginPath();
-            this.ctx.arc(magnet.x, magnet.y, magnet.radius, 0, Math.PI * 2);
-            this.ctx.fill();
-        });
+        // Draw center point for reference
+        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+        this.ctx.beginPath();
+        this.ctx.arc(this.centerX, this.centerY, 3, 0, Math.PI * 2);
+        this.ctx.fill();
         
         // Draw trail
         this.ctx.globalAlpha = 0.4;
