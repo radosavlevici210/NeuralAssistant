@@ -121,16 +121,48 @@
                 </form>
             </div>
 
+            <!-- AI Chat Interface -->
+            <div class="card">
+                <h2>
+                    <i data-feather="message-circle"></i>
+                    Chat with AVA
+                </h2>
+                
+                <form id="chatForm">
+                    <div class="input-group">
+                        <label for="chatInput">Ask AVA anything:</label>
+                        <textarea 
+                            id="chatInput" 
+                            rows="2" 
+                            placeholder="Ask for advice, help with tasks, device control, or just chat..."
+                            maxlength="1000"
+                        ></textarea>
+                    </div>
+                    
+                    <div class="controls">
+                        <button type="submit" id="chatBtn" class="btn btn-primary">
+                            <i data-feather="send"></i>
+                            Send Message
+                        </button>
+                        
+                        <button type="button" id="clearChatBtn" class="btn btn-secondary">
+                            <i data-feather="trash-2"></i>
+                            Clear Chat
+                        </button>
+                    </div>
+                </form>
+            </div>
+
             <!-- Recent Conversation -->
             <div class="card">
                 <h2>
                     <i data-feather="message-circle"></i>
-                    Recent Conversation
+                    Conversation History
                 </h2>
                 
                 <div id="conversation" class="conversation">
                     <div class="conversation-empty">
-                        No conversation history available. Start the assistant to begin.
+                        No conversation history available. Start chatting with AVA above.
                     </div>
                 </div>
             </div>

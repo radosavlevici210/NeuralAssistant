@@ -9,6 +9,8 @@ import logging
 import speech_recognition as sr
 import pyttsx3
 from openai import OpenAI
+from device_control import DeviceController
+from advanced_ai import AdvancedAI
 
 logger = logging.getLogger(__name__)
 
@@ -47,11 +49,15 @@ class VoiceAssistant:
         self.openai_client = None
         self._init_openai()
         
+        # Initialize advanced capabilities
+        self.device_controller = DeviceController()
+        self.advanced_ai = AdvancedAI()
+        
         # Conversation context
         self.conversation_history = []
         self.max_history = 10
         
-        logger.info("Voice Assistant initialized successfully")
+        logger.info("Voice Assistant with advanced capabilities initialized successfully")
         
     def _configure_tts(self):
         """Configure text-to-speech engine settings"""
@@ -149,7 +155,7 @@ class VoiceAssistant:
     
     def get_ai_response(self, user_input):
         """
-        Generate AI response to user input
+        Generate AI response to user input with advanced capabilities
         
         Args:
             user_input: User's speech input text
@@ -158,21 +164,73 @@ class VoiceAssistant:
             str: AI generated response
         """
         try:
-            # Add user input to conversation history
+            # Analyze user intent
+            intent = self.advanced_ai.analyze_intent(user_input)
+            
+            # Handle device control requests
+            if intent == "device_control":
+                return self._handle_device_control(user_input)
+            
+            # Use advanced AI for other requests
+            response = self.advanced_ai.generate_contextual_response(user_input, intent)
+            
+            # Add to conversation history
             self.conversation_history.append({"role": "user", "content": user_input})
+            self.conversation_history.append({"role": "assistant", "content": response})
             
             # Trim conversation history if too long
             if len(self.conversation_history) > self.max_history * 2:
                 self.conversation_history = self.conversation_history[-self.max_history:]
             
-            if self.openai_client:
-                return self._get_openai_response(user_input)
-            else:
-                return self._get_fallback_response(user_input)
+            return response
                 
         except Exception as e:
             logger.error(f"AI response generation error: {str(e)}")
             return "I apologize, but I'm having trouble processing your request right now."
+    
+    def _handle_device_control(self, user_input):
+        """Handle device control commands"""
+        try:
+            import re
+            
+            # Parse common device control commands
+            if re.search(r"open\s+(\w+)", user_input.lower()):
+                app_match = re.search(r"open\s+(\w+)", user_input.lower())
+                app_name = app_match.group(1) if app_match else "browser"
+                result = self.device_controller.execute_command("open_application", {"app_name": app_name})
+                return f"I tried to {result.get('message', 'execute the command')}."
+            
+            elif re.search(r"search\s+for\s+(.+)", user_input.lower()):
+                query_match = re.search(r"search\s+for\s+(.+)", user_input.lower())
+                query = query_match.group(1) if query_match else ""
+                result = self.device_controller.execute_command("search_web", {"query": query})
+                return f"I searched for '{query}' in your browser."
+            
+            elif re.search(r"browse\s+(.+)", user_input.lower()):
+                url_match = re.search(r"browse\s+(.+)", user_input.lower())
+                url = url_match.group(1) if url_match else ""
+                result = self.device_controller.execute_command("open_website", {"url": url})
+                return f"I opened {url} in your browser."
+            
+            elif "system info" in user_input.lower():
+                result = self.device_controller.execute_command("system_info", {})
+                if result.get("success"):
+                    info = result.get("data", {})
+                    return f"Your system is running {info.get('system', 'Unknown')} {info.get('version', '')}."
+                else:
+                    return "I couldn't retrieve system information."
+            
+            else:
+                # Use advanced AI to understand and guide device control
+                guidance = self.advanced_ai.generate_contextual_response(
+                    f"The user wants device control: {user_input}. Explain what I can help with.",
+                    "device_control"
+                )
+                return guidance
+                
+        except Exception as e:
+            logger.error(f"Device control error: {str(e)}")
+            return "I can help you control your device. Try asking me to open applications, search the web, or get system information."
     
     def _get_openai_response(self, user_input):
         """Generate response using OpenAI GPT model"""
