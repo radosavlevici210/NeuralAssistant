@@ -246,6 +246,51 @@ class AVAInterface {
         }
     }
     
+    async sendChatMessage() {
+        try {
+            const chatInput = document.getElementById('chatInput');
+            const message = chatInput?.value?.trim();
+            
+            if (!message) {
+                this.showNotification('Please enter a message', 'warning');
+                return;
+            }
+            
+            this.setButtonLoading('chatBtn', true);
+            
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message })
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok) {
+                this.showNotification('Message sent successfully', 'success');
+                chatInput.value = '';
+                // Conversation will be updated via WebSocket or we can refresh
+                this.loadConversation();
+            } else {
+                this.showNotification(result.error || 'Failed to send message', 'error');
+            }
+            
+        } catch (error) {
+            console.error('Chat error:', error);
+            this.showNotification('Failed to send message', 'error');
+        } finally {
+            this.setButtonLoading('chatBtn', false);
+        }
+    }
+    
+    clearChat() {
+        const conversationDiv = document.getElementById('conversation');
+        if (conversationDiv) {
+            conversationDiv.innerHTML = '<div class="conversation-empty">Conversation cleared. Start chatting with AVA above.</div>';
+        }
+        this.showNotification('Conversation cleared', 'info');
+    }
+    
     refreshData() {
         this.loadStatus();
         this.loadConversation();
