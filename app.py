@@ -22,6 +22,7 @@ from cloud_deploy import CloudDeploymentManager
 from automation_controller import AutomationController
 from self_management import AVACoreSelfManagement
 from development_suite import AdvancedDevelopmentSuite
+from advanced_capabilities import AdvancedCapabilities
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -135,6 +136,7 @@ cloud_deployer = CloudDeploymentManager()
 automation_controller = AutomationController()
 self_management = AVACoreSelfManagement("ervin210@icloud.com")
 development_suite = AdvancedDevelopmentSuite()
+advanced_capabilities = AdvancedCapabilities()
 
 @app.route('/')
 def index():
@@ -772,6 +774,113 @@ def get_dev_stats():
             'success': True,
             'stats': stats
         })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/advanced/browse', methods=['POST'])
+def browse_website():
+    """Browse external websites and extract information"""
+    try:
+        data = request.get_json()
+        url = data.get('url', '')
+        extract_info = data.get('extract_info', 'text')
+        
+        if not url:
+            return jsonify({'success': False, 'error': 'URL is required'}), 400
+        
+        result = advanced_capabilities.browse_website(url, extract_info)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/advanced/execute', methods=['POST'])
+def execute_external_request():
+    """Execute various external requests"""
+    try:
+        data = request.get_json()
+        request_type = data.get('request_type', '')
+        details = data.get('details', {})
+        
+        if not request_type:
+            return jsonify({'success': False, 'error': 'Request type is required'}), 400
+        
+        result = advanced_capabilities.process_external_request(request_type, details)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/advanced/capabilities')
+def get_advanced_capabilities():
+    """Get information about advanced capabilities"""
+    try:
+        capabilities = advanced_capabilities.get_capabilities()
+        return jsonify({
+            'success': True,
+            'capabilities': capabilities
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/advanced/code/execute', methods=['POST'])
+def execute_code():
+    """Execute code in various languages"""
+    try:
+        data = request.get_json()
+        language = data.get('language', 'python')
+        code = data.get('code', '')
+        
+        if not code:
+            return jsonify({'success': False, 'error': 'Code is required'}), 400
+        
+        result = advanced_capabilities.process_external_request('code_execution', {
+            'language': language,
+            'code': code
+        })
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/advanced/api/call', methods=['POST'])
+def call_external_api():
+    """Call external APIs"""
+    try:
+        data = request.get_json()
+        url = data.get('url', '')
+        method = data.get('method', 'GET')
+        headers = data.get('headers', {})
+        payload = data.get('data', {})
+        params = data.get('params', {})
+        
+        if not url:
+            return jsonify({'success': False, 'error': 'URL is required'}), 400
+        
+        result = advanced_capabilities.process_external_request('api_call', {
+            'url': url,
+            'method': method,
+            'headers': headers,
+            'data': payload,
+            'params': params
+        })
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/advanced/data/process', methods=['POST'])
+def process_data():
+    """Process and transform data"""
+    try:
+        data = request.get_json()
+        input_data = data.get('data', {})
+        operation = data.get('operation', 'query')
+        
+        result = advanced_capabilities.process_external_request('data_processing', {
+            'data': input_data,
+            'operation': operation,
+            'query': data.get('query'),
+            'conditions': data.get('conditions', {}),
+            'transformation': data.get('transformation')
+        })
+        return jsonify(result)
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
