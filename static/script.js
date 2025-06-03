@@ -294,7 +294,104 @@ class AVAInterface {
     refreshData() {
         this.loadStatus();
         this.loadConversation();
+        this.loadNetworkStatus();
         this.showNotification('Data refreshed', 'info');
+    }
+
+    async loadNetworkStatus() {
+        try {
+            const response = await fetch('/api/network/status');
+            const status = await response.json();
+            
+            this.updateNetworkStatus(status);
+            this.updateConnectionUrl(status.local_ip);
+        } catch (error) {
+            console.error('Failed to load network status:', error);
+        }
+    }
+
+    updateNetworkStatus(status) {
+        const networkStatusEl = document.getElementById('networkStatus');
+        const devicesListEl = document.getElementById('devicesList');
+        const discoveredDevicesEl = document.getElementById('discoveredDevices');
+        
+        if (networkStatusEl) {
+            const statusText = status.discovery_active ? 
+                `Active - Found ${status.discovered_devices} devices` : 
+                'Network discovery inactive';
+            networkStatusEl.innerHTML = `<span class="status-text">${statusText}</span>`;
+        }
+        
+        if (devicesListEl && status.devices && status.devices.discovered) {
+            const devices = Object.values(status.devices.discovered);
+            
+            if (devices.length > 0) {
+                devicesListEl.innerHTML = devices.map(device => `
+                    <div class="device-item">
+                        <div class="device-info">
+                            <strong>${device.hostname || device.ip}</strong>
+                            <span class="device-type">${device.type}</span>
+                            <span class="device-ip">${device.ip}</span>
+                        </div>
+                        <button class="btn btn-small" onclick="ava.connectToDevice('${device.ip}')">
+                            Connect
+                        </button>
+                    </div>
+                `).join('');
+                
+                if (discoveredDevicesEl) {
+                    discoveredDevicesEl.style.display = 'block';
+                }
+            } else if (discoveredDevicesEl) {
+                discoveredDevicesEl.style.display = 'none';
+            }
+        }
+    }
+
+    updateConnectionUrl(localIp) {
+        const connectionUrlEl = document.getElementById('connectionUrl');
+        if (connectionUrlEl && localIp) {
+            connectionUrlEl.textContent = `http://${localIp}:5000`;
+        }
+    }
+
+    async startNetworkDiscovery() {
+        try {
+            const response = await fetch('/api/network/discovery/start', {
+                method: 'POST'
+            });
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showNotification('Network discovery started - scanning for devices', 'success');
+                await this.loadNetworkStatus();
+            } else {
+                this.showNotification(`Failed to start discovery: ${result.message}`, 'error');
+            }
+        } catch (error) {
+            console.error('Network discovery start error:', error);
+            this.showNotification('Failed to start network discovery', 'error');
+        }
+    }
+
+    async connectToDevice(ipAddress) {
+        try {
+            const response = await fetch('/api/network/connect', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ip_address: ipAddress })
+            });
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showNotification(`Connected to device at ${ipAddress}`, 'success');
+            } else {
+                this.showNotification(`Connection failed: ${result.message}`, 'error');
+            }
+        } catch (error) {
+            console.error('Device connection error:', error);
+            this.showNotification('Failed to connect to device', 'error');
+        }
     }
     
     updateUI() {
