@@ -1,14 +1,19 @@
 /* ALPHA CORE: Clean Dark Theme */
 /* No water effects - simple, clear, dark interface */
 
-/* Remove all water background */
+/* Dark ocean background like before */
 body {
-    background: #0a0a0a !important;
+    background: linear-gradient(180deg, 
+        rgba(0, 119, 190, 0.3) 0%, 
+        rgba(0, 52, 89, 0.6) 30%, 
+        rgba(0, 24, 41, 0.9) 60%, 
+        rgba(0, 12, 24, 1) 100%) !important;
     color: #e0e0e0 !important;
     margin: 0;
     padding: 0;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     overflow-x: hidden;
+    min-height: 100vh;
 }
 
 /* Remove water container completely */
@@ -18,11 +23,11 @@ body {
     display: none !important;
 }
 
-/* Clean dark header */
+/* Ocean themed header */
 .header {
-    background: rgba(20, 20, 20, 0.95) !important;
+    background: rgba(0, 52, 89, 0.8) !important;
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(0, 150, 255, 0.3);
 }
 
 /* Clear title styling */
@@ -41,13 +46,13 @@ body {
     opacity: 0.8;
 }
 
-/* Dark cards with clear contrast */
+/* Ocean themed cards */
 .card {
-    background: rgba(30, 30, 30, 0.9) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: rgba(0, 24, 41, 0.8) !important;
+    border: 1px solid rgba(0, 100, 150, 0.3) !important;
     border-radius: 8px !important;
     backdrop-filter: blur(10px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+    box-shadow: 0 4px 20px rgba(0, 50, 100, 0.4) !important;
 }
 
 .card h3 {
