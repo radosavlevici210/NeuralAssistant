@@ -10,15 +10,17 @@ class GravityBall {
         this.ball = {
             x: 200,
             y: 100,
-            vx: 3,
+            vx: 5,
             vy: 0,
-            radius: 15,
+            radius: 8,
             color: '#00aaff',
             trail: []
         };
-        this.gravity = 0.4;
-        this.friction = 0.98;
-        this.bounce = 0.85;
+        this.gravity = 0.3;
+        this.friction = 0.995;
+        this.bounce = 0.9;
+        this.blackHoles = [];
+        this.magnets = [];
         this.mouse = { x: 0, y: 0, down: false };
         this.animationId = null;
         this.isActive = false;
@@ -28,6 +30,7 @@ class GravityBall {
     
     init() {
         this.createCanvas();
+        this.createPhysicsObjects();
         this.bindEvents();
         this.startGame();
     }
@@ -56,20 +59,34 @@ class GravityBall {
         this.createToggleButton();
     }
     
+    createPhysicsObjects() {
+        // Create small black holes
+        this.blackHoles = [
+            { x: 150, y: 150, radius: 12, strength: 0.8 },
+            { x: window.innerWidth - 150, y: window.innerHeight - 150, radius: 12, strength: 0.8 }
+        ];
+        
+        // Create small magnets that push
+        this.magnets = [
+            { x: window.innerWidth - 100, y: 100, radius: 10, strength: -1.2, type: 'repel' },
+            { x: 100, y: window.innerHeight - 100, radius: 10, strength: -1.2, type: 'repel' }
+        ];
+    }
+    
     createToggleButton() {
         const toggleBtn = document.createElement('button');
-        toggleBtn.innerHTML = '🏀';
+        toggleBtn.innerHTML = '⚫';
         toggleBtn.style.cssText = `
             position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
+            top: 15px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            background: rgba(0, 170, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(0, 170, 255, 0.7);
             color: white;
-            font-size: 20px;
+            font-size: 12px;
             cursor: pointer;
             z-index: 10;
             backdrop-filter: blur(10px);
@@ -94,7 +111,7 @@ class GravityBall {
         this.isActive = !this.isActive;
         this.canvas.style.pointerEvents = this.isActive ? 'all' : 'none';
         this.canvas.style.display = this.isActive ? 'block' : 'none';
-        this.toggleBtn.innerHTML = this.isActive ? '❌' : '🏀';
+        this.toggleBtn.innerHTML = this.isActive ? '❌' : '⚫';
         
         if (this.isActive) {
             this.resetBall();
@@ -187,6 +204,32 @@ class GravityBall {
     
     updatePhysics() {
         if (!this.ballGrabbed) {
+            // Apply black hole forces
+            this.blackHoles.forEach(hole => {
+                const dx = hole.x - this.ball.x;
+                const dy = hole.y - this.ball.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance > 5 && distance < 100) {
+                    const force = hole.strength / (distance * 0.1);
+                    this.ball.vx += (dx / distance) * force;
+                    this.ball.vy += (dy / distance) * force;
+                }
+            });
+            
+            // Apply magnet forces (repelling)
+            this.magnets.forEach(magnet => {
+                const dx = this.ball.x - magnet.x;
+                const dy = this.ball.y - magnet.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance > 0 && distance < 80) {
+                    const force = magnet.strength / (distance * 0.05);
+                    this.ball.vx += (dx / distance) * force;
+                    this.ball.vy += (dy / distance) * force;
+                }
+            });
+            
             // Apply gravity
             this.ball.vy += this.gravity;
             
@@ -237,14 +280,40 @@ class GravityBall {
         // Clear canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
+        // Draw black holes
+        this.blackHoles.forEach(hole => {
+            const gradient = this.ctx.createRadialGradient(hole.x, hole.y, 0, hole.x, hole.y, hole.radius);
+            gradient.addColorStop(0, 'rgba(20, 20, 20, 1)');
+            gradient.addColorStop(0.7, 'rgba(60, 60, 60, 0.8)');
+            gradient.addColorStop(1, 'rgba(100, 100, 100, 0.2)');
+            
+            this.ctx.fillStyle = gradient;
+            this.ctx.beginPath();
+            this.ctx.arc(hole.x, hole.y, hole.radius, 0, Math.PI * 2);
+            this.ctx.fill();
+        });
+        
+        // Draw magnets (repellers)
+        this.magnets.forEach(magnet => {
+            const gradient = this.ctx.createRadialGradient(magnet.x, magnet.y, 0, magnet.x, magnet.y, magnet.radius);
+            gradient.addColorStop(0, 'rgba(255, 100, 100, 0.8)');
+            gradient.addColorStop(0.7, 'rgba(255, 150, 150, 0.5)');
+            gradient.addColorStop(1, 'rgba(255, 200, 200, 0.1)');
+            
+            this.ctx.fillStyle = gradient;
+            this.ctx.beginPath();
+            this.ctx.arc(magnet.x, magnet.y, magnet.radius, 0, Math.PI * 2);
+            this.ctx.fill();
+        });
+        
         // Draw trail
-        this.ctx.globalAlpha = 0.6;
+        this.ctx.globalAlpha = 0.4;
         for (let i = 0; i < this.ball.trail.length; i++) {
             const point = this.ball.trail[i];
             const alpha = i / this.ball.trail.length;
-            const size = (this.ball.radius * alpha) / 2;
+            const size = (this.ball.radius * alpha) / 3;
             
-            this.ctx.fillStyle = `rgba(0, 170, 255, ${alpha * 0.5})`;
+            this.ctx.fillStyle = `rgba(0, 170, 255, ${alpha * 0.3})`;
             this.ctx.beginPath();
             this.ctx.arc(point.x, point.y, size, 0, Math.PI * 2);
             this.ctx.fill();
