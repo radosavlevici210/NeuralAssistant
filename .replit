@@ -5,16 +5,7 @@ channel = "stable-24_05"
 packages = ["cargo", "espeak-ng", "libiconv", "libxcrypt", "openssl", "pkg-config", "portaudio", "rustc"]
 
 [workflows]
-runButton = "Project"
-
-[[workflows.workflow]]
-name = "Project"
-mode = "parallel"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "AVA CORE Server"
+runButton = "AVA CORE Server"
 
 [[workflows.workflow]]
 name = "AVA CORE Server"
@@ -30,4 +21,4 @@ run = ["sh", "-c", "python app.py"]
 
 [[ports]]
 localPort = 5000
-externalPort = 80
+externalPort = 80  # Will only be respected in preview deployments
