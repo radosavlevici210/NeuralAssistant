@@ -23,6 +23,7 @@ from automation_controller import AutomationController
 from self_management import AVACoreSelfManagement
 from development_suite import AdvancedDevelopmentSuite
 from advanced_capabilities import AdvancedCapabilities
+from enhanced_features import EnhancedFeatures
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -137,6 +138,7 @@ automation_controller = AutomationController()
 self_management = AVACoreSelfManagement("ervin210@icloud.com")
 development_suite = AdvancedDevelopmentSuite()
 advanced_capabilities = AdvancedCapabilities()
+enhanced_features = EnhancedFeatures()
 
 @app.route('/')
 def index():
@@ -884,6 +886,54 @@ def process_data():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
+@app.route('/api/enhanced/features')
+def get_enhanced_features():
+    """Get enhanced features status"""
+    try:
+        status = enhanced_features.get_feature_status()
+        return jsonify({
+            'success': True,
+            'features': status
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/enhanced/web-automation', methods=['POST'])
+def web_automation():
+    """Web automation endpoints"""
+    try:
+        data = request.get_json()
+        action = data.get('action', '')
+        
+        result = enhanced_features.process_enhanced_request('web_automation', action, data)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/enhanced/ai-integration', methods=['POST'])
+def ai_integration():
+    """AI integration endpoints"""
+    try:
+        data = request.get_json()
+        action = data.get('action', '')
+        
+        result = enhanced_features.process_enhanced_request('ai_integration', action, data)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/enhanced/productivity', methods=['POST'])
+def productivity():
+    """Productivity suite endpoints"""
+    try:
+        data = request.get_json()
+        action = data.get('action', '')
+        
+        result = enhanced_features.process_enhanced_request('productivity', action, data)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 @socketio.on('connect')
 def handle_connect():
     """Handle client connection"""
@@ -924,4 +974,4 @@ if __name__ == '__main__':
     print("=" * 60)
     
     # Run the Flask-SocketIO app
-    socketio.run(app, host='0.0.0.0', port=5000, debug=False, allow_unsafe_werkzeug=True, use_reloader=False, log_output=False)
+    socketio.run(app, host='0.0.0.0', port=5001, debug=False, allow_unsafe_werkzeug=True, use_reloader=False, log_output=False)
