@@ -676,23 +676,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     initCompactControls() {
-        const toggleBtn = document.getElementById('toggleControlsBtn');
-        const controlPanel = document.getElementById('controlPanel');
-        const hideBtn = document.getElementById('hideControlsBtn');
+        const floatingBtn = document.getElementById('floatingControlBtn');
+        const floatingPanel = document.getElementById('floatingPanel');
+        const closeBtn = document.getElementById('closePanelBtn');
         
-        if (toggleBtn) {
-            toggleBtn.addEventListener('click', () => {
-                controlPanel.classList.toggle('control-panel-visible');
-                controlPanel.classList.toggle('control-panel-hidden');
+        if (floatingBtn) {
+            floatingBtn.addEventListener('click', () => {
+                floatingPanel.classList.remove('hidden');
+                floatingPanel.classList.add('visible');
             });
         }
         
-        if (hideBtn) {
-            hideBtn.addEventListener('click', () => {
-                controlPanel.classList.add('control-panel-hidden');
-                controlPanel.classList.remove('control-panel-visible');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                floatingPanel.classList.add('hidden');
+                floatingPanel.classList.remove('visible');
             });
         }
+        
+        // Close panel when clicking outside
+        document.addEventListener('click', (e) => {
+            if (floatingPanel && !floatingPanel.contains(e.target) && !floatingBtn.contains(e.target)) {
+                floatingPanel.classList.add('hidden');
+                floatingPanel.classList.remove('visible');
+            }
+        });
         
         // Network button
         const networkBtn = document.getElementById('networkBtn');
@@ -794,80 +802,174 @@ document.addEventListener('DOMContentLoaded', () => {
                     50% { transform: translateX(-50%) translateY(-15px); }
                 }
                 
-                .controls-compact {
+                /* Floating Control System */
+                .floating-control-wrapper {
                     display: flex;
                     justify-content: center;
                     margin-top: 20px;
                 }
                 
-                .btn-control-toggle {
+                .floating-control-btn {
                     background: linear-gradient(135deg, #00aaff, #0088cc);
                     color: white;
                     border: none;
-                    border-radius: 25px;
-                    padding: 12px 24px;
-                    font-size: 16px;
-                    font-weight: 600;
+                    border-radius: 50%;
+                    width: 60px;
+                    height: 60px;
+                    font-size: 24px;
                     cursor: pointer;
                     transition: all 0.3s ease;
                     display: flex;
                     align-items: center;
-                    gap: 8px;
-                    box-shadow: 0 4px 15px rgba(0, 170, 255, 0.3);
+                    justify-content: center;
+                    box-shadow: 0 4px 20px rgba(0, 170, 255, 0.4);
+                    position: relative;
+                    z-index: 100;
                 }
                 
-                .btn-control-toggle:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 6px 20px rgba(0, 170, 255, 0.4);
+                .floating-control-btn:hover {
+                    transform: translateY(-3px) scale(1.05);
+                    box-shadow: 0 8px 30px rgba(0, 170, 255, 0.6);
                 }
                 
-                .control-panel-hidden {
-                    display: none;
-                }
-                
-                .control-panel-visible {
-                    display: block;
-                    margin-top: 20px;
-                    padding: 20px;
-                    background: rgba(0, 170, 255, 0.1);
-                    border-radius: 15px;
+                .floating-panel {
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
+                    backdrop-filter: blur(20px);
                     border: 1px solid rgba(0, 170, 255, 0.3);
-                    animation: slideIn 0.3s ease;
+                    border-radius: 20px;
+                    padding: 0;
+                    width: 500px;
+                    max-width: 90vw;
+                    max-height: 80vh;
+                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                    z-index: 1000;
+                    transition: all 0.3s ease;
+                    overflow: hidden;
                 }
                 
-                .controls-grid {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-                    gap: 10px;
+                .floating-panel.hidden {
+                    opacity: 0;
+                    transform: translate(-50%, -50%) scale(0.8);
+                    pointer-events: none;
                 }
                 
-                .btn-compact {
-                    background: rgba(255, 255, 255, 0.1);
+                .floating-panel.visible {
+                    opacity: 1;
+                    transform: translate(-50%, -50%) scale(1);
+                    pointer-events: all;
+                }
+                
+                .floating-panel-header {
+                    background: linear-gradient(135deg, #00aaff, #0088cc);
+                    padding: 20px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    border-radius: 20px 20px 0 0;
+                }
+                
+                .floating-panel-header h3 {
+                    margin: 0;
                     color: white;
-                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    font-size: 18px;
+                    font-weight: 600;
+                }
+                
+                .close-panel-btn {
+                    background: rgba(255, 255, 255, 0.2);
+                    border: none;
+                    color: white;
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.2s ease;
+                }
+                
+                .close-panel-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: scale(1.1);
+                }
+                
+                .floating-panel-content {
+                    padding: 25px;
+                    max-height: 60vh;
+                    overflow-y: auto;
+                }
+                
+                .control-section {
+                    margin-bottom: 25px;
+                }
+                
+                .control-section:last-child {
+                    margin-bottom: 0;
+                }
+                
+                .control-section h4 {
+                    color: #00aaff;
+                    font-size: 14px;
+                    font-weight: 600;
+                    margin: 0 0 15px 0;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                }
+                
+                .control-row {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                    gap: 12px;
+                }
+                
+                .control-btn {
+                    background: rgba(255, 255, 255, 0.08);
+                    border: 1px solid rgba(255, 255, 255, 0.15);
+                    color: white;
+                    padding: 12px 16px;
                     border-radius: 12px;
-                    padding: 8px;
-                    font-size: 11px;
                     cursor: pointer;
                     transition: all 0.3s ease;
                     display: flex;
-                    flex-direction: column;
                     align-items: center;
-                    gap: 4px;
-                    min-height: 50px;
+                    gap: 10px;
+                    font-size: 14px;
+                    min-height: 48px;
                 }
                 
-                .btn-compact:hover {
+                .control-btn:hover {
                     transform: translateY(-2px);
-                    background: rgba(255, 255, 255, 0.2);
+                    box-shadow: 0 4px 15px rgba(0, 170, 255, 0.2);
                 }
                 
-                .btn-compact.btn-success { background: rgba(34, 197, 94, 0.3); border-color: rgba(34, 197, 94, 0.5); }
-                .btn-compact.btn-error { background: rgba(239, 68, 68, 0.3); border-color: rgba(239, 68, 68, 0.5); }
-                .btn-compact.btn-secondary { background: rgba(107, 114, 128, 0.3); border-color: rgba(107, 114, 128, 0.5); }
-                .btn-compact.btn-info { background: rgba(59, 130, 246, 0.3); border-color: rgba(59, 130, 246, 0.5); }
-                .btn-compact.btn-warning { background: rgba(245, 158, 11, 0.3); border-color: rgba(245, 158, 11, 0.5); }
-                .btn-compact.btn-muted { background: rgba(75, 85, 99, 0.3); border-color: rgba(75, 85, 99, 0.5); }
+                .control-btn:disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                    transform: none;
+                }
+                
+                .control-btn.primary { background: rgba(34, 197, 94, 0.2); border-color: rgba(34, 197, 94, 0.4); }
+                .control-btn.primary:hover { box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3); }
+                
+                .control-btn.danger { background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.4); }
+                .control-btn.danger:hover { box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
+                
+                .control-btn.warning { background: rgba(245, 158, 11, 0.2); border-color: rgba(245, 158, 11, 0.4); }
+                .control-btn.warning:hover { box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); }
+                
+                .control-btn.info { background: rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.4); }
+                .control-btn.info:hover { box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
+                
+                .control-btn.success { background: rgba(34, 197, 94, 0.2); border-color: rgba(34, 197, 94, 0.4); }
+                .control-btn.success:hover { box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3); }
+                
+                .control-btn.secondary { background: rgba(107, 114, 128, 0.2); border-color: rgba(107, 114, 128, 0.4); }
+                .control-btn.secondary:hover { box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3); }
                 
                 @keyframes slideIn {
                     from { opacity: 0; transform: translateY(-10px); }

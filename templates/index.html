@@ -81,71 +81,79 @@
                     <span id="currentStatus" class="text-muted">System ready</span>
                 </div>
                 
-                <!-- Main Control Panel -->
-                <div id="mainControls" class="controls-compact">
-                    <button id="toggleControlsBtn" class="btn-control-toggle">
-                        <i data-feather="settings"></i>
-                        Controls
+                <!-- Floating Control Button -->
+                <div class="floating-control-wrapper">
+                    <button id="floatingControlBtn" class="floating-control-btn">
+                        <i data-feather="grid"></i>
                     </button>
                 </div>
                 
-                <!-- Hidden Control Panel -->
-                <div id="controlPanel" class="control-panel-hidden">
-                    <div class="controls-grid">
-                        <button id="startBtn" class="btn-compact btn-success">
-                            <i data-feather="play"></i>
-                            Start
+                <!-- Floating Control Panel -->
+                <div id="floatingPanel" class="floating-panel hidden">
+                    <div class="floating-panel-header">
+                        <h3>AVA Controls</h3>
+                        <button id="closePanelBtn" class="close-panel-btn">
+                            <i data-feather="x"></i>
                         </button>
+                    </div>
+                    <div class="floating-panel-content">
+                        <div class="control-section">
+                            <h4>Core Functions</h4>
+                            <div class="control-row">
+                                <button id="startBtn" class="control-btn primary">
+                                    <i data-feather="play"></i>
+                                    <span>Start AVA</span>
+                                </button>
+                                <button id="stopBtn" class="control-btn danger" disabled>
+                                    <i data-feather="square"></i>
+                                    <span>Stop AVA</span>
+                                </button>
+                            </div>
+                        </div>
                         
-                        <button id="stopBtn" class="btn-compact btn-error" disabled>
-                            <i data-feather="square"></i>
-                            Stop
-                        </button>
+                        <div class="control-section">
+                            <h4>Self-Management</h4>
+                            <div class="control-row">
+                                <button id="securityBtn" class="control-btn danger">
+                                    <i data-feather="shield"></i>
+                                    <span>Security</span>
+                                </button>
+                                <button id="memoryBtn" class="control-btn info">
+                                    <i data-feather="database"></i>
+                                    <span>Memory</span>
+                                </button>
+                                <button id="upgradeBtn" class="control-btn success">
+                                    <i data-feather="upload"></i>
+                                    <span>Upgrade</span>
+                                </button>
+                                <button id="repairBtn" class="control-btn warning">
+                                    <i data-feather="tool"></i>
+                                    <span>Repair</span>
+                                </button>
+                            </div>
+                        </div>
                         
-                        <button id="refreshBtn" class="btn-compact btn-secondary">
-                            <i data-feather="refresh-cw"></i>
-                            Refresh
-                        </button>
-                        
-                        <button id="networkBtn" class="btn-compact btn-info">
-                            <i data-feather="wifi"></i>
-                            Network
-                        </button>
-                        
-                        <button id="devBtn" class="btn-compact btn-warning">
-                            <i data-feather="code"></i>
-                            Dev
-                        </button>
-                        
-                        <button id="securityBtn" class="btn-compact btn-error">
-                            <i data-feather="shield"></i>
-                            Security
-                        </button>
-                        
-                        <button id="memoryBtn" class="btn-compact btn-info">
-                            <i data-feather="database"></i>
-                            Memory
-                        </button>
-                        
-                        <button id="upgradeBtn" class="btn-compact btn-success">
-                            <i data-feather="upload"></i>
-                            Upgrade
-                        </button>
-                        
-                        <button id="repairBtn" class="btn-compact btn-warning">
-                            <i data-feather="tool"></i>
-                            Repair
-                        </button>
-                        
-                        <button id="workBtn" class="btn-compact btn-info">
-                            <i data-feather="briefcase"></i>
-                            Work
-                        </button>
-                        
-                        <button id="hideControlsBtn" class="btn-compact btn-muted">
-                            <i data-feather="eye-off"></i>
-                            Hide
-                        </button>
+                        <div class="control-section">
+                            <h4>Network & Development</h4>
+                            <div class="control-row">
+                                <button id="networkBtn" class="control-btn info">
+                                    <i data-feather="wifi"></i>
+                                    <span>Network</span>
+                                </button>
+                                <button id="devBtn" class="control-btn warning">
+                                    <i data-feather="code"></i>
+                                    <span>Development</span>
+                                </button>
+                                <button id="workBtn" class="control-btn secondary">
+                                    <i data-feather="briefcase"></i>
+                                    <span>External Work</span>
+                                </button>
+                                <button id="refreshBtn" class="control-btn secondary">
+                                    <i data-feather="refresh-cw"></i>
+                                    <span>Refresh</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
