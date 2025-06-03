@@ -1,0 +1,368 @@
+/* AVA CORE: Water Effects & Interactive Design */
+/* Copyright and Trademark: Ervin Radosavlevici */
+
+/* Water Ripple Container */
+.water-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: -1;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    overflow: hidden;
+}
+
+.water-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: none;
+    pointer-events: all;
+}
+
+/* Interactive Water Surface */
+.water-surface {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, 
+        rgba(255, 255, 255, 0.1) 0%, 
+        rgba(255, 255, 255, 0.05) 30%, 
+        transparent 70%);
+    pointer-events: all;
+    cursor: crosshair;
+}
+
+/* Ripple Animation */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, 
+        rgba(255, 255, 255, 0.6) 0%, 
+        rgba(255, 255, 255, 0.3) 30%, 
+        rgba(255, 255, 255, 0.1) 60%, 
+        transparent 100%);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    animation: ripple-expand 1.5s ease-out forwards;
+}
+
+@keyframes ripple-expand {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+    }
+    100% {
+        width: 300px;
+        height: 300px;
+        opacity: 0;
+    }
+}
+
+/* Large ripple for dramatic effect */
+.ripple.large {
+    animation: ripple-expand-large 2s ease-out forwards;
+}
+
+@keyframes ripple-expand-large {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 0.4;
+    }
+    100% {
+        width: 500px;
+        height: 500px;
+        opacity: 0;
+    }
+}
+
+/* Floating Particles */
+.water-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: float-particle 8s linear infinite;
+}
+
+@keyframes float-particle {
+    0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-10vh) translateX(100px);
+        opacity: 0;
+    }
+}
+
+/* Wave Background */
+.wave-background {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='rgba(255,255,255,0.1)' d='M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") repeat-x;
+    animation: wave-flow 10s ease-in-out infinite;
+}
+
+@keyframes wave-flow {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(-50px);
+    }
+}
+
+/* Touch Feedback */
+.touch-feedback {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    animation: touch-pulse 0.6s ease-out forwards;
+}
+
+@keyframes touch-pulse {
+    0% {
+        transform: translate(-50%, -50%) scale(0.3);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Content with Glass Effect */
+.glass-content {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced Cards with Water Theme */
+.card.water-themed {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.card.water-themed::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.4), 
+        transparent);
+    transition: left 0.6s ease;
+}
+
+.card.water-themed:hover::before {
+    left: 100%;
+}
+
+.card.water-themed:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+        0 16px 48px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* Liquid Button Effects */
+.btn.liquid {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn.liquid::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.4s ease;
+}
+
+.btn.liquid:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn.liquid:active {
+    transform: scale(0.98);
+}
+
+/* Bubble Effects */
+.bubble {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: bubble-rise 4s linear infinite;
+}
+
+@keyframes bubble-rise {
+    0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.8;
+        transform: translateY(90vh) scale(1);
+    }
+    90% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(-10vh) scale(0);
+        opacity: 0;
+    }
+}
+
+/* Water Drop Loading */
+.water-loader {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    position: relative;
+}
+
+.water-drop {
+    width: 20px;
+    height: 20px;
+    background: #667eea;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    position: absolute;
+    animation: water-drop-animation 1.5s ease-in-out infinite;
+}
+
+@keyframes water-drop-animation {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2) rotate(180deg);
+        opacity: 0.7;
+    }
+}
+
+/* Responsive Water Effects */
+@media (max-width: 768px) {
+    .ripple {
+        animation-duration: 1s;
+    }
+    
+    .ripple.large {
+        animation-duration: 1.5s;
+    }
+    
+    @keyframes ripple-expand {
+        100% {
+            width: 200px;
+            height: 200px;
+            opacity: 0;
+        }
+    }
+    
+    @keyframes ripple-expand-large {
+        100% {
+            width: 300px;
+            height: 300px;
+            opacity: 0;
+        }
+    }
+}
+
+/* Dark Mode Water Effects */
+@media (prefers-color-scheme: dark) {
+    .water-container {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    }
+    
+    .water-particle {
+        background: rgba(102, 126, 234, 0.6);
+    }
+    
+    .ripple {
+        background: radial-gradient(circle, 
+            rgba(102, 126, 234, 0.6) 0%, 
+            rgba(102, 126, 234, 0.3) 30%, 
+            rgba(102, 126, 234, 0.1) 60%, 
+            transparent 100%);
+    }
+    
+    .card.water-themed {
+        background: rgba(28, 28, 46, 0.95);
+        border: 1px solid rgba(102, 126, 234, 0.3);
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .ripple,
+    .water-particle,
+    .bubble,
+    .wave-background,
+    .water-drop {
+        animation: none;
+    }
+    
+    .card.water-themed:hover {
+        transform: none;
+    }
+}
+
+/* High Performance Settings */
+.water-container,
+.water-surface,
+.card.water-themed {
+    will-change: transform;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+}

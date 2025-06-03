@@ -19,11 +19,13 @@ class AVAInterface {
     init() {
         this.initWebSocket();
         this.bindEvents();
+        this.initAutomationControls();
         this.updateUI();
         
         // Load initial data
         this.loadStatus();
         this.loadConversation();
+        this.loadAutomationCapabilities();
         
         console.log('AVA Interface initialized');
     }
