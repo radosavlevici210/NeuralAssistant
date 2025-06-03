@@ -139,6 +139,11 @@ development_suite = AdvancedDevelopmentSuite()
 @app.route('/')
 def index():
     """Main dashboard page"""
+    return render_template('dashboard.html')
+
+@app.route('/classic')
+def classic():
+    """Classic interface"""
     return render_template('index.html')
 
 @app.route('/monitor')
