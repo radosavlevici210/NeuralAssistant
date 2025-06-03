@@ -810,26 +810,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 
                 .floating-control-btn {
-                    background: linear-gradient(135deg, #00aaff, #0088cc);
+                    background: linear-gradient(135deg, #1e40af, #3b82f6);
                     color: white;
                     border: none;
                     border-radius: 50%;
-                    width: 60px;
-                    height: 60px;
-                    font-size: 24px;
+                    width: 50px;
+                    height: 50px;
+                    font-size: 20px;
                     cursor: pointer;
                     transition: all 0.3s ease;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    box-shadow: 0 4px 20px rgba(0, 170, 255, 0.4);
+                    box-shadow: 0 3px 15px rgba(59, 130, 246, 0.4);
                     position: relative;
                     z-index: 100;
                 }
                 
                 .floating-control-btn:hover {
-                    transform: translateY(-3px) scale(1.05);
-                    box-shadow: 0 8px 30px rgba(0, 170, 255, 0.6);
+                    transform: translateY(-2px) scale(1.05);
+                    box-shadow: 0 6px 25px rgba(59, 130, 246, 0.6);
                 }
                 
                 .floating-panel {
@@ -837,15 +837,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     top: 50%;
                     left: 50%;
                     transform: translate(-50%, -50%);
-                    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
+                    background: linear-gradient(135deg, rgba(30, 58, 138, 0.95), rgba(30, 41, 59, 0.95));
                     backdrop-filter: blur(20px);
-                    border: 1px solid rgba(0, 170, 255, 0.3);
-                    border-radius: 20px;
+                    border: 1px solid rgba(59, 130, 246, 0.3);
+                    border-radius: 16px;
                     padding: 0;
-                    width: 500px;
-                    max-width: 90vw;
-                    max-height: 80vh;
-                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                    width: 420px;
+                    max-width: 85vw;
+                    max-height: 75vh;
+                    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
                     z-index: 1000;
                     transition: all 0.3s ease;
                     overflow: hidden;
@@ -864,18 +864,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 
                 .floating-panel-header {
-                    background: linear-gradient(135deg, #00aaff, #0088cc);
-                    padding: 20px;
+                    background: linear-gradient(135deg, #1e40af, #3b82f6);
+                    padding: 15px 20px;
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    border-radius: 20px 20px 0 0;
+                    border-radius: 16px 16px 0 0;
                 }
                 
                 .floating-panel-header h3 {
                     margin: 0;
                     color: white;
-                    font-size: 18px;
+                    font-size: 16px;
                     font-weight: 600;
                 }
                 
@@ -883,8 +883,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     background: rgba(255, 255, 255, 0.2);
                     border: none;
                     color: white;
-                    width: 30px;
-                    height: 30px;
+                    width: 28px;
+                    height: 28px;
                     border-radius: 50%;
                     cursor: pointer;
                     display: flex;
@@ -899,13 +899,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 
                 .floating-panel-content {
-                    padding: 25px;
-                    max-height: 60vh;
+                    padding: 18px;
+                    max-height: 55vh;
                     overflow-y: auto;
                 }
                 
                 .control-section {
-                    margin-bottom: 25px;
+                    margin-bottom: 18px;
                 }
                 
                 .control-section:last-child {
@@ -913,63 +913,100 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 
                 .control-section h4 {
-                    color: #00aaff;
-                    font-size: 14px;
+                    color: #60a5fa;
+                    font-size: 12px;
                     font-weight: 600;
-                    margin: 0 0 15px 0;
+                    margin: 0 0 10px 0;
                     text-transform: uppercase;
                     letter-spacing: 1px;
                 }
                 
                 .control-row {
                     display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-                    gap: 12px;
+                    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                    gap: 8px;
                 }
                 
                 .control-btn {
-                    background: rgba(255, 255, 255, 0.08);
-                    border: 1px solid rgba(255, 255, 255, 0.15);
+                    background: rgba(59, 130, 246, 0.1);
+                    border: 1px solid rgba(59, 130, 246, 0.2);
                     color: white;
-                    padding: 12px 16px;
-                    border-radius: 12px;
+                    padding: 10px 12px;
+                    border-radius: 10px;
                     cursor: pointer;
                     transition: all 0.3s ease;
                     display: flex;
                     align-items: center;
-                    gap: 10px;
-                    font-size: 14px;
-                    min-height: 48px;
+                    gap: 8px;
+                    font-size: 13px;
+                    min-height: 42px;
                 }
                 
                 .control-btn:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 4px 15px rgba(0, 170, 255, 0.2);
+                    transform: translateY(-1px);
+                    box-shadow: 0 3px 12px rgba(59, 130, 246, 0.3);
+                    background: rgba(59, 130, 246, 0.2);
                 }
                 
                 .control-btn:disabled {
-                    opacity: 0.5;
+                    opacity: 0.4;
                     cursor: not-allowed;
                     transform: none;
                 }
                 
-                .control-btn.primary { background: rgba(34, 197, 94, 0.2); border-color: rgba(34, 197, 94, 0.4); }
-                .control-btn.primary:hover { box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3); }
+                .control-btn.primary { 
+                    background: rgba(34, 197, 94, 0.15); 
+                    border-color: rgba(34, 197, 94, 0.3); 
+                }
+                .control-btn.primary:hover { 
+                    background: rgba(34, 197, 94, 0.25);
+                    box-shadow: 0 3px 12px rgba(34, 197, 94, 0.4); 
+                }
                 
-                .control-btn.danger { background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.4); }
-                .control-btn.danger:hover { box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
+                .control-btn.danger { 
+                    background: rgba(239, 68, 68, 0.15); 
+                    border-color: rgba(239, 68, 68, 0.3); 
+                }
+                .control-btn.danger:hover { 
+                    background: rgba(239, 68, 68, 0.25);
+                    box-shadow: 0 3px 12px rgba(239, 68, 68, 0.4); 
+                }
                 
-                .control-btn.warning { background: rgba(245, 158, 11, 0.2); border-color: rgba(245, 158, 11, 0.4); }
-                .control-btn.warning:hover { box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); }
+                .control-btn.warning { 
+                    background: rgba(245, 158, 11, 0.15); 
+                    border-color: rgba(245, 158, 11, 0.3); 
+                }
+                .control-btn.warning:hover { 
+                    background: rgba(245, 158, 11, 0.25);
+                    box-shadow: 0 3px 12px rgba(245, 158, 11, 0.4); 
+                }
                 
-                .control-btn.info { background: rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.4); }
-                .control-btn.info:hover { box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
+                .control-btn.info { 
+                    background: rgba(59, 130, 246, 0.15); 
+                    border-color: rgba(59, 130, 246, 0.3); 
+                }
+                .control-btn.info:hover { 
+                    background: rgba(59, 130, 246, 0.25);
+                    box-shadow: 0 3px 12px rgba(59, 130, 246, 0.4); 
+                }
                 
-                .control-btn.success { background: rgba(34, 197, 94, 0.2); border-color: rgba(34, 197, 94, 0.4); }
-                .control-btn.success:hover { box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3); }
+                .control-btn.success { 
+                    background: rgba(34, 197, 94, 0.15); 
+                    border-color: rgba(34, 197, 94, 0.3); 
+                }
+                .control-btn.success:hover { 
+                    background: rgba(34, 197, 94, 0.25);
+                    box-shadow: 0 3px 12px rgba(34, 197, 94, 0.4); 
+                }
                 
-                .control-btn.secondary { background: rgba(107, 114, 128, 0.2); border-color: rgba(107, 114, 128, 0.4); }
-                .control-btn.secondary:hover { box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3); }
+                .control-btn.secondary { 
+                    background: rgba(107, 114, 128, 0.15); 
+                    border-color: rgba(107, 114, 128, 0.3); 
+                }
+                .control-btn.secondary:hover { 
+                    background: rgba(107, 114, 128, 0.25);
+                    box-shadow: 0 3px 12px rgba(107, 114, 128, 0.4); 
+                }
                 
                 @keyframes slideIn {
                     from { opacity: 0; transform: translateY(-10px); }
