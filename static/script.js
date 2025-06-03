@@ -106,6 +106,21 @@ class AVAInterface {
             });
         }
         
+        // Chat form
+        const chatForm = document.getElementById('chatForm');
+        if (chatForm) {
+            chatForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.sendChatMessage();
+            });
+        }
+        
+        // Clear chat button
+        const clearChatBtn = document.getElementById('clearChatBtn');
+        if (clearChatBtn) {
+            clearChatBtn.addEventListener('click', () => this.clearChat());
+        }
+        
         // Periodic status updates
         setInterval(() => {
             if (this.isConnected) {

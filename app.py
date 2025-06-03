@@ -203,6 +203,86 @@ def manual_speak():
         logger.error(f"Failed to speak text: {str(e)}")
         return jsonify({'error': f'Failed to speak text: {str(e)}'}), 500
 
+@app.route('/api/chat', methods=['POST'])
+def chat_with_ava():
+    """Chat with AVA using advanced AI capabilities"""
+    try:
+        data = request.get_json()
+        message = data.get('message', '').strip()
+        
+        if not message:
+            return jsonify({'error': 'No message provided'}), 400
+        
+        # Log user message
+        web_assistant.log_conversation("User", message)
+        
+        # Get AI response using advanced capabilities
+        response = web_assistant.voice_assistant.get_ai_response(message)
+        
+        # Log AVA response
+        web_assistant.log_conversation("AVA", response)
+        
+        return jsonify({
+            'success': True, 
+            'response': response,
+            'message': 'Response generated successfully'
+        })
+        
+    except Exception as e:
+        logger.error(f"Failed to generate chat response: {str(e)}")
+        return jsonify({'error': f'Failed to generate response: {str(e)}'}), 500
+
+@app.route('/api/device-control', methods=['POST'])
+def device_control():
+    """Execute device control commands"""
+    try:
+        data = request.get_json()
+        command_type = data.get('command_type', '')
+        parameters = data.get('parameters', {})
+        
+        if not command_type:
+            return jsonify({'error': 'No command type provided'}), 400
+        
+        # Execute device control command
+        result = web_assistant.voice_assistant.device_controller.execute_command(command_type, parameters)
+        
+        # Log the action
+        web_assistant.log_conversation("System", f"Device control: {result.get('message', 'Command executed')}")
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Device control error: {str(e)}")
+        return jsonify({'error': f'Device control failed: {str(e)}'}), 500
+
+@app.route('/api/capabilities')
+def get_capabilities():
+    """Get AVA's current capabilities"""
+    try:
+        ai_capabilities = web_assistant.voice_assistant.advanced_ai.get_capabilities()
+        device_commands = web_assistant.voice_assistant.device_controller.get_available_commands()
+        
+        capabilities = {
+            'voice_recognition': web_assistant.voice_assistant.audio_available,
+            'text_to_speech': web_assistant.voice_assistant.tts_engine is not None,
+            'ai_capabilities': ai_capabilities,
+            'device_commands': device_commands,
+            'features': [
+                'Natural conversation with context awareness',
+                'Business and development advice',
+                'Device control (open apps, browse web, file operations)',
+                'Task analysis and breakdown',
+                'Personalized recommendations',
+                'Real-time monitoring and logging'
+            ]
+        }
+        
+        return jsonify(capabilities)
+        
+    except Exception as e:
+        logger.error(f"Failed to get capabilities: {str(e)}")
+        return jsonify({'error': f'Failed to get capabilities: {str(e)}'}), 500
+
 @socketio.on('connect')
 def handle_connect():
     """Handle client connection"""
