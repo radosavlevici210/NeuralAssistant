@@ -25,6 +25,10 @@ class GravityBall {
         this.animationId = null;
         this.isActive = false;
         
+        // Device motion for phone tilting
+        this.deviceMotion = { x: 0, y: 0, enabled: false };
+        this.motionSensitivity = 0.3;
+        
         this.init();
     }
     
@@ -147,6 +151,9 @@ class GravityBall {
         this.canvas.addEventListener('dblclick', (e) => {
             this.createBlackHole(e.clientX, e.clientY);
         });
+        
+        // Device motion for phone tilting
+        this.setupDeviceMotion();
     }
     
     toggleGame() {
@@ -176,6 +183,34 @@ class GravityBall {
         }
     }
     
+    setupDeviceMotion() {
+        if (window.DeviceMotionEvent) {
+            window.addEventListener('devicemotion', (event) => {
+                if (this.isActive) {
+                    // Get acceleration data
+                    const acceleration = event.accelerationIncludingGravity;
+                    if (acceleration) {
+                        // Convert device tilt to ball movement
+                        this.deviceMotion.x = acceleration.x || 0;
+                        this.deviceMotion.y = acceleration.y || 0;
+                        this.deviceMotion.enabled = true;
+                    }
+                }
+            });
+        }
+        
+        // For iOS devices, request permission
+        if (typeof DeviceMotionEvent.requestPermission === 'function') {
+            DeviceMotionEvent.requestPermission()
+                .then(permissionState => {
+                    if (permissionState === 'granted') {
+                        this.setupDeviceMotion();
+                    }
+                })
+                .catch(console.error);
+        }
+    }
+
     createBlackHole(x, y) {
         this.blackHoles.push({
             x: x,
@@ -219,6 +254,14 @@ class GravityBall {
                 }
             }
         });
+        
+        // Device motion (phone tilting) affects ball movement
+        if (this.deviceMotion.enabled) {
+            // Tilt left/right moves ball horizontally
+            this.ball.vx += this.deviceMotion.x * this.motionSensitivity;
+            // Tilt forward/back moves ball vertically
+            this.ball.vy -= this.deviceMotion.y * this.motionSensitivity;
+        }
         
         // Apply gravity
         this.ball.vy += this.gravity;
