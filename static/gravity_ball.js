@@ -249,17 +249,20 @@ class GravityBall {
                 const forceY = (dy / distance) * force;
                 
                 if (hole.type === 'attract') {
-                    // Strong magnetic pull
-                    this.ball.vx += forceX * 0.15;
-                    this.ball.vy += forceY * 0.15;
+                    // Strong magnetic pull - North pole
+                    this.ball.vx += forceX * 0.2;
+                    this.ball.vy += forceY * 0.2;
                 } else if (hole.type === 'repel') {
-                    // Push away like same poles
-                    this.ball.vx -= forceX * 0.12;
-                    this.ball.vy -= forceY * 0.12;
+                    // Push away like same poles - South pole
+                    this.ball.vx -= forceX * 0.18;
+                    this.ball.vy -= forceY * 0.18;
                 } else if (hole.type === 'magnet') {
-                    // Sideways magnetic force
-                    this.ball.vx += forceY * 0.1;
-                    this.ball.vy -= forceX * 0.1;
+                    // Polarized sideways force - creates spin
+                    this.ball.vx += forceY * 0.15;
+                    this.ball.vy -= forceX * 0.15;
+                    // Add rotational effect
+                    this.ball.vx += Math.sin(distance * 0.1) * 0.1;
+                    this.ball.vy += Math.cos(distance * 0.1) * 0.1;
                 }
             }
         });
@@ -283,22 +286,44 @@ class GravityBall {
         this.ball.x += this.ball.vx;
         this.ball.y += this.ball.vy;
         
-        // Boundary collisions
+        // Enhanced boundary collisions with corner forces
+        const cornerForce = 0.3;
+        const bounceForce = 1.2;
+        
+        // Right wall
         if (this.ball.x + this.ball.radius > this.canvas.width) {
             this.ball.x = this.canvas.width - this.ball.radius;
-            this.ball.vx *= -this.bounce;
+            this.ball.vx *= -this.bounce * bounceForce;
+            // Corner effects
+            if (this.ball.y < 100) this.ball.vy += cornerForce; // Top corner
+            if (this.ball.y > this.canvas.height - 100) this.ball.vy -= cornerForce; // Bottom corner
         }
+        
+        // Left wall
         if (this.ball.x - this.ball.radius < 0) {
             this.ball.x = this.ball.radius;
-            this.ball.vx *= -this.bounce;
+            this.ball.vx *= -this.bounce * bounceForce;
+            // Corner effects
+            if (this.ball.y < 100) this.ball.vy += cornerForce;
+            if (this.ball.y > this.canvas.height - 100) this.ball.vy -= cornerForce;
         }
+        
+        // Bottom wall
         if (this.ball.y + this.ball.radius > this.canvas.height) {
             this.ball.y = this.canvas.height - this.ball.radius;
-            this.ball.vy *= -this.bounce;
+            this.ball.vy *= -this.bounce * bounceForce;
+            // Corner effects
+            if (this.ball.x < 100) this.ball.vx += cornerForce; // Left corner
+            if (this.ball.x > this.canvas.width - 100) this.ball.vx -= cornerForce; // Right corner
         }
+        
+        // Top wall
         if (this.ball.y - this.ball.radius < 0) {
             this.ball.y = this.ball.radius;
-            this.ball.vy *= -this.bounce;
+            this.ball.vy *= -this.bounce * bounceForce;
+            // Corner effects
+            if (this.ball.x < 100) this.ball.vx += cornerForce;
+            if (this.ball.x > this.canvas.width - 100) this.ball.vx -= cornerForce;
         }
         
         // Update trail
