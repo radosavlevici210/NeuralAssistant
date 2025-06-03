@@ -676,29 +676,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     initCompactControls() {
-        const floatingBtn = document.getElementById('floatingControlBtn');
-        const floatingPanel = document.getElementById('floatingPanel');
-        const closeBtn = document.getElementById('closePanelBtn');
+        const modernBtn = document.getElementById('modernControlBtn');
+        const modernPanel = document.getElementById('modernPanel');
+        const closeBtn = document.getElementById('closeModernBtn');
         
-        if (floatingBtn) {
-            floatingBtn.addEventListener('click', () => {
-                floatingPanel.classList.remove('hidden');
-                floatingPanel.classList.add('visible');
+        if (modernBtn) {
+            modernBtn.addEventListener('click', () => {
+                modernPanel.classList.remove('hidden');
+                modernPanel.classList.add('visible');
             });
         }
         
         if (closeBtn) {
             closeBtn.addEventListener('click', () => {
-                floatingPanel.classList.add('hidden');
-                floatingPanel.classList.remove('visible');
+                modernPanel.classList.add('hidden');
+                modernPanel.classList.remove('visible');
             });
         }
         
         // Close panel when clicking outside
         document.addEventListener('click', (e) => {
-            if (floatingPanel && !floatingPanel.contains(e.target) && !floatingBtn.contains(e.target)) {
-                floatingPanel.classList.add('hidden');
-                floatingPanel.classList.remove('visible');
+            if (modernPanel && !modernPanel.contains(e.target) && !modernBtn.contains(e.target)) {
+                modernPanel.classList.add('hidden');
+                modernPanel.classList.remove('visible');
             }
         });
         
@@ -802,193 +802,229 @@ document.addEventListener('DOMContentLoaded', () => {
                     50% { transform: translateX(-50%) translateY(-15px); }
                 }
                 
-                /* Floating Control System */
-                .floating-control-wrapper {
+                /* Modern Control System */
+                .modern-control-wrapper {
                     display: flex;
                     justify-content: center;
-                    margin-top: 20px;
+                    margin-top: 15px;
                 }
                 
-                .floating-control-btn {
-                    background: linear-gradient(135deg, #1e40af, #3b82f6);
+                .modern-control-btn {
+                    background: linear-gradient(135deg, #667eea, #764ba2);
                     color: white;
                     border: none;
                     border-radius: 50%;
-                    width: 50px;
-                    height: 50px;
-                    font-size: 20px;
+                    width: 56px;
+                    height: 56px;
+                    font-size: 22px;
                     cursor: pointer;
-                    transition: all 0.3s ease;
+                    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    box-shadow: 0 3px 15px rgba(59, 130, 246, 0.4);
+                    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
                     position: relative;
                     z-index: 100;
                 }
                 
-                .floating-control-btn:hover {
-                    transform: translateY(-2px) scale(1.05);
-                    box-shadow: 0 6px 25px rgba(59, 130, 246, 0.6);
+                .modern-control-btn:hover {
+                    transform: translateY(-3px) scale(1.08);
+                    box-shadow: 0 12px 40px rgba(102, 126, 234, 0.5);
                 }
                 
-                .floating-panel {
+                .modern-panel {
                     position: fixed;
                     top: 50%;
                     left: 50%;
                     transform: translate(-50%, -50%);
-                    background: linear-gradient(135deg, rgba(30, 58, 138, 0.95), rgba(30, 41, 59, 0.95));
-                    backdrop-filter: blur(20px);
-                    border: 1px solid rgba(59, 130, 246, 0.3);
-                    border-radius: 16px;
-                    padding: 0;
-                    width: 420px;
-                    max-width: 85vw;
-                    max-height: 75vh;
-                    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+                    background: rgba(0, 0, 0, 0.85);
+                    backdrop-filter: blur(25px);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border-radius: 24px;
+                    width: 380px;
+                    max-width: 90vw;
+                    max-height: 85vh;
+                    box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
                     z-index: 1000;
-                    transition: all 0.3s ease;
+                    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
                     overflow: hidden;
                 }
                 
-                .floating-panel.hidden {
+                .modern-panel.hidden {
                     opacity: 0;
-                    transform: translate(-50%, -50%) scale(0.8);
+                    transform: translate(-50%, -50%) scale(0.9);
                     pointer-events: none;
                 }
                 
-                .floating-panel.visible {
+                .modern-panel.visible {
                     opacity: 1;
                     transform: translate(-50%, -50%) scale(1);
                     pointer-events: all;
                 }
                 
-                .floating-panel-header {
-                    background: linear-gradient(135deg, #1e40af, #3b82f6);
-                    padding: 15px 20px;
+                .modern-panel-header {
+                    background: linear-gradient(135deg, #667eea, #764ba2);
+                    padding: 16px 20px;
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    border-radius: 16px 16px 0 0;
+                    border-radius: 24px 24px 0 0;
                 }
                 
-                .floating-panel-header h3 {
-                    margin: 0;
+                .panel-title {
                     color: white;
                     font-size: 16px;
-                    font-weight: 600;
+                    font-weight: 700;
+                    letter-spacing: 0.5px;
                 }
                 
-                .close-panel-btn {
-                    background: rgba(255, 255, 255, 0.2);
+                .modern-close-btn {
+                    background: rgba(255, 255, 255, 0.15);
                     border: none;
                     color: white;
-                    width: 28px;
-                    height: 28px;
+                    width: 32px;
+                    height: 32px;
                     border-radius: 50%;
                     cursor: pointer;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    transition: all 0.2s ease;
+                    transition: all 0.3s ease;
+                    backdrop-filter: blur(10px);
                 }
                 
-                .close-panel-btn:hover {
-                    background: rgba(255, 255, 255, 0.3);
+                .modern-close-btn:hover {
+                    background: rgba(255, 255, 255, 0.25);
                     transform: scale(1.1);
                 }
                 
-                .floating-panel-content {
-                    padding: 20px;
-                    max-height: 60vh;
-                    overflow-y: auto;
-                }
-                
-                .unified-controls {
+                .modern-panel-grid {
+                    padding: 24px;
                     display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-                    gap: 10px;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 12px;
                 }
                 
-                .control-btn {
-                    background: rgba(59, 130, 246, 0.1);
-                    border: 1px solid rgba(59, 130, 246, 0.2);
+                .modern-btn {
+                    background: rgba(255, 255, 255, 0.05);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
                     color: white;
-                    padding: 10px 12px;
-                    border-radius: 10px;
+                    padding: 16px 12px;
+                    border-radius: 16px;
                     cursor: pointer;
                     transition: all 0.3s ease;
                     display: flex;
+                    flex-direction: column;
                     align-items: center;
                     gap: 8px;
                     font-size: 13px;
-                    min-height: 42px;
+                    font-weight: 500;
+                    min-height: 70px;
+                    text-align: center;
+                    backdrop-filter: blur(10px);
                 }
                 
-                .control-btn:hover {
-                    transform: translateY(-1px);
-                    box-shadow: 0 3px 12px rgba(59, 130, 246, 0.3);
-                    background: rgba(59, 130, 246, 0.2);
+                .modern-btn:hover {
+                    transform: translateY(-2px);
+                    background: rgba(255, 255, 255, 0.1);
+                    border-color: rgba(255, 255, 255, 0.2);
+                    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
                 }
                 
-                .control-btn:disabled {
-                    opacity: 0.4;
+                .modern-btn:disabled {
+                    opacity: 0.3;
                     cursor: not-allowed;
                     transform: none;
                 }
                 
-                .control-btn.primary { 
-                    background: rgba(34, 197, 94, 0.15); 
+                .start-btn { 
+                    background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1)); 
                     border-color: rgba(34, 197, 94, 0.3); 
                 }
-                .control-btn.primary:hover { 
-                    background: rgba(34, 197, 94, 0.25);
-                    box-shadow: 0 3px 12px rgba(34, 197, 94, 0.4); 
+                .start-btn:hover { 
+                    background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.2));
+                    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3); 
                 }
                 
-                .control-btn.danger { 
-                    background: rgba(239, 68, 68, 0.15); 
+                .stop-btn { 
+                    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1)); 
                     border-color: rgba(239, 68, 68, 0.3); 
                 }
-                .control-btn.danger:hover { 
-                    background: rgba(239, 68, 68, 0.25);
-                    box-shadow: 0 3px 12px rgba(239, 68, 68, 0.4); 
+                .stop-btn:hover { 
+                    background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.2));
+                    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3); 
                 }
                 
-                .control-btn.warning { 
-                    background: rgba(245, 158, 11, 0.15); 
-                    border-color: rgba(245, 158, 11, 0.3); 
+                .security-btn { 
+                    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 127, 0.1)); 
+                    border-color: rgba(239, 68, 68, 0.3); 
                 }
-                .control-btn.warning:hover { 
-                    background: rgba(245, 158, 11, 0.25);
-                    box-shadow: 0 3px 12px rgba(245, 158, 11, 0.4); 
+                .security-btn:hover { 
+                    background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(220, 38, 127, 0.2));
+                    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3); 
                 }
                 
-                .control-btn.info { 
-                    background: rgba(59, 130, 246, 0.15); 
+                .memory-btn { 
+                    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(147, 51, 234, 0.1)); 
                     border-color: rgba(59, 130, 246, 0.3); 
                 }
-                .control-btn.info:hover { 
-                    background: rgba(59, 130, 246, 0.25);
-                    box-shadow: 0 3px 12px rgba(59, 130, 246, 0.4); 
+                .memory-btn:hover { 
+                    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(147, 51, 234, 0.2));
+                    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3); 
                 }
                 
-                .control-btn.success { 
-                    background: rgba(34, 197, 94, 0.15); 
-                    border-color: rgba(34, 197, 94, 0.3); 
+                .upgrade-btn { 
+                    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.1)); 
+                    border-color: rgba(16, 185, 129, 0.3); 
                 }
-                .control-btn.success:hover { 
-                    background: rgba(34, 197, 94, 0.25);
-                    box-shadow: 0 3px 12px rgba(34, 197, 94, 0.4); 
+                .upgrade-btn:hover { 
+                    background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.2));
+                    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3); 
                 }
                 
-                .control-btn.secondary { 
-                    background: rgba(107, 114, 128, 0.15); 
+                .repair-btn { 
+                    background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.1)); 
+                    border-color: rgba(245, 158, 11, 0.3); 
+                }
+                .repair-btn:hover { 
+                    background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(217, 119, 6, 0.2));
+                    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3); 
+                }
+                
+                .network-btn { 
+                    background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(14, 165, 233, 0.1)); 
+                    border-color: rgba(6, 182, 212, 0.3); 
+                }
+                .network-btn:hover { 
+                    background: linear-gradient(135deg, rgba(6, 182, 212, 0.3), rgba(14, 165, 233, 0.2));
+                    box-shadow: 0 8px 25px rgba(6, 182, 212, 0.3); 
+                }
+                
+                .dev-btn { 
+                    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(124, 58, 237, 0.1)); 
+                    border-color: rgba(139, 92, 246, 0.3); 
+                }
+                .dev-btn:hover { 
+                    background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(124, 58, 237, 0.2));
+                    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3); 
+                }
+                
+                .work-btn { 
+                    background: linear-gradient(135deg, rgba(107, 114, 128, 0.2), rgba(75, 85, 99, 0.1)); 
                     border-color: rgba(107, 114, 128, 0.3); 
                 }
-                .control-btn.secondary:hover { 
-                    background: rgba(107, 114, 128, 0.25);
-                    box-shadow: 0 3px 12px rgba(107, 114, 128, 0.4); 
+                .work-btn:hover { 
+                    background: linear-gradient(135deg, rgba(107, 114, 128, 0.3), rgba(75, 85, 99, 0.2));
+                    box-shadow: 0 8px 25px rgba(107, 114, 128, 0.3); 
+                }
+                
+                .refresh-btn { 
+                    background: linear-gradient(135deg, rgba(156, 163, 175, 0.2), rgba(107, 114, 128, 0.1)); 
+                    border-color: rgba(156, 163, 175, 0.3); 
+                }
+                .refresh-btn:hover { 
+                    background: linear-gradient(135deg, rgba(156, 163, 175, 0.3), rgba(107, 114, 128, 0.2));
+                    box-shadow: 0 8px 25px rgba(156, 163, 175, 0.3); 
                 }
                 
                 @keyframes slideIn {
