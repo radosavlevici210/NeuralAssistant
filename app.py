@@ -18,6 +18,7 @@ import logging
 from voice_assistant import VoiceAssistant
 from network_discovery import NetworkDiscovery
 from chat_manager import AutoChatManager
+from cloud_deploy import CloudDeploymentManager
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -123,10 +124,11 @@ class WebVoiceAssistant:
         self.is_active = False
         self.status_update("stopped", "AVA CORE has been stopped")
 
-# Initialize web voice assistant, network discovery, and secure chat manager
+# Initialize web voice assistant, network discovery, secure chat manager, and cloud deployment
 web_assistant = WebVoiceAssistant(socketio)
 network_discovery = NetworkDiscovery(ava_port=5000)
 chat_manager = AutoChatManager(socketio)
+cloud_deployer = CloudDeploymentManager()
 
 @app.route('/')
 def index():
