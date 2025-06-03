@@ -1,38 +1,33 @@
 /**
- * ALPHA CORE: Gravity Game
- * Navigate the triangle through gravity wells to reach particle targets
+ * ALPHA CORE: Simple Gravity Ball
+ * A simple bouncing ball with gravity physics
  */
 
-class GravityGame {
+class GravityBall {
     constructor() {
         this.canvas = null;
         this.ctx = null;
-        this.player = {
-            x: 100,
+        this.ball = {
+            x: 200,
             y: 100,
             vx: 0,
             vy: 0,
-            size: 8,
-            angle: 0
+            radius: 8,
+            trail: []
         };
-        this.gravityWells = [];
-        this.targets = [];
-        this.particles = [];
-        this.level = 1;
-        this.score = 0;
-        this.gameState = 'playing'; // 'playing', 'won', 'lost'
+        this.gravity = 0.4;
+        this.friction = 0.998;
+        this.bounce = 0.85;
         this.mouse = { x: 0, y: 0, down: false };
         this.animationId = null;
         this.isActive = false;
-        this.thrust = false;
-        this.keys = {};
+        this.ballGrabbed = false;
         
         this.init();
     }
     
     init() {
         this.createCanvas();
-        this.createLevel();
         this.bindEvents();
         this.startGame();
     }
@@ -61,62 +56,12 @@ class GravityGame {
         this.createToggleButton();
     }
     
-    createLevel() {
-        // Reset game state
-        this.gameState = 'playing';
-        this.player.x = 100;
-        this.player.y = 100;
-        this.player.vx = 0;
-        this.player.vy = 0;
-        this.player.angle = 0;
-        
-        // Create level-specific elements
-        this.gravityWells = [];
-        this.targets = [];
-        this.particles = [];
-        
-        // Level 1 - Simple introduction
-        if (this.level === 1) {
-            this.targets.push({ x: 400, y: 200, radius: 15, collected: false });
-            this.gravityWells.push({ x: 250, y: 150, radius: 30, strength: 50 });
-        }
-        // Level 2 - More challenging
-        else if (this.level === 2) {
-            this.targets.push({ x: 500, y: 100, radius: 15, collected: false });
-            this.targets.push({ x: 450, y: 300, radius: 15, collected: false });
-            this.gravityWells.push({ x: 200, y: 150, radius: 25, strength: 40 });
-            this.gravityWells.push({ x: 350, y: 200, radius: 25, strength: 40 });
-        }
-        // Level 3 - Multiple wells
-        else if (this.level === 3) {
-            this.targets.push({ x: 600, y: 200, radius: 15, collected: false });
-            this.gravityWells.push({ x: 150, y: 100, radius: 20, strength: 35 });
-            this.gravityWells.push({ x: 300, y: 200, radius: 20, strength: 35 });
-            this.gravityWells.push({ x: 450, y: 300, radius: 20, strength: 35 });
-        }
-        // Default for other levels
-        else {
-            const numTargets = Math.min(this.level, 5);
-            const numWells = Math.min(this.level + 1, 8);
-            
-            for (let i = 0; i < numTargets; i++) {
-                this.targets.push({
-                    x: 300 + Math.random() * 400,
-                    y: 100 + Math.random() * 300,
-                    radius: 15,
-                    collected: false
-                });
-            }
-            
-            for (let i = 0; i < numWells; i++) {
-                this.gravityWells.push({
-                    x: 150 + Math.random() * 500,
-                    y: 100 + Math.random() * 300,
-                    radius: 20 + Math.random() * 15,
-                    strength: 30 + Math.random() * 25
-                });
-            }
-        }
+    resetBall() {
+        this.ball.x = this.canvas.width / 2;
+        this.ball.y = 100;
+        this.ball.vx = Math.random() * 4 - 2;
+        this.ball.vy = 0;
+        this.ball.trail = [];
     }
     
     createToggleButton() {
@@ -157,7 +102,7 @@ class GravityGame {
         this.isActive = !this.isActive;
         this.canvas.style.pointerEvents = this.isActive ? 'all' : 'none';
         this.canvas.style.display = this.isActive ? 'block' : 'none';
-        this.toggleBtn.innerHTML = this.isActive ? '❌' : '⚫';
+        this.toggleBtn.innerHTML = this.isActive ? '✕' : '●';
         
         if (this.isActive) {
             this.resetBall();
@@ -250,17 +195,6 @@ class GravityGame {
     
     updatePhysics() {
         if (!this.ballGrabbed) {
-            // Natural return force towards center (like elastic band)
-            const dx = this.centerX - this.ball.x;
-            const dy = this.centerY - this.ball.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            if (distance > 50) {
-                const returnStrength = this.returnForce * (distance / 100);
-                this.ball.vx += (dx / distance) * returnStrength;
-                this.ball.vy += (dy / distance) * returnStrength;
-            }
-            
             // Apply gravity downwards
             this.ball.vy += this.gravity;
             
@@ -272,24 +206,25 @@ class GravityGame {
             this.ball.x += this.ball.vx;
             this.ball.y += this.ball.vy;
             
-            // Bounce off boundaries (not corners)
-            if (this.ball.x - this.ball.radius < this.boundaries.left) {
-                this.ball.x = this.boundaries.left + this.ball.radius;
+            // Bounce off walls
+            if (this.ball.x - this.ball.radius < 0) {
+                this.ball.x = this.ball.radius;
                 this.ball.vx *= -this.bounce;
             }
-            if (this.ball.x + this.ball.radius > this.boundaries.right) {
-                this.ball.x = this.boundaries.right - this.ball.radius;
+            if (this.ball.x + this.ball.radius > this.canvas.width) {
+                this.ball.x = this.canvas.width - this.ball.radius;
                 this.ball.vx *= -this.bounce;
             }
             
-            // Bounce off floor and ceiling
-            if (this.ball.y + this.ball.radius > this.boundaries.bottom) {
-                this.ball.y = this.boundaries.bottom - this.ball.radius;
+            // Bounce off floor
+            if (this.ball.y + this.ball.radius > this.canvas.height) {
+                this.ball.y = this.canvas.height - this.ball.radius;
                 this.ball.vy *= -this.bounce;
             }
             
-            if (this.ball.y - this.ball.radius < this.boundaries.top) {
-                this.ball.y = this.boundaries.top + this.ball.radius;
+            // Bounce off ceiling
+            if (this.ball.y - this.ball.radius < 0) {
+                this.ball.y = this.ball.radius;
                 this.ball.vy *= -this.bounce;
             }
         }
@@ -305,11 +240,7 @@ class GravityGame {
         // Clear canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
-        // Draw center point for reference
-        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-        this.ctx.beginPath();
-        this.ctx.arc(this.centerX, this.centerY, 3, 0, Math.PI * 2);
-        this.ctx.fill();
+        // Simple clean background
         
         // Draw trail
         this.ctx.globalAlpha = 0.4;
