@@ -498,13 +498,133 @@ def get_automation_capabilities():
 def get_automation_history():
     """Get automation task history"""
     try:
-        user_id = request.args.get('user_id')
+        user_id = request.args.get('user_id', 'default_user')
         history = automation_controller.get_automation_history(user_id)
         return jsonify({'history': history})
         
     except Exception as e:
         logger.error(f"Get history error: {str(e)}")
         return jsonify({'error': f'Failed to get history: {str(e)}'}), 500
+
+@app.route('/api/self-management/status')
+def get_self_management_status():
+    """Get comprehensive self-management system status"""
+    try:
+        status = self_management.get_comprehensive_status()
+        return jsonify({
+            'success': True,
+            'status': status
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/self-management/memory/conversation', methods=['POST'])
+def store_conversation():
+    """Store conversation in persistent memory"""
+    try:
+        data = request.get_json()
+        speaker = data.get('speaker', 'Unknown')
+        message = data.get('message', '')
+        context = data.get('context', {})
+        
+        self_management.memory.remember_conversation(speaker, message, context)
+        return jsonify({'success': True, 'message': 'Conversation stored in persistent memory'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/self-management/memory/history')
+def get_memory_history():
+    """Get conversation history from persistent memory"""
+    try:
+        limit = int(request.args.get('limit', 100))
+        history = self_management.memory.get_conversation_history(limit)
+        return jsonify({
+            'success': True,
+            'history': history
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/self-management/repair/status')
+def get_repair_status():
+    """Get system repair status"""
+    try:
+        health_status = self_management.repair_system.perform_health_check()
+        return jsonify({
+            'success': True,
+            'health_status': health_status
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/self-management/upgrade/check')
+def check_upgrades():
+    """Check for available system upgrades"""
+    try:
+        upgrade_status = self_management.upgrade_system.check_for_upgrades()
+        return jsonify({
+            'success': True,
+            'upgrade_status': upgrade_status
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/self-management/upgrade/perform', methods=['POST'])
+def perform_upgrade():
+    """Perform system self-upgrade"""
+    try:
+        upgrade_result = self_management.upgrade_system.perform_self_upgrade()
+        return jsonify({
+            'success': True,
+            'upgrade_result': upgrade_result
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/self-management/defense/status')
+def get_defense_status():
+    """Get security defense status"""
+    try:
+        security_status = self_management.defense_system.get_security_status()
+        return jsonify({
+            'success': True,
+            'security_status': security_status
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/self-management/work/external', methods=['POST'])
+def process_external_work():
+    """Process external work requests"""
+    try:
+        data = request.get_json()
+        task_description = data.get('task_description', '')
+        task_type = data.get('task_type', 'general')
+        
+        result = self_management.process_external_work_request(task_description, task_type)
+        return jsonify({
+            'success': True,
+            'result': result
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/self-management/learn', methods=['POST'])
+def learn_behavior():
+    """Learn new behavioral patterns"""
+    try:
+        data = request.get_json()
+        pattern = data.get('pattern', '')
+        context = data.get('context', {})
+        effectiveness = data.get('effectiveness', 0.5)
+        
+        self_management.memory.learn_behavior(pattern, context, effectiveness)
+        return jsonify({'success': True, 'message': 'Behavior pattern learned'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @socketio.on('connect')
 def handle_connect():
