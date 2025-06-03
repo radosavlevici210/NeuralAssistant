@@ -127,6 +127,49 @@
                 </form>
             </div>
 
+            <!-- Computer Control Panel -->
+            <div class="card automation-panel">
+                <h2>
+                    <i data-feather="settings"></i>
+                    Computer Control & Automation
+                </h2>
+                
+                <div class="automation-controls">
+                    <div class="quick-commands">
+                        <h3>Quick Commands</h3>
+                        <div class="command-grid">
+                            <button class="quick-cmd-btn" data-command="AVA take control of my computer">
+                                <i data-feather="cpu"></i>
+                                Take Control
+                            </button>
+                            <button class="quick-cmd-btn" data-command="AVA fix this computer issue">
+                                <i data-feather="tool"></i>
+                                Fix Issues
+                            </button>
+                            <button class="quick-cmd-btn" data-command="AVA setup development environment">
+                                <i data-feather="code"></i>
+                                Setup Dev
+                            </button>
+                            <button class="quick-cmd-btn" data-command="AVA navigate to google.com">
+                                <i data-feather="globe"></i>
+                                Browse Web
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="automation-status">
+                        <div class="status-item">
+                            <span class="status-label">Automation Status:</span>
+                            <span id="automationStatus" class="status offline">Ready</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Permissions:</span>
+                            <span id="automationPermissions" class="permissions">Basic</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- AI Chat Interface -->
             <div class="card">
                 <h2>
@@ -136,11 +179,11 @@
                 
                 <form id="chatForm">
                     <div class="input-group">
-                        <label for="chatInput">Ask AVA anything:</label>
+                        <label for="chatInput">Command AVA:</label>
                         <textarea 
                             id="chatInput" 
-                            rows="2" 
-                            placeholder="Ask for advice, help with tasks, device control, or just chat..."
+                            rows="3" 
+                            placeholder="Try: 'AVA take control computer', 'fix this issue', 'setup development for React', 'navigate to GitHub', 'close this deal for me'..."
                             maxlength="1000"
                         ></textarea>
                     </div>
@@ -148,15 +191,32 @@
                     <div class="controls">
                         <button type="submit" id="chatBtn" class="btn btn-primary">
                             <i data-feather="send"></i>
-                            Send Message
+                            Execute Command
                         </button>
                         
                         <button type="button" id="clearChatBtn" class="btn btn-secondary">
                             <i data-feather="trash-2"></i>
                             Clear Chat
                         </button>
+                        
+                        <button type="button" id="automationHistoryBtn" class="btn btn-secondary">
+                            <i data-feather="clock"></i>
+                            History
+                        </button>
                     </div>
                 </form>
+                
+                <div class="automation-examples">
+                    <h4>Example Commands:</h4>
+                    <div class="example-commands">
+                        <span class="example-cmd">"AVA take control computer"</span>
+                        <span class="example-cmd">"Fix this bug for me"</span>
+                        <span class="example-cmd">"Setup React development"</span>
+                        <span class="example-cmd">"Navigate to YouTube"</span>
+                        <span class="example-cmd">"Open calculator"</span>
+                        <span class="example-cmd">"Create new project"</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Recent Conversation -->
