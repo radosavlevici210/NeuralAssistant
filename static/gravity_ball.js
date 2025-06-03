@@ -72,28 +72,30 @@ class GravityBall {
             position: fixed;
             top: 15px;
             right: 15px;
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            background: rgba(0, 170, 255, 0.8);
-            color: white;
-            font-size: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 170, 255, 0.3);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
             cursor: pointer;
             z-index: 1000;
-            backdrop-filter: blur(10px);
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
+            opacity: 0.4;
         `;
         
         toggleBtn.addEventListener('click', () => this.toggleGame());
         toggleBtn.addEventListener('mouseenter', () => {
-            toggleBtn.style.transform = 'scale(1.1)';
+            toggleBtn.style.opacity = '1';
+            toggleBtn.style.background = 'rgba(0, 170, 255, 0.8)';
         });
         toggleBtn.addEventListener('mouseleave', () => {
-            toggleBtn.style.transform = 'scale(1)';
+            toggleBtn.style.opacity = '0.4';
+            toggleBtn.style.background = 'rgba(0, 170, 255, 0.3)';
         });
         
         document.body.appendChild(toggleBtn);
