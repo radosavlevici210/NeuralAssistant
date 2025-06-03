@@ -15,10 +15,11 @@ class GravityBall {
             radius: 12,
             trail: []
         };
-        this.gravity = 0.4;
-        this.friction = 0.99;
-        this.bounce = 0.8;
-        this.attractionStrength = 0.2;
+        this.gravity = 0.6;
+        this.friction = 0.985;
+        this.bounce = 0.75;
+        this.attractionStrength = 0.3;
+        this.magnetStrength = 0.4;
         
         this.mouse = { x: 0, y: 0, down: false };
         this.blackHoles = [];
@@ -212,12 +213,14 @@ class GravityBall {
     }
 
     createBlackHole(x, y) {
+        // Create magnetic points like pool table bumpers
+        const types = ['attract', 'repel', 'magnet'];
         this.blackHoles.push({
             x: x,
             y: y,
-            radius: 25,
-            strength: 0.5,
-            type: Math.random() > 0.5 ? 'attract' : 'repel'
+            radius: 20,
+            strength: this.magnetStrength,
+            type: types[Math.floor(Math.random() * types.length)]
         });
     }
     
@@ -234,23 +237,29 @@ class GravityBall {
             }
         }
         
-        // Black hole interactions
+        // Magnetic interactions like pool table physics
         this.blackHoles.forEach(hole => {
             const dx = hole.x - this.ball.x;
             const dy = hole.y - this.ball.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             
-            if (distance > 0 && distance < 150) {
-                const force = hole.strength / (distance * 0.01);
+            if (distance > 0 && distance < 120) {
+                const force = hole.strength / (distance * 0.02);
                 const forceX = (dx / distance) * force;
                 const forceY = (dy / distance) * force;
                 
                 if (hole.type === 'attract') {
-                    this.ball.vx += forceX * 0.1;
-                    this.ball.vy += forceY * 0.1;
-                } else {
-                    this.ball.vx -= forceX * 0.1;
-                    this.ball.vy -= forceY * 0.1;
+                    // Strong magnetic pull
+                    this.ball.vx += forceX * 0.15;
+                    this.ball.vy += forceY * 0.15;
+                } else if (hole.type === 'repel') {
+                    // Push away like same poles
+                    this.ball.vx -= forceX * 0.12;
+                    this.ball.vy -= forceY * 0.12;
+                } else if (hole.type === 'magnet') {
+                    // Sideways magnetic force
+                    this.ball.vx += forceY * 0.1;
+                    this.ball.vy -= forceX * 0.1;
                 }
             }
         });
@@ -315,21 +324,28 @@ class GravityBall {
         });
         this.ctx.stroke();
         
-        // Draw black holes
+        // Draw magnetic points like pool table elements
         this.blackHoles.forEach(hole => {
             this.ctx.beginPath();
             this.ctx.arc(hole.x, hole.y, hole.radius, 0, Math.PI * 2);
+            
             if (hole.type === 'attract') {
-                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                // Blue magnet - pulls ball in
+                this.ctx.fillStyle = 'rgba(0, 100, 255, 0.7)';
+            } else if (hole.type === 'repel') {
+                // Red magnet - pushes ball away
+                this.ctx.fillStyle = 'rgba(255, 50, 50, 0.7)';
             } else {
-                this.ctx.fillStyle = 'rgba(255, 0, 0, 0.6)';
+                // Green magnet - sideways force
+                this.ctx.fillStyle = 'rgba(50, 255, 100, 0.7)';
             }
             this.ctx.fill();
             
-            // Draw effect ring
+            // Draw magnetic field effect
             this.ctx.beginPath();
-            this.ctx.arc(hole.x, hole.y, hole.radius + 10, 0, Math.PI * 2);
-            this.ctx.strokeStyle = hole.type === 'attract' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 0, 0, 0.3)';
+            this.ctx.arc(hole.x, hole.y, hole.radius + 8, 0, Math.PI * 2);
+            this.ctx.strokeStyle = hole.type === 'attract' ? 'rgba(0, 100, 255, 0.4)' : 
+                                  hole.type === 'repel' ? 'rgba(255, 50, 50, 0.4)' : 'rgba(50, 255, 100, 0.4)';
             this.ctx.lineWidth = 2;
             this.ctx.stroke();
         });
