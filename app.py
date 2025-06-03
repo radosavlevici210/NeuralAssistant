@@ -17,6 +17,7 @@ import logging
 
 from voice_assistant import VoiceAssistant
 from network_discovery import NetworkDiscovery
+from chat_manager import AutoChatManager
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -122,9 +123,10 @@ class WebVoiceAssistant:
         self.is_active = False
         self.status_update("stopped", "AVA CORE has been stopped")
 
-# Initialize web voice assistant and network discovery
+# Initialize web voice assistant, network discovery, and secure chat manager
 web_assistant = WebVoiceAssistant(socketio)
 network_discovery = NetworkDiscovery(ava_port=5000)
+chat_manager = AutoChatManager(socketio)
 
 @app.route('/')
 def index():
@@ -207,32 +209,105 @@ def manual_speak():
 
 @app.route('/api/chat', methods=['POST'])
 def chat_with_ava():
-    """Chat with AVA using advanced AI capabilities"""
+    """Secure chat with AVA using privacy controls"""
     try:
         data = request.get_json()
         message = data.get('message', '').strip()
+        session_id = data.get('session_id')
         
         if not message:
             return jsonify({'error': 'No message provided'}), 400
         
-        # Log user message
-        web_assistant.log_conversation("User", message)
+        # Create or get secure session
+        if not session_id:
+            session = chat_manager.create_session()
+            session_id = session.session_id
+        else:
+            session = chat_manager.get_session(session_id)
+            if not session:
+                session = chat_manager.create_session()
+                session_id = session.session_id
         
-        # Get AI response using advanced capabilities
-        response = web_assistant.voice_assistant.get_ai_response(message)
+        # Privacy control - block system access attempts
+        blocked_terms = ['shell', 'console', 'terminal', 'cmd', 'bash', 'sudo', 'admin', 'root']
+        if any(term in message.lower() for term in blocked_terms):
+            return jsonify({
+                'error': 'Access denied - chat only mode enabled for privacy',
+                'session_id': session_id
+            }), 403
         
-        # Log AVA response
-        web_assistant.log_conversation("AVA", response)
+        # Get AI response using secure chat manager
+        from advanced_ai import AdvancedAI
+        advanced_ai = AdvancedAI()
+        result = chat_manager.process_user_message(session_id, message, advanced_ai)
         
-        return jsonify({
-            'success': True, 
-            'response': response,
-            'message': 'Response generated successfully'
-        })
+        if result and 'error' not in result:
+            # Also log for main system
+            web_assistant.log_conversation("User", message)
+            web_assistant.log_conversation("AVA", result['ai_response']['message'])
+            
+            return jsonify({
+                'success': True,
+                'session_id': session_id,
+                'user_message': result['user_message'],
+                'ai_response': result['ai_response'],
+                'private_session': True,
+                'timestamp': datetime.now().isoformat()
+            })
+        else:
+            # Fallback to basic response if advanced AI fails
+            fallback_response = f"I'm here to chat with you! You said: {message}"
+            session.add_message("User", message)
+            ai_msg = session.add_message("AVA", fallback_response)
+            
+            web_assistant.log_conversation("User", message)
+            web_assistant.log_conversation("AVA", fallback_response)
+            
+            return jsonify({
+                'success': True,
+                'session_id': session_id,
+                'response': fallback_response,
+                'ai_response': ai_msg,
+                'private_session': True,
+                'fallback_mode': True
+            })
         
     except Exception as e:
         logger.error(f"Failed to generate chat response: {str(e)}")
         return jsonify({'error': f'Failed to generate response: {str(e)}'}), 500
+
+@app.route('/api/chat/session/new', methods=['POST'])
+def create_chat_session():
+    """Create new private chat session"""
+    try:
+        session = chat_manager.create_session()
+        return jsonify({
+            'session_id': session.session_id,
+            'created_at': session.created_at.isoformat(),
+            'privacy_mode': True,
+            'permissions': session.permissions
+        })
+    except Exception as e:
+        logger.error(f"Session creation error: {str(e)}")
+        return jsonify({'error': f'Failed to create session: {str(e)}'}), 500
+
+@app.route('/api/chat/session/<session_id>/messages')
+def get_session_messages(session_id):
+    """Get messages for specific session"""
+    try:
+        session = chat_manager.get_session(session_id)
+        if not session:
+            return jsonify({'error': 'Session not found'}), 404
+        
+        messages = session.get_recent_messages(50)
+        return jsonify({
+            'session_id': session_id,
+            'messages': messages,
+            'privacy_mode': session.privacy_mode
+        })
+    except Exception as e:
+        logger.error(f"Get messages error: {str(e)}")
+        return jsonify({'error': f'Failed to get messages: {str(e)}'}), 500
 
 @app.route('/api/device-control', methods=['POST'])
 def device_control():
