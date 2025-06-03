@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVA CORE - Neural AI Voice Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+    
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1>
+                    <i data-feather="cpu" style="width: 40px; height: 40px; vertical-align: middle; margin-right: 12px;"></i>
+                    AVA CORE
+                </h1>
+                <p>Neural AI Voice Assistant with Speech Recognition & Text-to-Speech</p>
+                <p class="copyright">Copyright and Trademark: Ervin Radosavlevici</p>
+                
+                <!-- Navigation -->
+                <nav class="nav">
+                    <a href="/" class="nav-link">
+                        <i data-feather="home"></i>
+                        Dashboard
+                    </a>
+                    <a href="/monitor" class="nav-link">
+                        <i data-feather="monitor"></i>
+                        Monitor
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Status Overview -->
+            <div class="card">
+                <h2>
+                    <i data-feather="activity"></i>
+                    System Status
+                </h2>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="statusIndicator">
+                            <span class="status offline">
+                                <span class="status-dot"></span>
+                                Offline
+                            </span>
+                        </span>
+                        <div class="stat-label">Assistant Status</div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <span class="stat-value" id="conversationCount">0</span>
+                        <div class="stat-label">Conversations</div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <span class="stat-value" id="lastActivity">Never</span>
+                        <div class="stat-label">Last Activity</div>
+                    </div>
+                </div>
+                
+                <div class="mb-md">
+                    <strong>Current Status:</strong>
+                    <span id="currentStatus" class="text-muted">System ready</span>
+                </div>
+                
+                <!-- Control Panel -->
+                <div class="controls">
+                    <button id="startBtn" class="btn btn-success">
+                        <i data-feather="play"></i>
+                        Start Listening
+                    </button>
+                    
+                    <button id="stopBtn" class="btn btn-error" disabled>
+                        <i data-feather="stop"></i>
+                        Stop Assistant
+                    </button>
+                    
+                    <button id="refreshBtn" class="btn btn-secondary">
+                        <i data-feather="refresh-cw"></i>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Manual Speech Control -->
+            <div class="card">
+                <h2>
+                    <i data-feather="volume-2"></i>
+                    Manual Speech Control
+                </h2>
+                
+                <form id="speakForm">
+                    <div class="input-group">
+                        <label for="speakText">Text to Speak:</label>
+                        <textarea 
+                            id="speakText" 
+                            rows="3" 
+                            placeholder="Enter text for AVA to speak..."
+                            maxlength="500"
+                        ></textarea>
+                    </div>
+                    
+                    <button type="submit" id="speakBtn" class="btn btn-primary">
+                        <i data-feather="volume-2"></i>
+                        Speak Text
+                    </button>
+                </form>
+            </div>
+
+            <!-- Recent Conversation -->
+            <div class="card">
+                <h2>
+                    <i data-feather="message-circle"></i>
+                    Recent Conversation
+                </h2>
+                
+                <div id="conversation" class="conversation">
+                    <div class="conversation-empty">
+                        No conversation history available. Start the assistant to begin.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Log -->
+            <div class="card">
+                <h2>
+                    <i data-feather="list"></i>
+                    Activity Log
+                </h2>
+                
+                <div id="activityLog" class="activity-log">
+                    <!-- Log entries will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- System Information -->
+            <div class="card">
+                <h2>
+                    <i data-feather="info"></i>
+                    System Information
+                </h2>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                    <div>
+                        <h3>Features</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="padding: 0.25rem 0;">
+                                <i data-feather="mic" style="width: 16px; height: 16px; color: hsl(220 70% 50%);"></i>
+                                Speech Recognition
+                            </li>
+                            <li style="padding: 0.25rem 0;">
+                                <i data-feather="brain" style="width: 16px; height: 16px; color: hsl(220 70% 50%);"></i>
+                                AI Conversation (OpenAI GPT-4o)
+                            </li>
+                            <li style="padding: 0.25rem 0;">
+                                <i data-feather="volume-2" style="width: 16px; height: 16px; color: hsl(220 70% 50%);"></i>
+                                Text-to-Speech
+                            </li>
+                            <li style="padding: 0.25rem 0;">
+                                <i data-feather="wifi" style="width: 16px; height: 16px; color: hsl(220 70% 50%);"></i>
+                                Real-time WebSocket Updates
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3>Controls</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="padding: 0.25rem 0;">
+                                <strong>Start/Stop:</strong> Control voice listening
+                            </li>
+                            <li style="padding: 0.25rem 0;">
+                                <strong>Manual Speech:</strong> Make AVA speak any text
+                            </li>
+                            <li style="padding: 0.25rem 0;">
+                                <strong>Monitor:</strong> View detailed conversation history
+                            </li>
+                            <li style="padding: 0.25rem 0;">
+                                <strong>Real-time:</strong> Live status and conversation updates
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        // Initialize Feather icons
+        feather.replace();
+        
+        // Add some visual feedback for button interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click animations to buttons
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+            
+            // Auto-resize textarea
+            const textarea = document.getElementById('speakText');
+            if (textarea) {
+                textarea.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = this.scrollHeight + 'px';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
