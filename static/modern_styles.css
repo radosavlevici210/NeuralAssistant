@@ -2,30 +2,30 @@
 /* Copyright and Trademark: Ervin Radosavlevici */
 
 :root {
-    /* iOS-inspired Color Palette */
-    --primary: #007AFF;
-    --primary-dark: #0056CC;
-    --secondary: #5856D6;
-    --success: #34C759;
-    --warning: #FF9500;
-    --error: #FF3B30;
-    --info: #5AC8FA;
+    /* Deep Ocean Color Palette */
+    --primary: #0096FF;
+    --primary-dark: #0066CC;
+    --secondary: #0088CC;
+    --success: #00AA55;
+    --warning: #FF6600;
+    --error: #FF4444;
+    --info: #00BBFF;
     
-    /* Background Colors */
-    --bg-primary: #F2F2F7;
-    --bg-secondary: #FFFFFF;
-    --bg-tertiary: #F2F2F7;
-    --bg-grouped: #F2F2F7;
+    /* Dark Ocean Background Colors */
+    --bg-primary: #000000;
+    --bg-secondary: #0A0A0A;
+    --bg-tertiary: #111111;
+    --bg-grouped: #151515;
     
-    /* Text Colors */
-    --text-primary: #000000;
-    --text-secondary: #3C3C43;
-    --text-tertiary: #3C3C4399;
-    --text-quaternary: #3C3C4360;
+    /* Ocean Text Colors */
+    --text-primary: #E0F2FF;
+    --text-secondary: #B3D9FF;
+    --text-tertiary: #80C6FF;
+    --text-quaternary: #4DB3FF;
     
     /* Border and Separator */
-    --separator: #C6C6C8;
-    --border: #D1D1D6;
+    --separator: #2A2A2A;
+    --border: #333333;
     
     /* System Colors */
     --fill-primary: #78788033;

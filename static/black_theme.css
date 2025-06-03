@@ -1,0 +1,250 @@
+/* AVA CORE: Black Ocean Theme */
+/* Copyright and Trademark: Ervin Radosavlevici */
+
+/* Override all white elements and make buttons smaller */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: #000000 !important;
+    color: #E0F2FF !important;
+}
+
+/* Hide all white backgrounds */
+.bg-white,
+.card.bg-white,
+.btn.btn-light,
+.alert.alert-light {
+    background: rgba(0, 50, 100, 0.2) !important;
+    color: #E0F2FF !important;
+    border-color: rgba(0, 150, 255, 0.3) !important;
+}
+
+/* Make all buttons smaller */
+.btn, button {
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    min-height: 28px !important;
+    border-radius: 6px !important;
+    font-weight: 500 !important;
+    background: rgba(0, 100, 200, 0.8) !important;
+    color: #E0F2FF !important;
+    border: 1px solid rgba(0, 150, 255, 0.4) !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn:hover, button:hover {
+    background: rgba(0, 150, 255, 0.9) !important;
+    transform: scale(1.05) !important;
+    box-shadow: 0 0 15px rgba(0, 150, 255, 0.5) !important;
+}
+
+/* Small button variants */
+.btn-sm, .btn.btn-sm {
+    padding: 4px 8px !important;
+    font-size: 11px !important;
+    min-height: 24px !important;
+}
+
+.btn-xs, .btn.btn-xs {
+    padding: 2px 6px !important;
+    font-size: 10px !important;
+    min-height: 20px !important;
+}
+
+/* Quick command buttons - extra small */
+.command-grid .btn {
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+    min-height: 24px !important;
+    min-width: 80px !important;
+}
+
+/* Text elements */
+h1, h2, h3, h4, h5, h6 {
+    color: #E0F2FF !important;
+}
+
+p, span, div, label {
+    color: #B3D9FF !important;
+}
+
+/* Input fields */
+input, textarea, select {
+    background: rgba(0, 30, 60, 0.8) !important;
+    color: #E0F2FF !important;
+    border: 1px solid rgba(0, 150, 255, 0.3) !important;
+    border-radius: 6px !important;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: rgba(0, 150, 255, 0.8) !important;
+    box-shadow: 0 0 10px rgba(0, 150, 255, 0.3) !important;
+}
+
+/* Cards with underwater effect */
+.card {
+    background: rgba(0, 30, 60, 0.3) !important;
+    border: 1px solid rgba(0, 150, 255, 0.2) !important;
+    box-shadow: 
+        0 8px 32px rgba(0, 50, 100, 0.3),
+        inset 0 1px 0 rgba(0, 200, 255, 0.1) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+}
+
+/* Status indicators */
+.status-dot {
+    background: #00BBFF !important;
+    box-shadow: 0 0 10px rgba(0, 187, 255, 0.5) !important;
+}
+
+/* Links */
+a {
+    color: #4DB3FF !important;
+}
+
+a:hover {
+    color: #80C6FF !important;
+}
+
+/* Enhanced water touch effects */
+.water-touch-effect {
+    position: fixed;
+    pointer-events: none;
+    border-radius: 50%;
+    background: radial-gradient(circle, 
+        rgba(0, 200, 255, 0.6) 0%, 
+        rgba(0, 150, 255, 0.3) 30%, 
+        rgba(0, 100, 200, 0.1) 60%, 
+        transparent 100%);
+    animation: water-touch-expand 1.5s ease-out forwards;
+    z-index: 9999;
+}
+
+@keyframes water-touch-expand {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        width: 300px;
+        height: 300px;
+        opacity: 0;
+    }
+}
+
+/* Water splash on button click */
+.btn.water-splash {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn.water-splash::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, 
+        rgba(255, 255, 255, 0.6) 0%, 
+        rgba(0, 200, 255, 0.3) 50%, 
+        transparent 100%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: button-splash 0.6s ease-out;
+}
+
+@keyframes button-splash {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+    }
+    100% {
+        width: 100px;
+        height: 100px;
+        opacity: 0;
+    }
+}
+
+/* Navigation and menu items */
+.nav-item, .navbar-nav .nav-link {
+    color: #B3D9FF !important;
+    font-size: 13px !important;
+}
+
+.nav-item:hover, .navbar-nav .nav-link:hover {
+    color: #E0F2FF !important;
+    background: rgba(0, 100, 200, 0.2) !important;
+}
+
+/* Alerts and notifications */
+.alert {
+    background: rgba(0, 50, 100, 0.4) !important;
+    color: #E0F2FF !important;
+    border: 1px solid rgba(0, 150, 255, 0.3) !important;
+    border-radius: 8px !important;
+}
+
+/* Tables */
+table {
+    background: rgba(0, 30, 60, 0.2) !important;
+    color: #B3D9FF !important;
+}
+
+th {
+    background: rgba(0, 50, 100, 0.4) !important;
+    color: #E0F2FF !important;
+    border-color: rgba(0, 150, 255, 0.3) !important;
+}
+
+td {
+    border-color: rgba(0, 150, 255, 0.2) !important;
+}
+
+/* Form groups */
+.form-group label, .input-group label {
+    color: #B3D9FF !important;
+    font-size: 13px !important;
+}
+
+/* Progress bars */
+.progress {
+    background: rgba(0, 30, 60, 0.5) !important;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #0096FF, #00BBFF) !important;
+}
+
+/* Badges */
+.badge {
+    background: rgba(0, 100, 200, 0.8) !important;
+    color: #E0F2FF !important;
+    font-size: 10px !important;
+    padding: 2px 6px !important;
+}
+
+/* Dropdowns */
+.dropdown-menu {
+    background: rgba(0, 30, 60, 0.9) !important;
+    border: 1px solid rgba(0, 150, 255, 0.3) !important;
+    backdrop-filter: blur(15px) !important;
+}
+
+.dropdown-item {
+    color: #B3D9FF !important;
+    font-size: 12px !important;
+}
+
+.dropdown-item:hover {
+    background: rgba(0, 100, 200, 0.3) !important;
+    color: #E0F2FF !important;
+}
