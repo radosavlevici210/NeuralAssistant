@@ -20,6 +20,7 @@ from network_discovery import NetworkDiscovery
 from chat_manager import AutoChatManager
 from cloud_deploy import CloudDeploymentManager
 from automation_controller import AutomationController
+from self_management import AVACoreSelfManagement
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -125,12 +126,13 @@ class WebVoiceAssistant:
         self.is_active = False
         self.status_update("stopped", "AVA CORE has been stopped")
 
-# Initialize web voice assistant, network discovery, secure chat manager, cloud deployment, and automation
+# Initialize web voice assistant, network discovery, secure chat manager, cloud deployment, automation, and self-management
 web_assistant = WebVoiceAssistant(socketio)
 network_discovery = NetworkDiscovery(ava_port=5000)
 chat_manager = AutoChatManager(socketio)
 cloud_deployer = CloudDeploymentManager()
 automation_controller = AutomationController()
+self_management = AVACoreSelfManagement("ervin210@icloud.com")
 
 @app.route('/')
 def index():

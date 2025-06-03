@@ -20,6 +20,8 @@ class AVAInterface {
         this.initWebSocket();
         this.bindEvents();
         this.initAutomationControls();
+        this.initCompactControls();
+        this.addWaterEffects();
         this.updateUI();
         
         // Load initial data
@@ -645,6 +647,199 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Export for use in other scripts
+    initAutomationControls() {
+        // Automation task execution
+        const executeTaskBtn = document.getElementById('executeTaskBtn');
+        if (executeTaskBtn) {
+            executeTaskBtn.addEventListener('click', () => {
+                const taskInput = document.getElementById('automationTask');
+                if (taskInput && taskInput.value.trim()) {
+                    this.executeAutomationTask(taskInput.value.trim());
+                    taskInput.value = '';
+                }
+            });
+        }
+        
+        // Task input enter key handler
+        const taskInput = document.getElementById('automationTask');
+        if (taskInput) {
+            taskInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const task = taskInput.value.trim();
+                    if (task) {
+                        this.executeAutomationTask(task);
+                        taskInput.value = '';
+                    }
+                }
+            });
+        }
+    }
+    
+    initCompactControls() {
+        const toggleBtn = document.getElementById('toggleControlsBtn');
+        const controlPanel = document.getElementById('controlPanel');
+        const hideBtn = document.getElementById('hideControlsBtn');
+        
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                controlPanel.classList.toggle('control-panel-visible');
+                controlPanel.classList.toggle('control-panel-hidden');
+            });
+        }
+        
+        if (hideBtn) {
+            hideBtn.addEventListener('click', () => {
+                controlPanel.classList.add('control-panel-hidden');
+                controlPanel.classList.remove('control-panel-visible');
+            });
+        }
+        
+        // Network button
+        const networkBtn = document.getElementById('networkBtn');
+        if (networkBtn) {
+            networkBtn.addEventListener('click', () => {
+                fetch('/start_network_discovery', { method: 'POST' })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.showNotification('Network discovery started', 'success');
+                    });
+            });
+        }
+        
+        // Dev button
+        const devBtn = document.getElementById('devBtn');
+        if (devBtn) {
+            devBtn.addEventListener('click', () => {
+                window.open('/monitor', '_blank');
+            });
+        }
+    }
+    
+    addWaterEffects() {
+        // Add water effect CSS if not already present
+        if (!document.querySelector('#waterEffects')) {
+            const style = document.createElement('style');
+            style.id = 'waterEffects';
+            style.textContent = `
+                body::before {
+                    content: '';
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    width: 200%;
+                    height: 60px;
+                    background: linear-gradient(90deg, rgba(0, 170, 255, 0.2), rgba(0, 140, 255, 0.4), rgba(0, 170, 255, 0.2));
+                    border-radius: 50% 50% 0 0;
+                    animation: wave 6s ease-in-out infinite;
+                    z-index: -1;
+                    pointer-events: none;
+                }
+                
+                body::after {
+                    content: '';
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    width: 200%;
+                    height: 40px;
+                    background: linear-gradient(90deg, rgba(0, 170, 255, 0.15), rgba(0, 200, 255, 0.3), rgba(0, 170, 255, 0.15));
+                    border-radius: 50% 50% 0 0;
+                    animation: wave 4s ease-in-out infinite reverse;
+                    z-index: -1;
+                    pointer-events: none;
+                }
+                
+                @keyframes wave {
+                    0%, 100% { transform: translateX(-50%) translateY(0px); }
+                    50% { transform: translateX(-50%) translateY(-15px); }
+                }
+                
+                .controls-compact {
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 20px;
+                }
+                
+                .btn-control-toggle {
+                    background: linear-gradient(135deg, #00aaff, #0088cc);
+                    color: white;
+                    border: none;
+                    border-radius: 25px;
+                    padding: 12px 24px;
+                    font-size: 16px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    box-shadow: 0 4px 15px rgba(0, 170, 255, 0.3);
+                }
+                
+                .btn-control-toggle:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 20px rgba(0, 170, 255, 0.4);
+                }
+                
+                .control-panel-hidden {
+                    display: none;
+                }
+                
+                .control-panel-visible {
+                    display: block;
+                    margin-top: 20px;
+                    padding: 20px;
+                    background: rgba(0, 170, 255, 0.1);
+                    border-radius: 15px;
+                    border: 1px solid rgba(0, 170, 255, 0.3);
+                    animation: slideIn 0.3s ease;
+                }
+                
+                .controls-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+                    gap: 10px;
+                }
+                
+                .btn-compact {
+                    background: rgba(255, 255, 255, 0.1);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    border-radius: 12px;
+                    padding: 8px;
+                    font-size: 11px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 4px;
+                    min-height: 50px;
+                }
+                
+                .btn-compact:hover {
+                    transform: translateY(-2px);
+                    background: rgba(255, 255, 255, 0.2);
+                }
+                
+                .btn-compact.btn-success { background: rgba(34, 197, 94, 0.3); border-color: rgba(34, 197, 94, 0.5); }
+                .btn-compact.btn-error { background: rgba(239, 68, 68, 0.3); border-color: rgba(239, 68, 68, 0.5); }
+                .btn-compact.btn-secondary { background: rgba(107, 114, 128, 0.3); border-color: rgba(107, 114, 128, 0.5); }
+                .btn-compact.btn-info { background: rgba(59, 130, 246, 0.3); border-color: rgba(59, 130, 246, 0.5); }
+                .btn-compact.btn-warning { background: rgba(245, 158, 11, 0.3); border-color: rgba(245, 158, 11, 0.5); }
+                .btn-compact.btn-muted { background: rgba(75, 85, 99, 0.3); border-color: rgba(75, 85, 99, 0.5); }
+                
+                @keyframes slideIn {
+                    from { opacity: 0; transform: translateY(-10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+}
+
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = AVAInterface;
 }
