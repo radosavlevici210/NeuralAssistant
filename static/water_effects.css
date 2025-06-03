@@ -1,7 +1,7 @@
 /* AVA CORE: Water Effects & Interactive Design */
 /* Copyright and Trademark: Ervin Radosavlevici */
 
-/* Water Ripple Container */
+/* Deep Ocean Water Container */
 .water-container {
     position: fixed;
     top: 0;
@@ -10,8 +10,24 @@
     height: 100vh;
     pointer-events: none;
     z-index: -1;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: 
+        radial-gradient(ellipse at top, #0077be 0%, #003459 40%, #001829 100%),
+        linear-gradient(180deg, 
+            rgba(0, 119, 190, 0.3) 0%, 
+            rgba(0, 52, 89, 0.6) 30%, 
+            rgba(0, 24, 41, 0.9) 60%, 
+            rgba(0, 12, 24, 1) 100%);
     overflow: hidden;
+    animation: ocean-depth 20s ease-in-out infinite alternate;
+}
+
+@keyframes ocean-depth {
+    0% {
+        filter: brightness(1.1) contrast(1.1);
+    }
+    100% {
+        filter: brightness(0.9) contrast(1.3);
+    }
 }
 
 .water-canvas {
@@ -22,33 +38,75 @@
     pointer-events: all;
 }
 
-/* Interactive Water Surface */
+/* Deep Ocean Water Surface */
 .water-surface {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at center, 
-        rgba(255, 255, 255, 0.1) 0%, 
-        rgba(255, 255, 255, 0.05) 30%, 
-        transparent 70%);
+    background: 
+        radial-gradient(ellipse 800px 400px at 30% 20%, rgba(0, 150, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse 600px 300px at 70% 60%, rgba(0, 200, 255, 0.1) 0%, transparent 50%),
+        linear-gradient(180deg, 
+            rgba(0, 150, 255, 0.1) 0%, 
+            rgba(0, 100, 200, 0.05) 30%, 
+            transparent 70%);
     pointer-events: all;
     cursor: crosshair;
+    animation: water-surface-flow 15s ease-in-out infinite;
 }
 
-/* Ripple Animation */
+@keyframes water-surface-flow {
+    0%, 100% {
+        background-position: 0% 0%, 100% 100%, 0% 0%;
+    }
+    50% {
+        background-position: 100% 50%, 0% 50%, 0% 0%;
+    }
+}
+
+/* Deep Water Ripple Animation */
 .ripple {
     position: absolute;
     border-radius: 50%;
     background: radial-gradient(circle, 
-        rgba(255, 255, 255, 0.6) 0%, 
-        rgba(255, 255, 255, 0.3) 30%, 
-        rgba(255, 255, 255, 0.1) 60%, 
+        rgba(0, 200, 255, 0.8) 0%, 
+        rgba(0, 150, 255, 0.4) 20%, 
+        rgba(0, 100, 200, 0.2) 40%, 
+        rgba(0, 50, 150, 0.1) 60%, 
         transparent 100%);
+    box-shadow: 
+        0 0 20px rgba(0, 150, 255, 0.3),
+        inset 0 0 20px rgba(255, 255, 255, 0.1);
     pointer-events: none;
     transform: translate(-50%, -50%);
-    animation: ripple-expand 1.5s ease-out forwards;
+    animation: deep-ripple-expand 2s ease-out forwards;
+}
+
+@keyframes deep-ripple-expand {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+        box-shadow: 
+            0 0 0 rgba(0, 150, 255, 0.8),
+            inset 0 0 0 rgba(255, 255, 255, 0.3);
+    }
+    50% {
+        opacity: 0.6;
+        box-shadow: 
+            0 0 40px rgba(0, 150, 255, 0.4),
+            inset 0 0 30px rgba(255, 255, 255, 0.2);
+    }
+    100% {
+        width: 400px;
+        height: 400px;
+        opacity: 0;
+        box-shadow: 
+            0 0 60px rgba(0, 150, 255, 0.1),
+            inset 0 0 40px rgba(255, 255, 255, 0.1);
+    }
 }
 
 @keyframes ripple-expand {
@@ -156,28 +214,32 @@
     }
 }
 
-/* Content with Glass Effect */
+/* Deep Ocean Glass Effect */
 .glass-content {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 80, 150, 0.15);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(0, 150, 255, 0.3);
     border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    box-shadow: 
+        0 8px 32px rgba(0, 50, 100, 0.3),
+        inset 0 1px 0 rgba(0, 200, 255, 0.2);
 }
 
-/* Enhanced Cards with Water Theme */
-.card.water-themed {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+/* Deep Water Cards */
+.card.water-themed, .card {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(0, 150, 255, 0.2);
     box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.5);
-    transition: all 0.3s ease;
+        0 8px 32px rgba(0, 50, 100, 0.2),
+        inset 0 1px 0 rgba(0, 200, 255, 0.15),
+        0 0 20px rgba(0, 150, 255, 0.1);
+    transition: all 0.4s ease;
     position: relative;
     overflow: hidden;
+    border-radius: 20px;
 }
 
 .card.water-themed::before {

@@ -31,25 +31,152 @@ class WaterEffects {
     }
     
     createWaterContainer() {
-        // Create water container
+        // Create deep ocean container
         const waterContainer = document.createElement('div');
         waterContainer.className = 'water-container';
         waterContainer.id = 'water-container';
         
-        // Create water surface
+        // Create multiple water layers for depth
+        const deepLayer = document.createElement('div');
+        deepLayer.style.cssText = `
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at center bottom, 
+                rgba(0, 100, 200, 0.3) 0%, 
+                rgba(0, 50, 150, 0.2) 50%, 
+                transparent 100%);
+            animation: deep-current 25s ease-in-out infinite;
+        `;
+        
+        // Create water surface with enhanced effects
         const waterSurface = document.createElement('div');
         waterSurface.className = 'water-surface';
         waterSurface.id = 'water-surface';
+        
+        // Create underwater currents
+        const currentLayer1 = document.createElement('div');
+        currentLayer1.style.cssText = `
+            position: absolute; top: 0; left: 0; width: 120%; height: 100%;
+            background: linear-gradient(45deg, 
+                transparent 0%, 
+                rgba(0, 150, 255, 0.1) 30%, 
+                transparent 60%);
+            animation: underwater-current-1 30s linear infinite;
+        `;
+        
+        const currentLayer2 = document.createElement('div');
+        currentLayer2.style.cssText = `
+            position: absolute; top: 0; left: 0; width: 120%; height: 100%;
+            background: linear-gradient(-45deg, 
+                transparent 0%, 
+                rgba(0, 200, 255, 0.08) 40%, 
+                transparent 80%);
+            animation: underwater-current-2 40s linear infinite reverse;
+        `;
         
         // Create wave background
         const waveBackground = document.createElement('div');
         waveBackground.className = 'wave-background';
         
+        // Add depth particles
+        this.createDepthParticles(waterContainer);
+        
+        waterContainer.appendChild(deepLayer);
+        waterContainer.appendChild(currentLayer1);
+        waterContainer.appendChild(currentLayer2);
         waterContainer.appendChild(waterSurface);
         waterContainer.appendChild(waveBackground);
         
         // Insert at the beginning of body
         document.body.insertBefore(waterContainer, document.body.firstChild);
+        
+        // Add dynamic styles
+        this.addDynamicStyles();
+    }
+    
+    addDynamicStyles() {
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes deep-current {
+                0%, 100% { transform: translateX(0) scale(1); opacity: 0.3; }
+                50% { transform: translateX(-20px) scale(1.1); opacity: 0.5; }
+            }
+            
+            @keyframes underwater-current-1 {
+                0% { transform: translateX(-20%); }
+                100% { transform: translateX(100%); }
+            }
+            
+            @keyframes underwater-current-2 {
+                0% { transform: translateX(100%); }
+                100% { transform: translateX(-20%); }
+            }
+            
+            @keyframes depth-particle {
+                0% { transform: translateY(100vh) scale(0); opacity: 0; }
+                10% { opacity: 0.6; transform: translateY(90vh) scale(1); }
+                90% { opacity: 0.6; }
+                100% { transform: translateY(-10vh) scale(0); opacity: 0; }
+            }
+            
+            @keyframes floating-debris {
+                0% { transform: translateY(100vh) translateX(0) rotate(0deg); opacity: 0; }
+                10% { opacity: 0.8; }
+                90% { opacity: 0.3; }
+                100% { transform: translateY(-10vh) translateX(50px) rotate(360deg); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    createDepthParticles(container) {
+        // Create various underwater particles
+        for (let i = 0; i < 20; i++) {
+            setTimeout(() => {
+                const particle = document.createElement('div');
+                particle.style.cssText = `
+                    position: absolute;
+                    width: ${2 + Math.random() * 4}px;
+                    height: ${2 + Math.random() * 4}px;
+                    background: rgba(0, 150, 255, ${0.3 + Math.random() * 0.4});
+                    border-radius: 50%;
+                    left: ${Math.random() * 100}%;
+                    animation: depth-particle ${15 + Math.random() * 10}s linear infinite;
+                    animation-delay: ${Math.random() * 15}s;
+                `;
+                container.appendChild(particle);
+                
+                // Remove after animation cycle
+                setTimeout(() => {
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                }, 25000);
+            }, i * 1000);
+        }
+        
+        // Create floating debris for realism
+        for (let i = 0; i < 5; i++) {
+            setTimeout(() => {
+                const debris = document.createElement('div');
+                debris.style.cssText = `
+                    position: absolute;
+                    width: ${8 + Math.random() * 6}px;
+                    height: ${3 + Math.random() * 3}px;
+                    background: rgba(0, 100, 150, 0.4);
+                    border-radius: 2px;
+                    left: ${Math.random() * 100}%;
+                    animation: floating-debris ${20 + Math.random() * 15}s linear infinite;
+                    animation-delay: ${Math.random() * 20}s;
+                `;
+                container.appendChild(debris);
+                
+                setTimeout(() => {
+                    if (debris.parentNode) {
+                        debris.parentNode.removeChild(debris);
+                    }
+                }, 35000);
+            }, i * 3000);
+        }
     }
     
     setupCanvas() {
