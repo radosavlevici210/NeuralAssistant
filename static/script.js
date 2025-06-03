@@ -646,7 +646,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.avaInterface = new AVAInterface();
 });
 
-// Export for use in other scripts
     initAutomationControls() {
         // Automation task execution
         const executeTaskBtn = document.getElementById('executeTaskBtn');
@@ -712,6 +711,46 @@ document.addEventListener('DOMContentLoaded', () => {
         if (devBtn) {
             devBtn.addEventListener('click', () => {
                 window.open('/monitor', '_blank');
+            });
+        }
+        
+        // Security button
+        const securityBtn = document.getElementById('securityBtn');
+        if (securityBtn) {
+            securityBtn.addEventListener('click', () => {
+                this.checkSecurityStatus();
+            });
+        }
+        
+        // Memory button
+        const memoryBtn = document.getElementById('memoryBtn');
+        if (memoryBtn) {
+            memoryBtn.addEventListener('click', () => {
+                this.checkMemoryStatus();
+            });
+        }
+        
+        // Upgrade button
+        const upgradeBtn = document.getElementById('upgradeBtn');
+        if (upgradeBtn) {
+            upgradeBtn.addEventListener('click', () => {
+                this.performSystemUpgrade();
+            });
+        }
+        
+        // Repair button
+        const repairBtn = document.getElementById('repairBtn');
+        if (repairBtn) {
+            repairBtn.addEventListener('click', () => {
+                this.performSystemRepair();
+            });
+        }
+        
+        // Work button
+        const workBtn = document.getElementById('workBtn');
+        if (workBtn) {
+            workBtn.addEventListener('click', () => {
+                this.handleExternalWork();
             });
         }
     }
@@ -838,8 +877,115 @@ document.addEventListener('DOMContentLoaded', () => {
             document.head.appendChild(style);
         }
     }
+    
+    checkSecurityStatus() {
+        fetch('/api/self-management/defense/status')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const status = data.security_status;
+                    this.showNotification(`Security Level: ${status.security_level || 'Normal'} - ${status.defensive_measures?.length || 0} measures active`, 'info');
+                } else {
+                    this.showNotification('Failed to check security status', 'error');
+                }
+            })
+            .catch(error => {
+                this.showNotification('Security check failed', 'error');
+            });
+    }
+    
+    checkMemoryStatus() {
+        fetch('/api/self-management/memory/history?limit=10')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const count = data.history?.length || 0;
+                    this.showNotification(`Persistent Memory: ${count} recent conversations stored across devices`, 'success');
+                } else {
+                    this.showNotification('Failed to check memory status', 'error');
+                }
+            })
+            .catch(error => {
+                this.showNotification('Memory check failed', 'error');
+            });
+    }
+    
+    performSystemUpgrade() {
+        if (confirm('Perform system self-upgrade? This will check for and install available updates.')) {
+            this.showNotification('Starting system upgrade...', 'info');
+            
+            fetch('/api/self-management/upgrade/perform', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const result = data.upgrade_result;
+                        const count = result.upgrades_performed?.length || 0;
+                        this.showNotification(`Upgrade complete: ${count} packages updated`, 'success');
+                    } else {
+                        this.showNotification('Upgrade failed', 'error');
+                    }
+                })
+                .catch(error => {
+                    this.showNotification('Upgrade request failed', 'error');
+                });
+        }
+    }
+    
+    performSystemRepair() {
+        this.showNotification('Running system health check and repair...', 'info');
+        
+        fetch('/api/self-management/repair/status')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const health = data.health_status;
+                    const issues = health.issues_detected?.length || 0;
+                    const repairs = health.repairs_attempted?.length || 0;
+                    
+                    if (issues > 0) {
+                        this.showNotification(`Health check: ${issues} issues detected, ${repairs} repairs attempted`, 'warning');
+                    } else {
+                        this.showNotification('System health: All systems operating normally', 'success');
+                    }
+                } else {
+                    this.showNotification('Health check failed', 'error');
+                }
+            })
+            .catch(error => {
+                this.showNotification('System repair check failed', 'error');
+            });
+    }
+    
+    handleExternalWork() {
+        const taskDescription = prompt('Enter external work task description:');
+        if (taskDescription && taskDescription.trim()) {
+            this.showNotification('Processing external work request...', 'info');
+            
+            fetch('/api/self-management/work/external', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    task_description: taskDescription.trim(),
+                    task_type: 'general'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const result = data.result;
+                    this.showNotification(`Work accepted: Task #${result.work_id} - ${result.status}`, 'success');
+                } else {
+                    this.showNotification('Failed to process work request', 'error');
+                }
+            })
+            .catch(error => {
+                this.showNotification('Work request failed', 'error');
+            });
+        }
+    }
 }
 
+// Export for use in other scripts
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = AVAInterface;
 }
