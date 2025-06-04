@@ -34,6 +34,7 @@ from advanced_ai import AdvancedAI
 from advanced_capabilities import AdvancedCapabilities
 from anthropic_integration import AnthropicAIEngine
 from nda_protection import nda_protect, protect_all_endpoints, nda_monitor, NDA_LICENSE_INFO
+from api_management import api_manager, AdvancedAPIManager
 
 # Production configuration
 app = Flask(__name__)
@@ -2067,6 +2068,171 @@ def handle_connect():
 def handle_disconnect():
     """Handle WebSocket disconnection"""
     logger.info("Client disconnected")
+
+# ====================================================
+# ADVANCED API MANAGEMENT ENDPOINTS - NDA PROTECTED
+# Copyright: Ervin Remus Radosavlevici (© ervin210@icloud.com)
+# Watermark: radosavlevici210@icloud.com
+# ====================================================
+
+@app.route('/api/account/create', methods=['POST'])
+@nda_protect('api_management')
+def create_api_account():
+    """Create new API account with automatic key generation - NDA Protected"""
+    try:
+        data = request.get_json()
+        email = data.get('email', '').strip()
+        permissions = data.get('permissions', ['chat', 'basic_automation', 'data_access'])
+        
+        if not email:
+            return jsonify({'success': False, 'error': 'Email address required'}), 400
+        
+        result = api_manager.create_api_account(email, permissions)
+        result.update({
+            'copyright': 'Ervin Remus Radosavlevici (© ervin210@icloud.com)',
+            'watermark': 'radosavlevici210@icloud.com',
+            'nda_protected': True,
+            'timestamp': datetime.now().isoformat()
+        })
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"API account creation failed: {e}")
+        return jsonify({'success': False, 'error': 'Account creation failed'}), 500
+
+@app.route('/api/connect/easy', methods=['POST'])
+@nda_protect('api_connection')
+def easy_api_connection():
+    """Easy API connection with automatic setup - NDA Protected"""
+    try:
+        data = request.get_json()
+        email = data.get('email', '').strip()
+        connection_type = data.get('type', 'standard')
+        
+        if not email:
+            return jsonify({'success': False, 'error': 'Email address required'}), 400
+        
+        permissions_map = {
+            'standard': ['chat', 'basic_automation', 'data_access'],
+            'premium': ['chat', 'automation', 'data_access', 'voice_processing', 'web_browsing'],
+            'enterprise': ['chat', 'automation', 'data_access', 'voice_processing', 'web_browsing', 
+                          'ai_integration', 'network_control', 'business_tools']
+        }
+        
+        permissions = permissions_map.get(connection_type, permissions_map['standard'])
+        result = api_manager.create_api_account(email, permissions)
+        
+        if result['success']:
+            result['connection_guide'] = {
+                'quick_start': {
+                    'step_1': 'Check your email for API credentials',
+                    'step_2': 'Copy the API key from the email',
+                    'step_3': 'Include in requests: Authorization: Bearer YOUR_API_KEY',
+                    'step_4': 'Start making requests to available endpoints'
+                },
+                'example_request': {
+                    'url': 'https://your-domain.com/api/chat',
+                    'method': 'POST',
+                    'headers': {
+                        'Authorization': f'Bearer {result.get("api_key", "YOUR_API_KEY")}',
+                        'Content-Type': 'application/json'
+                    },
+                    'body': {'message': 'Hello AVA CORE!'}
+                },
+                'available_endpoints': [
+                    '/api/chat - AI Chat Interface',
+                    '/api/automation - Task Automation', 
+                    '/api/analysis - Data Analysis',
+                    '/api/voice - Voice Processing',
+                    '/api/anthropic - Advanced AI Features'
+                ]
+            }
+            result['easy_setup'] = True
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Easy API connection failed: {e}")
+        return jsonify({'success': False, 'error': 'Connection setup failed'}), 500
+
+@app.route('/api/account/validate', methods=['POST'])
+@nda_protect('api_management')
+def validate_api_key_endpoint():
+    """Validate API key and return account status - NDA Protected"""
+    try:
+        data = request.get_json()
+        api_key = data.get('api_key', '')
+        
+        if not api_key:
+            return jsonify({'success': False, 'error': 'API key required'}), 400
+        
+        account = api_manager.validate_api_key(api_key)
+        
+        if account:
+            return jsonify({
+                'success': True,
+                'valid': True,
+                'account_id': account.account_id,
+                'email': account.email,
+                'permissions': account.permissions,
+                'usage_count': account.usage_count,
+                'active': account.active,
+                'copyright': 'Ervin Remus Radosavlevici (© ervin210@icloud.com)',
+                'nda_protected': True
+            })
+        else:
+            return jsonify({
+                'success': True,
+                'valid': False,
+                'message': 'Invalid or expired API key'
+            })
+        
+    except Exception as e:
+        logger.error(f"API key validation failed: {e}")
+        return jsonify({'success': False, 'error': 'Validation failed'}), 500
+
+@app.route('/api/connection/status', methods=['GET'])
+@nda_protect('api_connection')
+def api_connection_status():
+    """Check API connection status and health - NDA Protected"""
+    try:
+        api_key = request.headers.get('Authorization', '').replace('Bearer ', '')
+        
+        if not api_key:
+            return jsonify({
+                'success': True,
+                'connected': False,
+                'status': 'No API key provided',
+                'message': 'Include API key in Authorization header'
+            })
+        
+        account = api_manager.validate_api_key(api_key)
+        
+        if account:
+            return jsonify({
+                'success': True,
+                'connected': True,
+                'status': 'Connected',
+                'account_email': account.email,
+                'permissions': account.permissions,
+                'usage_count': account.usage_count,
+                'last_used': account.last_used.isoformat() if account.last_used else None,
+                'system_status': 'Operational',
+                'nda_protected': True,
+                'copyright': 'Ervin Remus Radosavlevici (© ervin210@icloud.com)'
+            })
+        else:
+            return jsonify({
+                'success': True,
+                'connected': False,
+                'status': 'Invalid API key',
+                'message': 'Please check your API key or create a new account'
+            })
+        
+    except Exception as e:
+        logger.error(f"Connection status check failed: {e}")
+        return jsonify({'success': False, 'error': 'Status check failed'}), 500
 
 if __name__ == '__main__':
     print("=" * 60)

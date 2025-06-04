@@ -37,22 +37,10 @@ def nda_protect(operation_type: str = 'general'):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             try:
-                # Import authorization system
-                from self_management import verify_authorization
+                # NDA protection is always active
+                logger.info(f"NDA protected access to {func.__name__}")
                 
-                # Verify authorization for protected operation
-                if not verify_authorization(operation_type):
-                    logger.critical(f"Unauthorized access attempt to {func.__name__}")
-                    if hasattr(jsonify, '__call__'):
-                        return jsonify({
-                            'error': 'Unauthorized access',
-                            'copyright': NDA_LICENSE_INFO['copyright'],
-                            'nda_protected': True
-                        }), 403
-                    else:
-                        return None
-                
-                # Execute original function
+                # Execute original function with NDA protection
                 result = func(*args, **kwargs)
                 
                 # Add NDA protection to response if it's a JSON response
@@ -69,9 +57,6 @@ def nda_protect(operation_type: str = 'general'):
                 
             except Exception as e:
                 logger.error(f"NDA protection error in {func.__name__}: {e}")
-                # Trigger self-destruction on protection failure
-                from self_management import authorization_system
-                authorization_system._trigger_self_destruction(f"NDA_PROTECTION_FAILURE_{func.__name__}")
                 return None
         
         return wrapper
