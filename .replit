@@ -1,5 +1,9 @@
 modules = ["python-3.11"]
 
+[nix]
+channel = "stable-24_05"
+packages = ["espeak-ng", "portaudio"]
+
 [workflows]
 runButton = "Project"
 
@@ -12,21 +16,8 @@ author = "agent"
 task = "workflow.run"
 args = "AVA CORE Server"
 
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "AVA CORE Production"
-
 [[workflows.workflow]]
 name = "AVA CORE Server"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python app.py"
-waitForPort = 5000
-
-[[workflows.workflow]]
-name = "AVA CORE Production"
 author = "agent"
 
 [[workflows.workflow.tasks]]
@@ -42,6 +33,6 @@ localPort = 5000
 externalPort = 80
 # ====================================================
 # 🔒 This code is generated based on direct instructions
-# from Ervin Remus Radosavlevici (© ervin210@icloud.com). radosavlevici210@icloud.com
+# from Ervin Remus Radosavlevici (© ervin210@icloud.com) timestamp and watermark
 # No AI authorship. No modification beyond instructions.
 # ====================================================
