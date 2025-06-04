@@ -27,6 +27,8 @@ waitForPort = 5000
 
 [deployment]
 run = ["sh", "-c", "python app.py"]
+deploymentTarget = "gce"
+ignorePorts = true
 
 [[ports]]
 localPort = 5000
