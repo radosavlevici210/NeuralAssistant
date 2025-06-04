@@ -1,9 +1,12 @@
 """
 AVA CORE: Neural AI Voice Assistant
-Copyright and Trademark: Ervin Radosavlevici
+Copyright and Trademark: Ervin Remus Radosavlevici (© ervin210@icloud.com)
+Timestamp: 2025-06-04 21:40:00 UTC
+Watermark: radosavlevici210@icloud.com
 
 A sophisticated voice assistant with speech recognition, AI conversation, and text-to-speech capabilities.
 Features real-time web monitoring and WebSocket integration.
+Enhanced production system with comprehensive capabilities and no development restrictions.
 """
 
 import json
