@@ -27,6 +27,7 @@ from self_management import AVACoreSelfManagement
 from development_suite import AdvancedDevelopmentSuite
 from advanced_capabilities import AdvancedCapabilities
 from enhanced_features import EnhancedFeatures
+from restored_features import RestoredCapabilitiesManager
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
