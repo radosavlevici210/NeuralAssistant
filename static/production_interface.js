@@ -364,6 +364,263 @@ class AVAProductionInterface {
         }
     }
 
+    async testConnection() {
+        const connectionType = document.getElementById('connection-type').value;
+        const connectionData = this.getConnectionData(connectionType);
+        
+        this.showLoading('Testing connection...');
+        
+        try {
+            const response = await fetch('/api/production/connect', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    service_type: connectionType,
+                    connection_data: connectionData
+                })
+            });
+            
+            const result = await response.json();
+            this.hideLoading();
+            
+            if (result.success) {
+                this.showNotification('Connection successful', 'success');
+                this.displayResults('Connection Test Results', result);
+            } else {
+                this.showNotification(result.error || 'Connection failed', 'error');
+            }
+        } catch (error) {
+            this.hideLoading();
+            this.showNotification('Network error: ' + error.message, 'error');
+        }
+    }
+
+    getConnectionData(connectionType) {
+        const fields = document.getElementById('connection-fields');
+        const data = {};
+        
+        fields.querySelectorAll('.control-input').forEach(input => {
+            data[input.id.replace('conn-', '')] = input.value;
+        });
+        
+        return data;
+    }
+
+    updateConnectionFields() {
+        const connectionType = document.getElementById('connection-type').value;
+        const fieldsContainer = document.getElementById('connection-fields');
+        
+        let fieldsHTML = '';
+        
+        switch (connectionType) {
+            case 'database':
+                fieldsHTML = `
+                    <div class="control-group">
+                        <div class="control-label">Database Type</div>
+                        <select class="control-input" id="conn-type">
+                            <option value="postgresql">PostgreSQL</option>
+                            <option value="mysql">MySQL</option>
+                            <option value="mongodb">MongoDB</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">Host</div>
+                        <input type="text" class="control-input" id="conn-host" placeholder="localhost">
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">Port</div>
+                        <input type="number" class="control-input" id="conn-port" placeholder="5432">
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">Database Name</div>
+                        <input type="text" class="control-input" id="conn-database" placeholder="myapp">
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">Username</div>
+                        <input type="text" class="control-input" id="conn-username" placeholder="admin">
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">Password</div>
+                        <input type="password" class="control-input" id="conn-password">
+                    </div>
+                `;
+                break;
+            case 'cloud_service':
+                fieldsHTML = `
+                    <div class="control-group">
+                        <div class="control-label">Provider</div>
+                        <select class="control-input" id="conn-provider">
+                            <option value="aws">Amazon AWS</option>
+                            <option value="gcp">Google Cloud</option>
+                            <option value="azure">Microsoft Azure</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">Access Key</div>
+                        <input type="password" class="control-input" id="conn-access_key">
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">Secret Key</div>
+                        <input type="password" class="control-input" id="conn-secret_key">
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">Region</div>
+                        <input type="text" class="control-input" id="conn-region" placeholder="us-east-1">
+                    </div>
+                `;
+                break;
+            case 'api_service':
+                fieldsHTML = `
+                    <div class="control-group">
+                        <div class="control-label">API URL</div>
+                        <input type="url" class="control-input" id="conn-url" placeholder="https://api.example.com">
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">API Key</div>
+                        <input type="password" class="control-input" id="conn-api_key">
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">Headers (JSON)</div>
+                        <textarea class="control-input" id="conn-headers" placeholder='{"Content-Type": "application/json"}'></textarea>
+                    </div>
+                `;
+                break;
+            case 'webhook':
+                fieldsHTML = `
+                    <div class="control-group">
+                        <div class="control-label">Webhook URL</div>
+                        <input type="url" class="control-input" id="conn-url" placeholder="https://yourapp.com/webhook">
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">Secret Token</div>
+                        <input type="password" class="control-input" id="conn-secret">
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">Events</div>
+                        <input type="text" class="control-input" id="conn-events" placeholder="push,pull_request">
+                    </div>
+                `;
+                break;
+        }
+        
+        fieldsContainer.innerHTML = fieldsHTML;
+    }
+
+    async refreshMetrics() {
+        this.showLoading('Refreshing metrics...');
+        
+        try {
+            const response = await fetch('/api/production/monitor');
+            const result = await response.json();
+            this.hideLoading();
+            
+            if (result.success) {
+                const data = result.data;
+                document.getElementById('system-health').textContent = `${100 - data.system_health.cpu_percent}%`;
+                document.getElementById('active-connections').textContent = data.active_connections.total_connections;
+                document.getElementById('response-time').textContent = `${data.performance_metrics.response_time_avg * 1000}ms`;
+                document.getElementById('uptime').textContent = `${data.uptime.uptime_hours.toFixed(1)}h`;
+            }
+        } catch (error) {
+            this.hideLoading();
+            this.showNotification('Failed to refresh metrics', 'error');
+        }
+    }
+
+    async processData() {
+        const inputData = document.getElementById('data-input').value;
+        const operation = document.getElementById('data-operation').value;
+        const query = document.getElementById('data-query').value;
+        
+        if (!inputData.trim()) {
+            this.showNotification('Please enter data to process', 'warning');
+            return;
+        }
+
+        let parsedData;
+        try {
+            parsedData = JSON.parse(inputData);
+        } catch (e) {
+            this.showNotification('Invalid JSON format', 'error');
+            return;
+        }
+
+        this.showLoading('Processing data...');
+        
+        try {
+            const response = await fetch('/api/advanced/data/process', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    data: parsedData,
+                    operation: operation,
+                    query: query
+                })
+            });
+            
+            const result = await response.json();
+            this.hideLoading();
+            
+            if (result.success) {
+                this.displayResults('Data Processing Results', result);
+            } else {
+                this.showNotification(result.error || 'Data processing failed', 'error');
+            }
+        } catch (error) {
+            this.hideLoading();
+            this.showNotification('Network error: ' + error.message, 'error');
+        }
+    }
+
+    async createWorkflow() {
+        const name = document.getElementById('workflow-name').value;
+        const trigger = document.getElementById('workflow-trigger').value;
+        const actionsText = document.getElementById('workflow-actions').value;
+        
+        if (!name.trim()) {
+            this.showNotification('Please enter a workflow name', 'warning');
+            return;
+        }
+
+        let actions;
+        try {
+            actions = JSON.parse(actionsText || '[]');
+        } catch (e) {
+            this.showNotification('Invalid JSON format for actions', 'error');
+            return;
+        }
+
+        this.showLoading('Creating workflow...');
+        
+        try {
+            const response = await fetch('/api/enhanced/productivity', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'schedule_automation',
+                    name: name,
+                    cron_expression: '0 9 * * *',
+                    action_type: trigger,
+                    action_data: { actions: actions }
+                })
+            });
+            
+            const result = await response.json();
+            this.hideLoading();
+            
+            if (result.success) {
+                this.displayResults('Workflow Created', result);
+                document.getElementById('workflow-name').value = '';
+                document.getElementById('workflow-actions').value = '';
+            } else {
+                this.showNotification(result.error || 'Workflow creation failed', 'error');
+            }
+        } catch (error) {
+            this.hideLoading();
+            this.showNotification('Network error: ' + error.message, 'error');
+        }
+    }
+
     toggleChat() {
         const chatInterface = document.getElementById('chatInterface');
         if (chatInterface.style.display === 'none' || !chatInterface.style.display) {
@@ -664,6 +921,38 @@ function trainModel() {
 
 function makePrediction() {
     window.avaInterface.makePrediction();
+}
+
+function testConnection() {
+    window.avaInterface.testConnection();
+}
+
+function updateConnectionFields() {
+    window.avaInterface.updateConnectionFields();
+}
+
+function refreshMetrics() {
+    window.avaInterface.refreshMetrics();
+}
+
+function processData() {
+    window.avaInterface.processData();
+}
+
+function testConnection() {
+    window.avaInterface.testConnection();
+}
+
+function updateConnectionFields() {
+    window.avaInterface.updateConnectionFields();
+}
+
+function refreshMetrics() {
+    window.avaInterface.refreshMetrics();
+}
+
+function processData() {
+    window.avaInterface.processData();
 }
 
 // Initialize interface when DOM is loaded

@@ -396,6 +396,61 @@
             50% { transform: translateY(-20px) scale(1.1); }
         }
         
+        .monitoring-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .metric-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .metric-title {
+            font-size: 0.8rem;
+            color: #a0a0a0;
+            margin-bottom: 8px;
+        }
+        
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .connection-fields {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .feature-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            margin: 20px 0;
+        }
+        
+        .success-indicator {
+            color: #4CAF50;
+            font-weight: 600;
+        }
+        
+        .error-indicator {
+            color: #F44336;
+            font-weight: 600;
+        }
+        
+        .warning-indicator {
+            color: #FF9800;
+            font-weight: 600;
+        }
+        
         @media (max-width: 768px) {
             .feature-grid {
                 grid-template-columns: 1fr;
@@ -414,6 +469,10 @@
                 right: 10px;
                 left: 10px;
                 max-width: none;
+            }
+            
+            .monitoring-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
