@@ -1138,6 +1138,83 @@ def get_uptime_stats():
         'uptime_days': uptime_seconds / 86400
     }
 
+# Restored Development Features API Endpoints
+@app.route('/api/restored/capabilities', methods=['GET'])
+def get_restored_capabilities():
+    """Get all restored development capabilities"""
+    try:
+        restored_capabilities = RestoredCapabilitiesManager()
+        return jsonify(restored_capabilities.get_restored_capabilities())
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/api/restored/create-project', methods=['POST'])
+def create_restored_project():
+    """Create a full project with restored capabilities"""
+    try:
+        data = request.get_json()
+        restored_capabilities = RestoredCapabilitiesManager()
+        result = restored_capabilities.development_suite.create_full_project(
+            data.get('name', ''),
+            data.get('language', ''),
+            data.get('framework'),
+            data.get('template')
+        )
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/api/restored/execute-code', methods=['POST'])
+def execute_restored_code():
+    """Execute code with advanced development environment"""
+    try:
+        data = request.get_json()
+        restored_capabilities = RestoredCapabilitiesManager()
+        result = restored_capabilities.development_suite.execute_advanced_code(
+            data.get('project_id', ''),
+            data.get('language', ''),
+            data.get('code', ''),
+            data.get('context', {})
+        )
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/api/restored/deploy', methods=['POST'])
+def deploy_restored_project():
+    """Deploy project to production platforms"""
+    try:
+        data = request.get_json()
+        restored_capabilities = RestoredCapabilitiesManager()
+        result = restored_capabilities.development_suite.deploy_to_production(
+            data.get('project_id', ''),
+            data.get('platform', ''),
+            data.get('config', {})
+        )
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/api/restored/projects', methods=['GET'])
+def get_restored_projects():
+    """Get all projects with restored capabilities"""
+    try:
+        restored_capabilities = RestoredCapabilitiesManager()
+        result = restored_capabilities.development_suite.get_all_projects()
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/api/restored/analytics/<project_id>', methods=['GET'])
+def get_restored_analytics(project_id):
+    """Get project analytics with restored capabilities"""
+    try:
+        restored_capabilities = RestoredCapabilitiesManager()
+        result = restored_capabilities.development_suite.get_project_analytics(project_id)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
 @socketio.on('connect')
 def handle_connect():
     """Handle client connection"""
