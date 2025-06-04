@@ -27,3 +27,12 @@ waitForPort = 5000
 
 [deployment]
 run = ["sh", "-c", "python app.py"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+# ====================================================
+# 🔒 This code is generated based on direct instructions
+# from Ervin Remus Radosavlevici (© ervin210@icloud.com) timestamp and watermark
+# No AI authorship. No modification beyond instructions.
+# ====================================================

@@ -92,23 +92,35 @@ class AVAProductionInterface {
     toggleFeature(featureId) {
         const content = document.getElementById(`${featureId}-content`);
         const card = document.querySelector(`[data-feature="${featureId}"]`);
+        
+        if (!content || !card) {
+            console.warn(`Feature elements not found for: ${featureId}`);
+            return;
+        }
+        
         const expandBtn = card.querySelector('.expand-btn i');
         
         if (this.expandedFeatures.has(featureId)) {
             // Collapse
             content.classList.remove('open');
             card.classList.remove('expanded');
-            expandBtn.style.transform = 'rotate(0deg)';
+            if (expandBtn) {
+                expandBtn.style.transform = 'rotate(0deg)';
+            }
             this.expandedFeatures.delete(featureId);
         } else {
             // Expand
             content.classList.add('open');
             card.classList.add('expanded');
-            expandBtn.style.transform = 'rotate(180deg)';
+            if (expandBtn) {
+                expandBtn.style.transform = 'rotate(180deg)';
+            }
             this.expandedFeatures.add(featureId);
             
             // Scroll to card
-            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => {
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
         }
     }
 
