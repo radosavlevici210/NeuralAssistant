@@ -6,7 +6,7 @@ runButton = "Project"
 [[workflows.workflow]]
 name = "Project"
 mode = "parallel"
-author = "agent"
+author = "radosavlevici210@icloud.com""
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
@@ -18,7 +18,7 @@ args = "AVA CORE Production"
 
 [[workflows.workflow]]
 name = "AVA CORE Server"
-author = "agent"
+author = "radosavlevici210@icloud.com"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
@@ -27,7 +27,7 @@ waitForPort = 5000
 
 [[workflows.workflow]]
 name = "AVA CORE Production"
-author = "agent"
+author = "radosavlevici210@icloud.com""
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
@@ -36,12 +36,12 @@ waitForPort = 5000
 
 [deployment]
 run = ["sh", "-c", "python app.py"]
-
+author = "radosavlevici210@icloud.com"
 [[ports]]
 localPort = 5000
 externalPort = 80
 # ====================================================
 # 🔒 This code is generated based on direct instructions
-# from Ervin Remus Radosavlevici (© ervin210@icloud.com). radosavlevici210@icloud.com
+# from Ervin Remus Radosavlevici (© ervin210@icloud.com). radosavlevici210@icloud.com and timestamp and watermark
 # No AI authorship. No modification beyond instructions.
 # ====================================================
