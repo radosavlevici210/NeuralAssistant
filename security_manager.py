@@ -1,334 +1,428 @@
 """
-AVA CORE Security Manager - Copyright Protection System
-Copyright and Trademark: Ervin Remus Radosavlevici (© ervin210@icloud.com)
-Timestamp: 2025-06-04 22:16:00 UTC
-Watermark: radosavlevici210@icloud.com
+AVA CORE Security Manager
+Copyright and Trademark: Ervin Radosavlevici
 
-NDA LICENSE AGREEMENT
-This software and its associated intellectual property are protected under
-Non-Disclosure Agreement and proprietary license terms. Unauthorized use,
-reproduction, or distribution is strictly prohibited.
-
-IMMUTABLE COPYRIGHT PROTECTION SYSTEM
-Any attempt to modify copyright information will trigger immediate system shutdown.
+Enterprise-grade security and authentication system
 """
 
 import os
-import sys
+import jwt
 import hashlib
+import secrets
 import logging
-import threading
-import time
-from datetime import datetime
-from typing import Dict, Any, List
+from datetime import datetime, timedelta
+from cryptography.fernet import Fernet
+import bcrypt
 
 logger = logging.getLogger(__name__)
 
-class CopyrightProtectionSystem:
-    """Immutable copyright protection and tamper detection system"""
+class SecurityManager:
+    """Handles authentication, encryption, and security policies"""
     
     def __init__(self):
-        self.protected_files = [
-            'production_ava.py',
-            'anthropic_integration.py',
-            'advanced_ai.py',
-            'advanced_capabilities.py',
-            'autonomous_thinking.py',
-            'voice_assistant.py',
-            'network_discovery.py',
-            'security_manager.py'
-        ]
-        self.original_owner = "Ervin Remus Radosavlevici (© ervin210@icloud.com)"
-        self.watermark = "radosavlevici210@icloud.com"
-        self.copyright_hashes = {}
-        self.monitoring_active = False
-        self.shutdown_triggered = False
-        
-        # Initialize protection system
-        self._initialize_protection()
-        self._start_monitoring()
+        self.jwt_secret = os.environ.get('JWT_SECRET', self._generate_jwt_secret())
+        self.encryption_key = self._get_or_create_encryption_key()
+        self.fernet = Fernet(self.encryption_key)
+        self.session_timeout = 3600  # 1 hour
+        self.active_sessions = {}
+        self.security_policies = self._load_security_policies()
+        logger.info("Security Manager initialized")
     
-    def _initialize_protection(self):
-        """Initialize copyright protection hashes"""
+    def _generate_jwt_secret(self):
+        """Generate secure JWT secret"""
+        return secrets.token_urlsafe(64)
+    
+    def _get_or_create_encryption_key(self):
+        """Get or create encryption key"""
+        key_file = 'ava_encryption.key'
         try:
-            for file_path in self.protected_files:
-                if os.path.exists(file_path):
-                    with open(file_path, 'r', encoding='utf-8') as f:
-                        content = f.read()
-                    
-                    # Store hash of copyright section
-                    copyright_section = self._extract_copyright_section(content)
-                    if copyright_section:
-                        file_hash = hashlib.sha256(copyright_section.encode()).hexdigest()
-                        self.copyright_hashes[file_path] = file_hash
-                        logger.info(f"Copyright protection initialized for {file_path}")
-                    
-            logger.info("Copyright protection system activated")
-            
+            if os.path.exists(key_file):
+                with open(key_file, 'rb') as f:
+                    return f.read()
+            else:
+                key = Fernet.generate_key()
+                with open(key_file, 'wb') as f:
+                    f.write(key)
+                os.chmod(key_file, 0o600)  # Restrict permissions
+                return key
         except Exception as e:
-            logger.error(f"Copyright protection initialization failed: {e}")
+            logger.error(f"Encryption key error: {str(e)}")
+            return Fernet.generate_key()  # Fallback to memory-only key
     
-    def _extract_copyright_section(self, content: str) -> str:
-        """Extract copyright section from file content"""
-        lines = content.split('\n')
-        copyright_section = []
-        in_copyright = False
-        
-        for line in lines:
-            if 'Copyright and Trademark: Ervin Remus Radosavlevici' in line:
-                in_copyright = True
-            
-            if in_copyright:
-                copyright_section.append(line)
-                
-                # End of copyright section
-                if line.strip() == '"""' and len(copyright_section) > 5:
-                    break
-        
-        return '\n'.join(copyright_section)
-    
-    def _start_monitoring(self):
-        """Start continuous copyright monitoring"""
-        if not self.monitoring_active:
-            self.monitoring_active = True
-            monitor_thread = threading.Thread(target=self._monitor_files, daemon=True)
-            monitor_thread.start()
-            logger.info("Copyright monitoring thread started")
-    
-    def _monitor_files(self):
-        """Continuously monitor protected files for copyright tampering"""
-        while self.monitoring_active and not self.shutdown_triggered:
-            try:
-                for file_path in self.protected_files:
-                    if os.path.exists(file_path):
-                        with open(file_path, 'r', encoding='utf-8') as f:
-                            content = f.read()
-                        
-                        # Check copyright integrity
-                        if not self._verify_copyright_integrity(file_path, content):
-                            logger.critical(f"COPYRIGHT VIOLATION DETECTED in {file_path}")
-                            self._trigger_protection_response()
-                            return
-                
-                # Check every 5 seconds
-                time.sleep(5)
-                
-            except Exception as e:
-                logger.error(f"Copyright monitoring error: {e}")
-                time.sleep(10)
-    
-    def _verify_copyright_integrity(self, file_path: str, content: str) -> bool:
-        """Verify copyright information has not been tampered with"""
-        try:
-            # Check for required copyright elements
-            required_elements = [
-                "Copyright and Trademark: Ervin Remus Radosavlevici (© ervin210@icloud.com)",
-                "Watermark: radosavlevici210@icloud.com",
-                "NDA LICENSE AGREEMENT",
-                "Non-Disclosure Agreement and proprietary license terms",
-                "Unauthorized use, reproduction, or distribution is strictly prohibited"
-            ]
-            
-            for element in required_elements:
-                if element not in content:
-                    logger.critical(f"Missing copyright element: {element}")
-                    return False
-            
-            # Verify copyright section hash if available
-            if file_path in self.copyright_hashes:
-                copyright_section = self._extract_copyright_section(content)
-                current_hash = hashlib.sha256(copyright_section.encode()).hexdigest()
-                
-                if current_hash != self.copyright_hashes[file_path]:
-                    logger.critical(f"Copyright hash mismatch in {file_path}")
-                    return False
-            
-            return True
-            
-        except Exception as e:
-            logger.error(f"Copyright verification error: {e}")
-            return False
-    
-    def _trigger_protection_response(self):
-        """Trigger immediate system protection response"""
-        if self.shutdown_triggered:
-            return
-            
-        self.shutdown_triggered = True
-        
-        logger.critical("=" * 80)
-        logger.critical("COPYRIGHT VIOLATION DETECTED")
-        logger.critical("UNAUTHORIZED MODIFICATION OF PROTECTED CONTENT")
-        logger.critical("INITIATING IMMEDIATE SYSTEM PROTECTION")
-        logger.critical("=" * 80)
-        
-        # Stop all monitoring
-        self.monitoring_active = False
-        
-        # Execute protection protocol
-        self._execute_protection_protocol()
-    
-    def _execute_protection_protocol(self):
-        """Execute comprehensive protection protocol"""
-        try:
-            logger.critical("EXECUTING PROTECTION PROTOCOL")
-            
-            # Step 1: Clear sensitive data
-            self._clear_sensitive_data()
-            
-            # Step 2: Disable system functions
-            self._disable_system_functions()
-            
-            # Step 3: Log violation
-            self._log_violation()
-            
-            # Step 4: Emergency shutdown
-            self._emergency_shutdown()
-            
-        except Exception as e:
-            logger.critical(f"Protection protocol execution error: {e}")
-            # Force immediate exit
-            os._exit(1)
-    
-    def _clear_sensitive_data(self):
-        """Clear sensitive data and configurations"""
-        try:
-            # Clear database contents
-            sensitive_files = [
-                'autonomous_memory.db',
-                'production_conversations.db',
-                'productivity.db',
-                'dev_secrets.db'
-            ]
-            
-            for file_path in sensitive_files:
-                if os.path.exists(file_path):
-                    try:
-                        os.remove(file_path)
-                        logger.critical(f"Cleared sensitive file: {file_path}")
-                    except:
-                        pass
-            
-            # Clear environment variables
-            sensitive_vars = ['OPENAI_API_KEY', 'ANTHROPIC_API_KEY']
-            for var in sensitive_vars:
-                if var in os.environ:
-                    del os.environ[var]
-            
-            logger.critical("Sensitive data cleared")
-            
-        except Exception as e:
-            logger.critical(f"Data clearing error: {e}")
-    
-    def _disable_system_functions(self):
-        """Disable core system functions"""
-        try:
-            # Create disable flag file
-            with open('.system_disabled', 'w') as f:
-                f.write(f"SYSTEM DISABLED DUE TO COPYRIGHT VIOLATION\n")
-                f.write(f"Timestamp: {datetime.now().isoformat()}\n")
-                f.write(f"Original Owner: {self.original_owner}\n")
-            
-            logger.critical("System functions disabled")
-            
-        except Exception as e:
-            logger.critical(f"Function disable error: {e}")
-    
-    def _log_violation(self):
-        """Log copyright violation details"""
-        try:
-            violation_log = f"""
-COPYRIGHT VIOLATION INCIDENT REPORT
-====================================
-Timestamp: {datetime.now().isoformat()}
-Original Copyright Owner: {self.original_owner}
-Watermark: {self.watermark}
-Violation Type: Unauthorized modification of protected content
-System Status: PROTECTION PROTOCOL ACTIVATED
-Action Taken: IMMEDIATE SYSTEM SHUTDOWN
-
-This system is protected under NDA LICENSE AGREEMENT.
-Unauthorized use, reproduction, or distribution is strictly prohibited.
-All modifications to copyright information trigger automatic protection.
-
-Contact: {self.original_owner}
-====================================
-"""
-            
-            with open('COPYRIGHT_VIOLATION_LOG.txt', 'w') as f:
-                f.write(violation_log)
-            
-            logger.critical("Violation logged")
-            
-        except Exception as e:
-            logger.critical(f"Violation logging error: {e}")
-    
-    def _emergency_shutdown(self):
-        """Execute emergency system shutdown"""
-        try:
-            logger.critical("INITIATING EMERGENCY SHUTDOWN")
-            logger.critical("SYSTEM TERMINATION IN PROGRESS")
-            
-            # Force immediate termination
-            time.sleep(1)
-            os._exit(1)
-            
-        except Exception as e:
-            logger.critical(f"Emergency shutdown error: {e}")
-            # Absolute force exit
-            sys.exit(1)
-    
-    def verify_system_integrity(self) -> bool:
-        """Public method to verify system integrity"""
-        if self.shutdown_triggered:
-            return False
-        
-        try:
-            for file_path in self.protected_files:
-                if os.path.exists(file_path):
-                    with open(file_path, 'r', encoding='utf-8') as f:
-                        content = f.read()
-                    
-                    if not self._verify_copyright_integrity(file_path, content):
-                        return False
-            
-            return True
-            
-        except Exception as e:
-            logger.error(f"Integrity verification error: {e}")
-            return False
-    
-    def get_protection_status(self) -> Dict[str, Any]:
-        """Get current protection system status"""
+    def _load_security_policies(self):
+        """Load security policies configuration"""
         return {
-            'monitoring_active': self.monitoring_active,
-            'shutdown_triggered': self.shutdown_triggered,
-            'protected_files_count': len(self.protected_files),
-            'copyright_hashes_count': len(self.copyright_hashes),
-            'original_owner': self.original_owner,
-            'watermark': self.watermark,
-            'system_integrity': self.verify_system_integrity()
+            'password_policy': {
+                'min_length': 12,
+                'require_uppercase': True,
+                'require_lowercase': True,
+                'require_numbers': True,
+                'require_symbols': True,
+                'max_age_days': 90
+            },
+            'access_control': {
+                'max_failed_attempts': 5,
+                'lockout_duration': 1800,  # 30 minutes
+                'require_2fa': True,
+                'session_timeout': 3600
+            },
+            'api_security': {
+                'rate_limit_per_minute': 100,
+                'require_api_key': True,
+                'encrypt_api_responses': True,
+                'audit_all_requests': True
+            }
         }
-
-# Global protection instance
-copyright_protection = CopyrightProtectionSystem()
-
-def verify_copyright_protection():
-    """Verify copyright protection is active"""
-    return copyright_protection.verify_system_integrity()
-
-def get_protection_status():
-    """Get protection system status"""
-    return copyright_protection.get_protection_status()
-
-# ====================================================
-# NDA LICENSE AGREEMENT
-# This software and its associated intellectual property are protected under
-# Non-Disclosure Agreement and proprietary license terms. Unauthorized use,
-# reproduction, or distribution is strictly prohibited.
-# 
-# Copyright and Trademark: Ervin Remus Radosavlevici (© ervin210@icloud.com)
-# Timestamp: 2025-06-04 22:16:00 UTC
-# Watermark: radosavlevici210@icloud.com
-# IMMUTABLE COPYRIGHT PROTECTION - NO MODIFICATIONS PERMITTED
-# ====================================================
+    
+    def authenticate_user(self, username, password, additional_factors=None):
+        """Authenticate user with credentials and optional 2FA"""
+        try:
+            # Check if user is locked out
+            if self._is_user_locked_out(username):
+                return {
+                    "success": False,
+                    "message": "Account temporarily locked due to failed attempts",
+                    "lockout_expires": self._get_lockout_expiry(username)
+                }
+            
+            # Verify password
+            if not self._verify_password(username, password):
+                self._record_failed_attempt(username)
+                return {"success": False, "message": "Invalid credentials"}
+            
+            # Check 2FA if required
+            if self.security_policies['access_control']['require_2fa']:
+                if not additional_factors or not self._verify_2fa(username, additional_factors):
+                    return {"success": False, "message": "Two-factor authentication required"}
+            
+            # Generate session token
+            session_token = self._create_session(username)
+            self._clear_failed_attempts(username)
+            
+            return {
+                "success": True,
+                "message": "Authentication successful",
+                "session_token": session_token,
+                "expires": datetime.now() + timedelta(seconds=self.session_timeout)
+            }
+            
+        except Exception as e:
+            logger.error(f"Authentication error: {str(e)}")
+            return {"success": False, "message": "Authentication failed"}
+    
+    def _verify_password(self, username, password):
+        """Verify user password against stored hash"""
+        try:
+            # This would typically check against a secure database
+            # For demonstration, using environment variable
+            stored_hash = os.environ.get(f'USER_HASH_{username.upper()}')
+            if not stored_hash:
+                return False
+            
+            return bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8'))
+        except Exception:
+            return False
+    
+    def _verify_2fa(self, username, factors):
+        """Verify two-factor authentication"""
+        try:
+            # Support multiple 2FA methods
+            if 'totp_code' in factors:
+                return self._verify_totp(username, factors['totp_code'])
+            elif 'sms_code' in factors:
+                return self._verify_sms_code(username, factors['sms_code'])
+            elif 'backup_code' in factors:
+                return self._verify_backup_code(username, factors['backup_code'])
+            return False
+        except Exception:
+            return False
+    
+    def _verify_totp(self, username, totp_code):
+        """Verify TOTP (Time-based One-Time Password)"""
+        try:
+            import pyotp
+            secret = os.environ.get(f'TOTP_SECRET_{username.upper()}')
+            if not secret:
+                return False
+            
+            totp = pyotp.TOTP(secret)
+            return totp.verify(totp_code, valid_window=1)
+        except Exception:
+            return False
+    
+    def _verify_sms_code(self, username, sms_code):
+        """Verify SMS verification code"""
+        # This would integrate with SMS service
+        stored_code = os.environ.get(f'SMS_CODE_{username.upper()}')
+        return stored_code == sms_code if stored_code else False
+    
+    def _verify_backup_code(self, username, backup_code):
+        """Verify backup recovery code"""
+        # This would check against stored backup codes
+        backup_codes = os.environ.get(f'BACKUP_CODES_{username.upper()}', '').split(',')
+        return backup_code in backup_codes
+    
+    def _create_session(self, username):
+        """Create authenticated session"""
+        try:
+            session_id = secrets.token_urlsafe(32)
+            expires_at = datetime.now() + timedelta(seconds=self.session_timeout)
+            
+            payload = {
+                'session_id': session_id,
+                'username': username,
+                'created': datetime.now().isoformat(),
+                'expires': expires_at.isoformat(),
+                'permissions': self._get_user_permissions(username)
+            }
+            
+            token = jwt.encode(payload, self.jwt_secret, algorithm='HS256')
+            
+            self.active_sessions[session_id] = {
+                'username': username,
+                'created': datetime.now(),
+                'expires': expires_at,
+                'last_activity': datetime.now()
+            }
+            
+            return token
+            
+        except Exception as e:
+            logger.error(f"Session creation error: {str(e)}")
+            return None
+    
+    def validate_session(self, token):
+        """Validate session token"""
+        try:
+            payload = jwt.decode(token, self.jwt_secret, algorithms=['HS256'])
+            session_id = payload.get('session_id')
+            
+            if session_id not in self.active_sessions:
+                return {"valid": False, "reason": "Session not found"}
+            
+            session = self.active_sessions[session_id]
+            
+            if datetime.now() > session['expires']:
+                del self.active_sessions[session_id]
+                return {"valid": False, "reason": "Session expired"}
+            
+            # Update last activity
+            session['last_activity'] = datetime.now()
+            
+            return {
+                "valid": True,
+                "username": session['username'],
+                "permissions": payload.get('permissions', []),
+                "session_id": session_id
+            }
+            
+        except jwt.ExpiredSignatureError:
+            return {"valid": False, "reason": "Token expired"}
+        except jwt.InvalidTokenError:
+            return {"valid": False, "reason": "Invalid token"}
+        except Exception as e:
+            logger.error(f"Session validation error: {str(e)}")
+            return {"valid": False, "reason": "Validation failed"}
+    
+    def encrypt_data(self, data):
+        """Encrypt sensitive data"""
+        try:
+            if isinstance(data, str):
+                data = data.encode('utf-8')
+            elif isinstance(data, dict):
+                import json
+                data = json.dumps(data).encode('utf-8')
+            
+            encrypted = self.fernet.encrypt(data)
+            return encrypted.decode('utf-8')
+        except Exception as e:
+            logger.error(f"Encryption error: {str(e)}")
+            return None
+    
+    def decrypt_data(self, encrypted_data):
+        """Decrypt sensitive data"""
+        try:
+            if isinstance(encrypted_data, str):
+                encrypted_data = encrypted_data.encode('utf-8')
+            
+            decrypted = self.fernet.decrypt(encrypted_data)
+            return decrypted.decode('utf-8')
+        except Exception as e:
+            logger.error(f"Decryption error: {str(e)}")
+            return None
+    
+    def generate_api_key(self, username, permissions=None):
+        """Generate API key for programmatic access"""
+        try:
+            api_key = f"ava_{secrets.token_urlsafe(32)}"
+            key_hash = hashlib.sha256(api_key.encode()).hexdigest()
+            
+            key_data = {
+                'username': username,
+                'permissions': permissions or [],
+                'created': datetime.now().isoformat(),
+                'hash': key_hash,
+                'active': True
+            }
+            
+            # Store API key data (encrypted)
+            encrypted_data = self.encrypt_data(key_data)
+            api_key_file = f"api_key_{key_hash[:16]}.enc"
+            
+            with open(api_key_file, 'w') as f:
+                f.write(encrypted_data)
+            
+            return {
+                "success": True,
+                "api_key": api_key,
+                "key_id": key_hash[:16],
+                "permissions": permissions or []
+            }
+            
+        except Exception as e:
+            logger.error(f"API key generation error: {str(e)}")
+            return {"success": False, "message": "API key generation failed"}
+    
+    def validate_api_key(self, api_key):
+        """Validate API key"""
+        try:
+            key_hash = hashlib.sha256(api_key.encode()).hexdigest()
+            key_id = key_hash[:16]
+            api_key_file = f"api_key_{key_id}.enc"
+            
+            if not os.path.exists(api_key_file):
+                return {"valid": False, "reason": "API key not found"}
+            
+            with open(api_key_file, 'r') as f:
+                encrypted_data = f.read()
+            
+            key_data = self.decrypt_data(encrypted_data)
+            if not key_data:
+                return {"valid": False, "reason": "Invalid key data"}
+            
+            import json
+            key_info = json.loads(key_data)
+            
+            if not key_info.get('active', False):
+                return {"valid": False, "reason": "API key deactivated"}
+            
+            return {
+                "valid": True,
+                "username": key_info['username'],
+                "permissions": key_info.get('permissions', []),
+                "key_id": key_id
+            }
+            
+        except Exception as e:
+            logger.error(f"API key validation error: {str(e)}")
+            return {"valid": False, "reason": "Validation failed"}
+    
+    def _is_user_locked_out(self, username):
+        """Check if user is locked out due to failed attempts"""
+        lockout_file = f"lockout_{hashlib.md5(username.encode()).hexdigest()}.tmp"
+        if not os.path.exists(lockout_file):
+            return False
+        
+        try:
+            with open(lockout_file, 'r') as f:
+                lockout_data = f.read().strip()
+            
+            lockout_time = datetime.fromisoformat(lockout_data)
+            lockout_duration = self.security_policies['access_control']['lockout_duration']
+            
+            if datetime.now() < lockout_time + timedelta(seconds=lockout_duration):
+                return True
+            else:
+                os.remove(lockout_file)  # Lockout expired
+                return False
+        except Exception:
+            return False
+    
+    def _record_failed_attempt(self, username):
+        """Record failed authentication attempt"""
+        attempts_file = f"attempts_{hashlib.md5(username.encode()).hexdigest()}.tmp"
+        
+        try:
+            attempts = 0
+            if os.path.exists(attempts_file):
+                with open(attempts_file, 'r') as f:
+                    attempts = int(f.read().strip())
+            
+            attempts += 1
+            
+            with open(attempts_file, 'w') as f:
+                f.write(str(attempts))
+            
+            max_attempts = self.security_policies['access_control']['max_failed_attempts']
+            if attempts >= max_attempts:
+                self._lockout_user(username)
+                
+        except Exception as e:
+            logger.error(f"Failed attempt recording error: {str(e)}")
+    
+    def _lockout_user(self, username):
+        """Lock out user due to excessive failed attempts"""
+        lockout_file = f"lockout_{hashlib.md5(username.encode()).hexdigest()}.tmp"
+        
+        try:
+            with open(lockout_file, 'w') as f:
+                f.write(datetime.now().isoformat())
+            
+            logger.warning(f"User {username} locked out due to failed attempts")
+        except Exception as e:
+            logger.error(f"Lockout error: {str(e)}")
+    
+    def _clear_failed_attempts(self, username):
+        """Clear failed attempt records for user"""
+        attempts_file = f"attempts_{hashlib.md5(username.encode()).hexdigest()}.tmp"
+        try:
+            if os.path.exists(attempts_file):
+                os.remove(attempts_file)
+        except Exception:
+            pass
+    
+    def _get_user_permissions(self, username):
+        """Get user permissions"""
+        # This would typically query a user database
+        default_permissions = ['chat', 'speak', 'device_control']
+        admin_users = os.environ.get('ADMIN_USERS', '').split(',')
+        
+        if username in admin_users:
+            return default_permissions + ['admin', 'user_management', 'system_config']
+        
+        return default_permissions
+    
+    def audit_log(self, action, username=None, details=None):
+        """Log security-relevant actions"""
+        try:
+            audit_entry = {
+                'timestamp': datetime.now().isoformat(),
+                'action': action,
+                'username': username,
+                'details': details,
+                'ip_address': os.environ.get('REQUEST_IP', 'unknown'),
+                'user_agent': os.environ.get('REQUEST_USER_AGENT', 'unknown')
+            }
+            
+            import json
+            audit_file = f"audit_{datetime.now().strftime('%Y%m%d')}.log"
+            
+            with open(audit_file, 'a') as f:
+                f.write(json.dumps(audit_entry) + '\n')
+                
+        except Exception as e:
+            logger.error(f"Audit logging error: {str(e)}")
+    
+    def get_security_status(self):
+        """Get current security status"""
+        return {
+            'active_sessions': len(self.active_sessions),
+            'security_policies': self.security_policies,
+            'encryption_enabled': True,
+            'audit_logging': True,
+            'session_timeout': self.session_timeout,
+            'lockout_policy': {
+                'max_attempts': self.security_policies['access_control']['max_failed_attempts'],
+                'lockout_duration': self.security_policies['access_control']['lockout_duration']
+            }
+        }
