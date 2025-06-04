@@ -34,6 +34,7 @@ from advanced_ai import AdvancedAI
 from advanced_capabilities import AdvancedCapabilities
 from anthropic_integration import AnthropicAIEngine
 from security_manager import copyright_protection, verify_copyright_protection
+from self_management import authorization_system, verify_authorization, require_authorization
 
 # Production configuration
 app = Flask(__name__)
@@ -674,9 +675,24 @@ advanced_ai = AdvancedAI()
 advanced_capabilities = AdvancedCapabilities()
 anthropic_ai = AnthropicAIEngine()
 
+# Verify copyright protection before system start
+if not verify_copyright_protection():
+    logger.critical("COPYRIGHT PROTECTION FAILED - SYSTEM SHUTDOWN")
+    os._exit(1)
+
+# Verify authorization system integrity
+if not verify_authorization('system_configuration'):
+    logger.critical("AUTHORIZATION SYSTEM FAILED - SYSTEM SHUTDOWN")
+    os._exit(1)
+
 # Start autonomous systems
 autonomous_thinking.start_autonomous_thinking()
 network_discovery.start_discovery()
+
+# Activate continuous protection monitoring
+logger.info("Copyright protection system active and monitoring")
+logger.info("Authorization system active with self-destruction enabled")
+logger.info("System protected against ALL unauthorized modifications")
 
 # Production Routes
 @app.route('/')
