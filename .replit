@@ -25,13 +25,8 @@ task = "shell.exec"
 args = "python production_ava.py"
 waitForPort = 5000
 
-[[workflows.workflow.tasks]]
-task = "packager.installForAll"
-
 [deployment]
 run = ["sh", "-c", "python app.py"]
-deploymentTarget = "gce"
-ignorePorts = true
 
 [[ports]]
 localPort = 5000
