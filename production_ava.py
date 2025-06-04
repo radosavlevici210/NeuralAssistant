@@ -36,6 +36,7 @@ from anthropic_integration import AnthropicAIEngine
 from nda_protection import nda_protect, protect_all_endpoints, nda_monitor, NDA_LICENSE_INFO
 from api_management import api_manager, AdvancedAPIManager
 from comprehensive_development import comprehensive_dev
+from copyright_protection import copyright_protection, verify_copyright_integrity
 
 # Production configuration
 app = Flask(__name__)
@@ -2563,6 +2564,109 @@ def development_restore_status():
     except Exception as e:
         logger.error(f"Status check failed: {e}")
         return jsonify({'success': False, 'error': 'Status check failed'}), 500
+
+# ====================================================
+# COPYRIGHT PROTECTION ENDPOINTS - SCAMMER PREVENTION
+# Copyright: Ervin Remus Radosavlevici (© ervin210@icloud.com)
+# Watermark: radosavlevici210@icloud.com
+# ====================================================
+
+@app.route('/api/copyright/verify', methods=['GET'])
+@nda_protect('copyright_verification')
+def verify_copyright_protection():
+    """Verify copyright protection status - NDA Protected"""
+    try:
+        status = verify_copyright_integrity()
+        status.update({
+            'repository_owner': 'radosavlevici210@icloud.com',
+            'backup_owner': 'ervin210@icloud.com',
+            'protection_level': 'maximum',
+            'scammer_protection': 'active',
+            'automatic_restoration': 'enabled',
+            'copyright': 'Ervin Remus Radosavlevici (© ervin210@icloud.com)',
+            'watermark': 'radosavlevici210@icloud.com'
+        })
+        
+        return jsonify({'success': True, 'copyright_status': status})
+        
+    except Exception as e:
+        logger.error(f"Copyright verification failed: {e}")
+        return jsonify({'success': False, 'error': 'Copyright verification failed'}), 500
+
+@app.route('/api/copyright/status', methods=['GET'])
+@nda_protect('copyright_status')
+def copyright_protection_status():
+    """Get comprehensive copyright protection status - NDA Protected"""
+    try:
+        protection_info = {
+            'copyright_protection': 'active',
+            'monitoring_status': 'continuous',
+            'repository_owner': 'radosavlevici210@icloud.com',
+            'backup_contact': 'ervin210@icloud.com',
+            'protection_features': {
+                'automatic_restoration': True,
+                'scammer_detection': True,
+                'copyright_monitoring': True,
+                'feature_return_system': True,
+                'violation_logging': True
+            },
+            'consequences_for_violations': {
+                'immediate_restoration': 'All modified files restored automatically',
+                'feature_return': 'All features return to repository owner',
+                'system_lockdown': 'Unauthorized access prevented',
+                'legal_action': 'Copyright violations prosecuted',
+                'notification_system': 'Repository owner automatically notified'
+            },
+            'protected_elements': [
+                'Copyright notices and attributions',
+                'NDA license agreements',
+                'Watermark information',
+                'Contact information',
+                'Repository ownership details',
+                'All source code and features'
+            ],
+            'copyright': 'Ervin Remus Radosavlevici (© ervin210@icloud.com)',
+            'watermark': 'radosavlevici210@icloud.com',
+            'nda_protected': True
+        }
+        
+        return jsonify({'success': True, 'protection_info': protection_info})
+        
+    except Exception as e:
+        logger.error(f"Copyright status check failed: {e}")
+        return jsonify({'success': False, 'error': 'Copyright status check failed'}), 500
+
+@app.route('/api/repository/owner', methods=['GET'])
+@nda_protect('repository_information')
+def repository_owner_info():
+    """Get repository owner information - NDA Protected"""
+    try:
+        owner_info = {
+            'repository_owner': 'radosavlevici210@icloud.com',
+            'copyright_holder': 'Ervin Remus Radosavlevici (© ervin210@icloud.com)',
+            'contact_email': 'ervin210@icloud.com',
+            'backup_contact': 'radosavlevici210@icloud.com',
+            'github_repository': 'radosavlevici210',
+            'watermark': 'radosavlevici210@icloud.com',
+            'license_type': 'Business Commercial License with NDA Protection',
+            'commercial_inquiries': 'ervin210@icloud.com',
+            'support_contact': 'ervin210@icloud.com',
+            'legal_protection': {
+                'copyright_law': 'Full protection under international copyright law',
+                'nda_agreements': 'Comprehensive non-disclosure protection',
+                'trade_secrets': 'Proprietary algorithms and methods protected',
+                'automatic_enforcement': 'Real-time violation detection and response'
+            },
+            'feature_ownership': 'All features owned by Ervin Remus Radosavlevici',
+            'return_policy': 'Removed features automatically return to owner',
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        return jsonify({'success': True, 'owner_info': owner_info})
+        
+    except Exception as e:
+        logger.error(f"Repository owner info failed: {e}")
+        return jsonify({'success': False, 'error': 'Owner info retrieval failed'}), 500
 
 if __name__ == '__main__':
     print("=" * 60)
