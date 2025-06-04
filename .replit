@@ -2,7 +2,7 @@ modules = ["python-3.11"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["espeak-ng", "portaudio"]
+packages = ["cargo", "espeak-ng", "libiconv", "libxcrypt", "openssl", "pkg-config", "portaudio", "rustc"]
 
 [workflows]
 runButton = "Project"

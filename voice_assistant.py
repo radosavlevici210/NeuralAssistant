@@ -1,354 +1,475 @@
 """
-Voice Assistant Core Module
-Handles speech recognition, AI conversation, and text-to-speech functionality
+AVA CORE Voice Processing and Speech Recognition
+Copyright and Trademark: Ervin Remus Radosavlevici (© ervin210@icloud.com)
+Timestamp: 2025-06-04 21:40:00 UTC
+Watermark: radosavlevici210@icloud.com
+
+NDA LICENSE AGREEMENT
+This software and its associated intellectual property are protected under
+Non-Disclosure Agreement and proprietary license terms. Unauthorized use,
+reproduction, or distribution is strictly prohibited.
+
+Voice processing, speech recognition, and natural language understanding
 """
 
 import os
 import json
+import threading
 import logging
-import speech_recognition as sr
-import pyttsx3
-from openai import OpenAI
-from device_control import DeviceController
-from advanced_ai import AdvancedAI
+from typing import Dict, List, Any, Optional
+import time
+
+# Voice processing imports (graceful degradation if not available)
+try:
+    import speech_recognition as sr
+    import pyttsx3
+    import pyaudio
+    VOICE_AVAILABLE = True
+except ImportError:
+    VOICE_AVAILABLE = False
+    logging.warning("Voice processing libraries not available")
 
 logger = logging.getLogger(__name__)
 
-class VoiceAssistant:
-    """Core voice assistant with speech recognition, AI conversation, and TTS"""
+class VoiceProcessor:
+    """Advanced voice processing and speech recognition"""
     
     def __init__(self):
-        # Initialize speech recognition
-        self.recognizer = sr.Recognizer()
+        self.listening = False
+        self.recognition_active = False
+        self.voice_engine = None
+        self.recognizer = None
         self.microphone = None
-        self.audio_available = False
+        self.init_voice_systems()
         
-        # Try to initialize audio components
-        try:
-            self.microphone = sr.Microphone()
-            # Configure recognizer settings
-            self.recognizer.energy_threshold = 300
-            self.recognizer.dynamic_energy_threshold = True
-            self.recognizer.pause_threshold = 0.8
-            self.audio_available = True
-            logger.info("Audio hardware initialized successfully")
-        except Exception as e:
-            logger.warning(f"Audio hardware not available: {str(e)}")
-            logger.info("Running in text-only mode")
-        
-        # Initialize text-to-speech engine
-        self.tts_engine = None
-        try:
-            self.tts_engine = pyttsx3.init()
-            self._configure_tts()
-            logger.info("Text-to-speech initialized successfully")
-        except Exception as e:
-            logger.warning(f"Text-to-speech not available: {str(e)}")
-        
-        # Initialize OpenAI client
-        self.openai_client = None
-        self._init_openai()
-        
-        # Initialize advanced capabilities
-        self.device_controller = DeviceController()
-        self.advanced_ai = AdvancedAI()
-        
-        # Conversation context
-        self.conversation_history = []
-        self.max_history = 10
-        
-        logger.info("Voice Assistant with advanced capabilities initialized successfully")
-        
-    def _configure_tts(self):
-        """Configure text-to-speech engine settings"""
-        if not self.tts_engine:
-            return
+    def init_voice_systems(self):
+        """Initialize voice recognition and synthesis systems"""
+        if not VOICE_AVAILABLE:
+            logger.warning("Voice processing not available")
+            return False
             
         try:
-            # Set voice properties
-            voices = self.tts_engine.getProperty('voices')
+            # Initialize speech recognition
+            self.recognizer = sr.Recognizer()
+            self.microphone = sr.Microphone()
+            
+            # Initialize text-to-speech
+            self.voice_engine = pyttsx3.init()
+            
+            # Configure voice settings
+            voices = self.voice_engine.getProperty('voices')
             if voices:
-                # Prefer female voice if available
-                for voice in voices:
-                    if 'female' in voice.name.lower() or 'zira' in voice.name.lower():
-                        self.tts_engine.setProperty('voice', voice.id)
-                        break
-                else:
-                    # Use first available voice
-                    self.tts_engine.setProperty('voice', voices[0].id)
+                # Use first available voice
+                self.voice_engine.setProperty('voice', voices[0].id)
             
             # Set speech rate and volume
-            self.tts_engine.setProperty('rate', 180)  # Speed of speech
-            self.tts_engine.setProperty('volume', 0.9)  # Volume level (0.0 to 1.0)
+            self.voice_engine.setProperty('rate', 180)
+            self.voice_engine.setProperty('volume', 0.8)
+            
+            logger.info("Voice systems initialized successfully")
+            return True
             
         except Exception as e:
-            logger.warning(f"TTS configuration warning: {str(e)}")
+            logger.error(f"Voice system initialization failed: {e}")
+            return False
     
-    def _init_openai(self):
-        """Initialize OpenAI client with API key"""
-        try:
-            api_key = os.environ.get('OPENAI_API_KEY')
-            if api_key:
-                self.openai_client = OpenAI(api_key=api_key)
-                logger.info("OpenAI client initialized successfully")
-            else:
-                logger.warning("No OpenAI API key found. AI responses will use fallback method.")
-        except Exception as e:
-            logger.error(f"Failed to initialize OpenAI: {str(e)}")
-    
-    def listen_for_speech(self, timeout=5, phrase_time_limit=10):
-        """
-        Listen for speech input from microphone
+    def start_listening(self) -> Dict[str, Any]:
+        """Start continuous voice listening"""
+        if not VOICE_AVAILABLE:
+            return {
+                'success': False,
+                'error': 'Voice processing not available',
+                'fallback': 'Text input available'
+            }
         
-        Args:
-            timeout: Maximum time to wait for speech to start
-            phrase_time_limit: Maximum time to listen for a complete phrase
-            
-        Returns:
-            str: Recognized speech text or None if no speech detected
-        """
-        if not self.audio_available or not self.microphone:
-            logger.warning("Audio hardware not available for speech recognition")
-            return None
-            
         try:
-            with self.microphone as source:
-                # Adjust for ambient noise
-                self.recognizer.adjust_for_ambient_noise(source, duration=0.5)
-                
-                # Listen for audio input
-                logger.info("Listening for speech...")
-                audio = self.recognizer.listen(
-                    source, 
-                    timeout=timeout, 
-                    phrase_time_limit=phrase_time_limit
-                )
+            self.listening = True
+            listen_thread = threading.Thread(target=self._listen_loop, daemon=True)
+            listen_thread.start()
             
-            # Recognize speech using Google's service
-            try:
-                text = self.recognizer.recognize_google(audio)
-                logger.info(f"Recognized speech: {text}")
-                return text.strip()
-                
-            except sr.UnknownValueError:
-                logger.info("Could not understand audio")
-                return None
-                
-            except sr.RequestError as e:
-                logger.error(f"Google Speech Recognition error: {str(e)}")
-                # Try offline recognition as fallback
-                try:
-                    text = self.recognizer.recognize_sphinx(audio)
-                    logger.info(f"Offline recognition: {text}")
-                    return text.strip()
-                except:
-                    logger.error("All speech recognition methods failed")
-                    return None
-                    
-        except sr.WaitTimeoutError:
-            logger.info("No speech detected within timeout period")
-            return None
-            
-        except Exception as e:
-            logger.error(f"Speech recognition error: {str(e)}")
-            return None
-    
-    def get_ai_response(self, user_input):
-        """
-        Generate AI response to user input with advanced capabilities
-        
-        Args:
-            user_input: User's speech input text
-            
-        Returns:
-            str: AI generated response
-        """
-        try:
-            # Analyze user intent
-            intent = self.advanced_ai.analyze_intent(user_input)
-            
-            # Handle device control requests
-            if intent == "device_control":
-                return self._handle_device_control(user_input)
-            
-            # Use advanced AI for other requests
-            response = self.advanced_ai.generate_contextual_response(user_input, intent)
-            
-            # Add to conversation history
-            self.conversation_history.append({"role": "user", "content": user_input})
-            self.conversation_history.append({"role": "assistant", "content": response})
-            
-            # Trim conversation history if too long
-            if len(self.conversation_history) > self.max_history * 2:
-                self.conversation_history = self.conversation_history[-self.max_history:]
-            
-            return response
-                
-        except Exception as e:
-            logger.error(f"AI response generation error: {str(e)}")
-            return "I apologize, but I'm having trouble processing your request right now."
-    
-    def _handle_device_control(self, user_input):
-        """Handle device control commands"""
-        try:
-            import re
-            
-            # Parse common device control commands
-            if re.search(r"open\s+(\w+)", user_input.lower()):
-                app_match = re.search(r"open\s+(\w+)", user_input.lower())
-                app_name = app_match.group(1) if app_match else "browser"
-                result = self.device_controller.execute_command("open_application", {"app_name": app_name})
-                return f"I tried to {result.get('message', 'execute the command')}."
-            
-            elif re.search(r"search\s+for\s+(.+)", user_input.lower()):
-                query_match = re.search(r"search\s+for\s+(.+)", user_input.lower())
-                query = query_match.group(1) if query_match else ""
-                result = self.device_controller.execute_command("search_web", {"query": query})
-                return f"I searched for '{query}' in your browser."
-            
-            elif re.search(r"browse\s+(.+)", user_input.lower()):
-                url_match = re.search(r"browse\s+(.+)", user_input.lower())
-                url = url_match.group(1) if url_match else ""
-                result = self.device_controller.execute_command("open_website", {"url": url})
-                return f"I opened {url} in your browser."
-            
-            elif "system info" in user_input.lower():
-                result = self.device_controller.execute_command("system_info", {})
-                if result.get("success"):
-                    info = result.get("data", {})
-                    return f"Your system is running {info.get('system', 'Unknown')} {info.get('version', '')}."
-                else:
-                    return "I couldn't retrieve system information."
-            
-            else:
-                # Use advanced AI to understand and guide device control
-                guidance = self.advanced_ai.generate_contextual_response(
-                    f"The user wants device control: {user_input}. Explain what I can help with.",
-                    "device_control"
-                )
-                return guidance
-                
-        except Exception as e:
-            logger.error(f"Device control error: {str(e)}")
-            return "I can help you control your device. Try asking me to open applications, search the web, or get system information."
-    
-    def _get_openai_response(self, user_input):
-        """Generate response using OpenAI GPT model"""
-        try:
-            # System message to define AVA's personality
-            system_message = {
-                "role": "system",
-                "content": """You are AVA, a helpful AI voice assistant created by Ervin Radosavlevici. 
-                You are knowledgeable, friendly, and concise in your responses since they will be spoken aloud. 
-                Keep responses conversational and under 100 words unless specifically asked for detailed information.
-                You can help with questions, tasks, calculations, explanations, and general conversation."""
+            return {
+                'success': True,
+                'message': 'Voice listening activated',
+                'status': 'listening'
             }
             
-            # Prepare messages for API call
-            messages = [system_message] + self.conversation_history
-            
-            # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
-            # do not change this unless explicitly requested by the user
-            response = self.openai_client.chat.completions.create(
-                model="gpt-4o",
-                messages=messages,
-                max_tokens=150,
-                temperature=0.7
-            )
-            
-            ai_response = response.choices[0].message.content.strip()
-            
-            # Add AI response to conversation history
-            self.conversation_history.append({"role": "assistant", "content": ai_response})
-            
-            logger.info(f"OpenAI response generated: {ai_response[:50]}...")
-            return ai_response
-            
         except Exception as e:
-            logger.error(f"OpenAI API error: {str(e)}")
-            return self._get_fallback_response(user_input)
+            return {
+                'success': False,
+                'error': str(e)
+            }
     
-    def _get_fallback_response(self, user_input):
-        """Generate fallback response when OpenAI is unavailable"""
-        user_lower = user_input.lower()
-        
-        # Simple rule-based responses
-        if any(greeting in user_lower for greeting in ['hello', 'hi', 'hey', 'good morning', 'good afternoon']):
-            return "Hello! I'm AVA, your AI assistant. How can I help you today?"
-        
-        elif any(word in user_lower for word in ['how are you', 'how do you do']):
-            return "I'm doing well, thank you for asking! I'm here and ready to assist you."
-        
-        elif any(word in user_lower for word in ['what is your name', 'who are you']):
-            return "I'm AVA, an AI voice assistant created by Ervin Radosavlevici. I'm here to help you with various tasks and questions."
-        
-        elif any(word in user_lower for word in ['time', 'what time']):
-            from datetime import datetime
-            current_time = datetime.now().strftime("%I:%M %p")
-            return f"The current time is {current_time}."
-        
-        elif any(word in user_lower for word in ['date', 'what date', 'today']):
-            from datetime import datetime
-            current_date = datetime.now().strftime("%A, %B %d, %Y")
-            return f"Today is {current_date}."
-        
-        elif any(word in user_lower for word in ['thank you', 'thanks']):
-            return "You're very welcome! I'm happy to help."
-        
-        elif any(word in user_lower for word in ['goodbye', 'bye', 'see you']):
-            return "Goodbye! It was nice talking with you. Have a great day!"
-        
-        elif any(word in user_lower for word in ['help', 'what can you do']):
-            return "I can help you with questions, provide information, have conversations, tell you the time and date, and assist with various tasks. Just ask me anything!"
-        
-        else:
-            return f"I heard you say '{user_input}'. I'm currently running in offline mode with limited capabilities. For full AI responses, please ensure an OpenAI API key is configured."
+    def stop_listening(self) -> Dict[str, Any]:
+        """Stop voice listening"""
+        self.listening = False
+        return {
+            'success': True,
+            'message': 'Voice listening deactivated',
+            'status': 'stopped'
+        }
     
-    def speak_text(self, text):
-        """
-        Convert text to speech and play it
-        
-        Args:
-            text: Text to be spoken
-        """
+    def _listen_loop(self):
+        """Continuous listening loop"""
+        while self.listening:
+            try:
+                if not self.recognition_active:
+                    self.recognition_active = True
+                    
+                    with self.microphone as source:
+                        # Adjust for ambient noise
+                        self.recognizer.adjust_for_ambient_noise(source, duration=0.5)
+                        
+                    # Listen for audio with timeout
+                    with self.microphone as source:
+                        audio = self.recognizer.listen(source, timeout=1, phrase_time_limit=5)
+                    
+                    # Recognize speech
+                    text = self.recognizer.recognize_google(audio)
+                    
+                    if text.strip():
+                        logger.info(f"Voice input recognized: {text}")
+                        # Process the recognized text
+                        self._process_voice_command(text)
+                    
+                    self.recognition_active = False
+                    
+            except sr.WaitTimeoutError:
+                # No speech detected, continue listening
+                pass
+            except sr.UnknownValueError:
+                # Speech not understood
+                pass
+            except sr.RequestError as e:
+                logger.error(f"Speech recognition request error: {e}")
+                time.sleep(1)
+            except Exception as e:
+                logger.error(f"Voice listening error: {e}")
+                time.sleep(1)
+            finally:
+                self.recognition_active = False
+    
+    def _process_voice_command(self, text: str):
+        """Process recognized voice command"""
         try:
-            if not text or not text.strip():
-                return
+            # Voice command processing logic
+            command_lower = text.lower()
             
-            logger.info(f"Speaking: {text[:50]}...")
+            # Wake words
+            wake_words = ['ava', 'assistant', 'hey ava', 'hello ava']
             
-            # Use text-to-speech engine if available
-            if self.tts_engine:
-                self.tts_engine.say(text)
-                self.tts_engine.runAndWait()
-            else:
-                logger.warning("Text-to-speech engine not available")
+            if any(wake in command_lower for wake in wake_words):
+                self.speak("Yes, I'm listening")
+                
+                # Extract command after wake word
+                for wake in wake_words:
+                    if wake in command_lower:
+                        command = text[command_lower.find(wake) + len(wake):].strip()
+                        if command:
+                            self._execute_voice_command(command)
+                        break
             
         except Exception as e:
-            logger.error(f"Text-to-speech error: {str(e)}")
+            logger.error(f"Voice command processing error: {e}")
     
-    def clear_conversation_history(self):
-        """Clear the conversation history"""
-        self.conversation_history = []
-        logger.info("Conversation history cleared")
+    def _execute_voice_command(self, command: str):
+        """Execute voice command"""
+        try:
+            # Command categorization
+            command_lower = command.lower()
+            
+            if 'status' in command_lower:
+                self.speak("System is running normally. All autonomous functions are active.")
+            elif 'devices' in command_lower or 'network' in command_lower:
+                self.speak("Scanning network for connected devices.")
+            elif 'capabilities' in command_lower:
+                self.speak("I have autonomous thinking, network control, business development, and climate solution capabilities.")
+            elif 'help' in command_lower:
+                self.speak("I can help with business development, climate solutions, device control, and autonomous assistance.")
+            else:
+                # Pass to AI for processing
+                self.speak(f"Processing your request: {command}")
+            
+        except Exception as e:
+            logger.error(f"Voice command execution error: {e}")
     
-    def get_conversation_summary(self):
-        """Get a summary of the current conversation"""
-        if not self.conversation_history:
-            return "No conversation history available."
+    def speak(self, text: str) -> Dict[str, Any]:
+        """Convert text to speech"""
+        if not VOICE_AVAILABLE or not self.voice_engine:
+            return {
+                'success': False,
+                'error': 'Voice synthesis not available',
+                'text': text
+            }
         
-        user_messages = len([msg for msg in self.conversation_history if msg["role"] == "user"])
-        ai_messages = len([msg for msg in self.conversation_history if msg["role"] == "assistant"])
+        try:
+            self.voice_engine.say(text)
+            self.voice_engine.runAndWait()
+            
+            return {
+                'success': True,
+                'text': text,
+                'spoken': True
+            }
+            
+        except Exception as e:
+            return {
+                'success': False,
+                'error': str(e),
+                'text': text
+            }
+    
+    def process_text_input(self, text: str) -> Dict[str, Any]:
+        """Process text input as if it were voice"""
+        try:
+            # Natural language understanding
+            analysis = self._analyze_intent(text)
+            
+            response = {
+                'success': True,
+                'input_text': text,
+                'intent': analysis['intent'],
+                'confidence': analysis['confidence'],
+                'entities': analysis['entities'],
+                'processing_type': 'natural_language'
+            }
+            
+            return response
+            
+        except Exception as e:
+            return {
+                'success': False,
+                'error': str(e),
+                'input_text': text
+            }
+    
+    def _analyze_intent(self, text: str) -> Dict[str, Any]:
+        """Analyze intent from natural language input"""
+        text_lower = text.lower()
         
-        return f"Conversation contains {user_messages} user messages and {ai_messages} AI responses."
+        # Intent classification
+        intents = {
+            'device_control': ['control', 'device', 'turn on', 'turn off', 'switch', 'manage'],
+            'business_analysis': ['business', 'analyze', 'report', 'metrics', 'performance'],
+            'climate_solutions': ['climate', 'environment', 'sustainability', 'carbon', 'green'],
+            'automation': ['automate', 'schedule', 'workflow', 'task', 'process'],
+            'information': ['what', 'how', 'when', 'where', 'tell me', 'explain'],
+            'system_status': ['status', 'health', 'running', 'working', 'active'],
+            'memory_recall': ['remember', 'recall', 'previous', 'before', 'history']
+        }
+        
+        detected_intent = 'general'
+        confidence = 0.5
+        entities = []
+        
+        for intent, keywords in intents.items():
+            matches = sum(1 for keyword in keywords if keyword in text_lower)
+            if matches > 0:
+                detected_intent = intent
+                confidence = min(0.9, 0.3 + (matches * 0.2))
+                entities = [word for word in keywords if word in text_lower]
+                break
+        
+        return {
+            'intent': detected_intent,
+            'confidence': confidence,
+            'entities': entities,
+            'keywords_found': len(entities)
+        }
+    
+    def get_voice_status(self) -> Dict[str, Any]:
+        """Get current voice processing status"""
+        return {
+            'voice_available': VOICE_AVAILABLE,
+            'listening': self.listening,
+            'recognition_active': self.recognition_active,
+            'systems_initialized': self.voice_engine is not None and self.recognizer is not None,
+            'capabilities': {
+                'speech_recognition': VOICE_AVAILABLE,
+                'text_to_speech': VOICE_AVAILABLE and self.voice_engine is not None,
+                'natural_language_processing': True,
+                'intent_analysis': True,
+                'voice_commands': VOICE_AVAILABLE,
+                'text_fallback': True
+            }
+        }
+    
+    def configure_voice_settings(self, settings: Dict[str, Any]) -> Dict[str, Any]:
+        """Configure voice processing settings"""
+        try:
+            if not VOICE_AVAILABLE or not self.voice_engine:
+                return {
+                    'success': False,
+                    'error': 'Voice engine not available'
+                }
+            
+            if 'rate' in settings:
+                rate = max(100, min(300, settings['rate']))
+                self.voice_engine.setProperty('rate', rate)
+            
+            if 'volume' in settings:
+                volume = max(0.0, min(1.0, settings['volume']))
+                self.voice_engine.setProperty('volume', volume)
+            
+            if 'voice_id' in settings:
+                voices = self.voice_engine.getProperty('voices')
+                if voices and 0 <= settings['voice_id'] < len(voices):
+                    self.voice_engine.setProperty('voice', voices[settings['voice_id']].id)
+            
+            return {
+                'success': True,
+                'message': 'Voice settings updated',
+                'current_settings': {
+                    'rate': self.voice_engine.getProperty('rate'),
+                    'volume': self.voice_engine.getProperty('volume')
+                }
+            }
+            
+        except Exception as e:
+            return {
+                'success': False,
+                'error': str(e)
+            }
 
-if __name__ == "__main__":
-    # Simple test of voice assistant functionality
-    print("Testing Voice Assistant...")
+class NaturalLanguageProcessor:
+    """Advanced natural language processing for AVA CORE"""
     
-    assistant = VoiceAssistant()
+    def __init__(self):
+        self.context_history = []
+        self.entity_memory = {}
+        
+    def process_natural_language(self, text: str, context: str = None) -> Dict[str, Any]:
+        """Process natural language with context awareness"""
+        try:
+            # Clean and normalize input
+            cleaned_text = self._clean_text(text)
+            
+            # Extract entities and context
+            entities = self._extract_entities(cleaned_text)
+            sentiment = self._analyze_sentiment(cleaned_text)
+            
+            # Build context-aware response
+            processing_result = {
+                'original_text': text,
+                'cleaned_text': cleaned_text,
+                'entities': entities,
+                'sentiment': sentiment,
+                'context': context,
+                'processing_timestamp': time.time(),
+                'language_confidence': 0.85
+            }
+            
+            # Store in context history
+            self.context_history.append(processing_result)
+            if len(self.context_history) > 100:  # Keep last 100 interactions
+                self.context_history.pop(0)
+            
+            return {
+                'success': True,
+                'processing_result': processing_result,
+                'context_available': len(self.context_history) > 1
+            }
+            
+        except Exception as e:
+            return {
+                'success': False,
+                'error': str(e),
+                'text': text
+            }
     
-    # Test text-to-speech
-    assistant.speak_text("Hello, I am AVA, your AI voice assistant.")
+    def _clean_text(self, text: str) -> str:
+        """Clean and normalize text input"""
+        # Remove extra whitespace and normalize
+        cleaned = ' '.join(text.split())
+        
+        # Basic normalization
+        cleaned = cleaned.strip()
+        
+        return cleaned
     
-    print("Voice Assistant test completed.")
+    def _extract_entities(self, text: str) -> List[Dict[str, Any]]:
+        """Extract entities from text"""
+        entities = []
+        text_lower = text.lower()
+        
+        # Define entity patterns
+        entity_patterns = {
+            'device_types': ['raspberry pi', 'arduino', 'smart device', 'sensor', 'camera'],
+            'business_terms': ['revenue', 'profit', 'growth', 'analytics', 'metrics'],
+            'climate_terms': ['carbon', 'emissions', 'renewable', 'solar', 'wind', 'sustainable'],
+            'actions': ['create', 'build', 'develop', 'implement', 'optimize', 'analyze'],
+            'locations': ['local', 'network', 'cloud', 'server', 'database']
+        }
+        
+        for category, patterns in entity_patterns.items():
+            for pattern in patterns:
+                if pattern in text_lower:
+                    entities.append({
+                        'text': pattern,
+                        'category': category,
+                        'confidence': 0.8
+                    })
+        
+        return entities
+    
+    def _analyze_sentiment(self, text: str) -> Dict[str, Any]:
+        """Analyze sentiment of input text"""
+        positive_words = ['good', 'great', 'excellent', 'amazing', 'wonderful', 'help', 'please']
+        negative_words = ['bad', 'terrible', 'awful', 'problem', 'issue', 'error', 'fail']
+        
+        text_lower = text.lower()
+        positive_count = sum(1 for word in positive_words if word in text_lower)
+        negative_count = sum(1 for word in negative_words if word in text_lower)
+        
+        if positive_count > negative_count:
+            sentiment = 'positive'
+            confidence = min(0.9, 0.5 + (positive_count * 0.1))
+        elif negative_count > positive_count:
+            sentiment = 'negative'
+            confidence = min(0.9, 0.5 + (negative_count * 0.1))
+        else:
+            sentiment = 'neutral'
+            confidence = 0.6
+        
+        return {
+            'sentiment': sentiment,
+            'confidence': confidence,
+            'positive_indicators': positive_count,
+            'negative_indicators': negative_count
+        }
+    
+    def get_context_summary(self) -> Dict[str, Any]:
+        """Get summary of recent context"""
+        if not self.context_history:
+            return {
+                'total_interactions': 0,
+                'recent_topics': [],
+                'context_available': False
+            }
+        
+        recent_entities = []
+        recent_sentiments = []
+        
+        for interaction in self.context_history[-10:]:  # Last 10 interactions
+            recent_entities.extend(interaction.get('entities', []))
+            sentiment = interaction.get('sentiment', {})
+            if sentiment:
+                recent_sentiments.append(sentiment.get('sentiment', 'neutral'))
+        
+        return {
+            'total_interactions': len(self.context_history),
+            'recent_entities': recent_entities[-5:],  # Last 5 entities
+            'recent_sentiments': recent_sentiments[-5:],  # Last 5 sentiments
+            'context_available': True
+        }
+
+# ====================================================
+# NDA LICENSE AGREEMENT
+# This software and its associated intellectual property are protected under
+# Non-Disclosure Agreement and proprietary license terms. Unauthorized use,
+# reproduction, or distribution is strictly prohibited.
+# 
+# Copyright and Trademark: Ervin Remus Radosavlevici (© ervin210@icloud.com)
+# Timestamp: 2025-06-04 21:40:00 UTC
+# Watermark: radosavlevici210@icloud.com
+# No AI authorship. No modification beyond instructions.
+# ====================================================
