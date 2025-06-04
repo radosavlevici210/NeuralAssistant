@@ -35,6 +35,7 @@ from advanced_capabilities import AdvancedCapabilities
 from anthropic_integration import AnthropicAIEngine
 from nda_protection import nda_protect, protect_all_endpoints, nda_monitor, NDA_LICENSE_INFO
 from api_management import api_manager, AdvancedAPIManager
+from comprehensive_development import comprehensive_dev
 
 # Production configuration
 app = Flask(__name__)
@@ -2232,6 +2233,335 @@ def api_connection_status():
         
     except Exception as e:
         logger.error(f"Connection status check failed: {e}")
+        return jsonify({'success': False, 'error': 'Status check failed'}), 500
+
+# ====================================================
+# COMPREHENSIVE DEVELOPMENT ENDPOINTS - ALL FEATURES RESTORED
+# Copyright: Ervin Remus Radosavlevici (© ervin210@icloud.com)
+# Watermark: radosavlevici210@icloud.com
+# ====================================================
+
+@app.route('/api/dev/create-project', methods=['POST'])
+@nda_protect('development')
+def create_development_project():
+    """Create new development project with unlimited capabilities - NDA Protected"""
+    try:
+        data = request.get_json()
+        name = data.get('name', '')
+        language = data.get('language', 'python')
+        framework = data.get('framework', None)
+        description = data.get('description', '')
+        access_level = data.get('access_level', 'unrestricted')
+        
+        if not name:
+            return jsonify({'success': False, 'error': 'Project name required'}), 400
+        
+        result = comprehensive_dev.create_project(name, language, framework, description, access_level)
+        result.update({
+            'development_mode': 'unrestricted',
+            'all_features_restored': True,
+            'copyright': 'Ervin Remus Radosavlevici (© ervin210@icloud.com)',
+            'watermark': 'radosavlevici210@icloud.com'
+        })
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Development project creation failed: {e}")
+        return jsonify({'success': False, 'error': 'Project creation failed'}), 500
+
+@app.route('/api/dev/execute-code', methods=['POST'])
+@nda_protect('code_execution')
+def execute_development_code():
+    """Execute code with unlimited capabilities - NDA Protected"""
+    try:
+        data = request.get_json()
+        project_id = data.get('project_id', 'default')
+        language = data.get('language', 'python')
+        code = data.get('code', '')
+        unrestricted = data.get('unrestricted', True)
+        
+        if not code:
+            return jsonify({'success': False, 'error': 'Code required'}), 400
+        
+        result = comprehensive_dev.execute_code(project_id, language, code, unrestricted)
+        result.update({
+            'development_mode': 'unrestricted',
+            'restrictions_removed': True,
+            'copyright': 'Ervin Remus Radosavlevici (© ervin210@icloud.com)',
+            'watermark': 'radosavlevici210@icloud.com'
+        })
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Code execution failed: {e}")
+        return jsonify({'success': False, 'error': 'Code execution failed'}), 500
+
+@app.route('/api/dev/secret-project', methods=['POST'])
+@nda_protect('secret_development')
+def create_secret_development_project():
+    """Create secret development project - NDA Protected"""
+    try:
+        data = request.get_json()
+        name = data.get('name', '')
+        description = data.get('description', '')
+        classification = data.get('classification', 'confidential')
+        
+        if not name:
+            return jsonify({'success': False, 'error': 'Project name required'}), 400
+        
+        result = comprehensive_dev.create_secret_project(name, description, classification)
+        result.update({
+            'secret_development': True,
+            'unrestricted_access': True,
+            'copyright': 'Ervin Remus Radosavlevici (© ervin210@icloud.com)',
+            'watermark': 'radosavlevici210@icloud.com'
+        })
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Secret project creation failed: {e}")
+        return jsonify({'success': False, 'error': 'Secret project creation failed'}), 500
+
+@app.route('/api/dev/deploy-project', methods=['POST'])
+@nda_protect('deployment')
+def deploy_development_project():
+    """Deploy project with advanced capabilities - NDA Protected"""
+    try:
+        data = request.get_json()
+        project_id = data.get('project_id', '')
+        platform = data.get('platform', 'replit')
+        config = data.get('config', {})
+        
+        if not project_id:
+            return jsonify({'success': False, 'error': 'Project ID required'}), 400
+        
+        result = comprehensive_dev.deploy_project(project_id, platform, config)
+        result.update({
+            'deployment_unrestricted': True,
+            'all_platforms_available': True,
+            'copyright': 'Ervin Remus Radosavlevici (© ervin210@icloud.com)',
+            'watermark': 'radosavlevici210@icloud.com'
+        })
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Project deployment failed: {e}")
+        return jsonify({'success': False, 'error': 'Deployment failed'}), 500
+
+@app.route('/api/dev/advanced-tools', methods=['GET'])
+@nda_protect('advanced_tools')
+def get_development_tools():
+    """Get all advanced development tools - NDA Protected"""
+    try:
+        result = comprehensive_dev.get_advanced_tools()
+        result.update({
+            'all_tools_restored': True,
+            'unrestricted_access': True,
+            'copyright': 'Ervin Remus Radosavlevici (© ervin210@icloud.com)',
+            'watermark': 'radosavlevici210@icloud.com'
+        })
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Failed to get development tools: {e}")
+        return jsonify({'success': False, 'error': 'Failed to get tools'}), 500
+
+@app.route('/api/dev/system-access', methods=['POST'])
+@nda_protect('system_access')
+def system_access_endpoint():
+    """Direct system access with unrestricted capabilities - NDA Protected"""
+    try:
+        data = request.get_json()
+        command = data.get('command', '')
+        access_level = data.get('access_level', 'unrestricted')
+        
+        if not command:
+            return jsonify({'success': False, 'error': 'Command required'}), 400
+        
+        # Execute system command with unrestricted access
+        result = comprehensive_dev.execute_code('system', 'bash', command, True)
+        result.update({
+            'system_access': 'unrestricted',
+            'restrictions': 'none',
+            'copyright': 'Ervin Remus Radosavlevici (© ervin210@icloud.com)',
+            'watermark': 'radosavlevici210@icloud.com'
+        })
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"System access failed: {e}")
+        return jsonify({'success': False, 'error': 'System access failed'}), 500
+
+@app.route('/api/dev/file-operations', methods=['POST'])
+@nda_protect('file_operations')
+def file_operations_endpoint():
+    """File system operations with unrestricted access - NDA Protected"""
+    try:
+        data = request.get_json()
+        operation = data.get('operation', '')
+        path = data.get('path', '')
+        content = data.get('content', '')
+        
+        if operation == 'read':
+            with open(path, 'r') as f:
+                content = f.read()
+            result = {'success': True, 'content': content, 'operation': 'read'}
+        elif operation == 'write':
+            with open(path, 'w') as f:
+                f.write(content)
+            result = {'success': True, 'message': 'File written', 'operation': 'write'}
+        elif operation == 'create':
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            with open(path, 'w') as f:
+                f.write(content)
+            result = {'success': True, 'message': 'File created', 'operation': 'create'}
+        elif operation == 'delete':
+            os.remove(path)
+            result = {'success': True, 'message': 'File deleted', 'operation': 'delete'}
+        else:
+            result = {'success': False, 'error': 'Invalid operation'}
+        
+        result.update({
+            'file_access': 'unrestricted',
+            'restrictions': 'none',
+            'copyright': 'Ervin Remus Radosavlevici (© ervin210@icloud.com)',
+            'watermark': 'radosavlevici210@icloud.com'
+        })
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"File operation failed: {e}")
+        return jsonify({'success': False, 'error': 'File operation failed'}), 500
+
+@app.route('/api/dev/database-access', methods=['POST'])
+@nda_protect('database_access')
+def database_access_endpoint():
+    """Database operations with unrestricted access - NDA Protected"""
+    try:
+        data = request.get_json()
+        db_type = data.get('db_type', 'sqlite')
+        query = data.get('query', '')
+        connection_string = data.get('connection_string', 'comprehensive_development.db')
+        
+        if not query:
+            return jsonify({'success': False, 'error': 'Query required'}), 400
+        
+        if db_type == 'sqlite':
+            with sqlite3.connect(connection_string) as conn:
+                cursor = conn.execute(query)
+                if query.strip().upper().startswith('SELECT'):
+                    results = cursor.fetchall()
+                    columns = [description[0] for description in cursor.description]
+                    data = [dict(zip(columns, row)) for row in results]
+                else:
+                    conn.commit()
+                    data = {'affected_rows': cursor.rowcount}
+        else:
+            data = {'error': 'Database type not supported in this endpoint'}
+        
+        result = {
+            'success': True,
+            'data': data,
+            'query_executed': query,
+            'database_access': 'unrestricted',
+            'restrictions': 'none',
+            'copyright': 'Ervin Remus Radosavlevici (© ervin210@icloud.com)',
+            'watermark': 'radosavlevici210@icloud.com'
+        }
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Database access failed: {e}")
+        return jsonify({'success': False, 'error': 'Database access failed'}), 500
+
+@app.route('/api/dev/network-operations', methods=['POST'])
+@nda_protect('network_operations')
+def network_operations_endpoint():
+    """Network operations with unrestricted access - NDA Protected"""
+    try:
+        data = request.get_json()
+        operation = data.get('operation', '')
+        target = data.get('target', '')
+        
+        if operation == 'ping':
+            result = subprocess.run(['ping', '-c', '4', target], capture_output=True, text=True)
+            output = result.stdout
+        elif operation == 'scan':
+            # Basic port scan
+            import socket
+            open_ports = []
+            for port in range(1, 1001):
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.settimeout(0.1)
+                result = sock.connect_ex((target, port))
+                if result == 0:
+                    open_ports.append(port)
+                sock.close()
+            output = f"Open ports on {target}: {open_ports}"
+        elif operation == 'request':
+            url = data.get('url', target)
+            response = requests.get(url, timeout=10)
+            output = {'status_code': response.status_code, 'headers': dict(response.headers), 'content': response.text[:1000]}
+        else:
+            output = 'Invalid operation'
+        
+        result = {
+            'success': True,
+            'output': output,
+            'operation': operation,
+            'target': target,
+            'network_access': 'unrestricted',
+            'restrictions': 'none',
+            'copyright': 'Ervin Remus Radosavlevici (© ervin210@icloud.com)',
+            'watermark': 'radosavlevici210@icloud.com'
+        }
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Network operation failed: {e}")
+        return jsonify({'success': False, 'error': 'Network operation failed'}), 500
+
+@app.route('/api/dev/restore-status', methods=['GET'])
+@nda_protect('development_status')
+def development_restore_status():
+    """Get status of all restored development features - NDA Protected"""
+    try:
+        status = {
+            'development_features': {
+                'project_creation': 'fully_restored',
+                'code_execution': 'unrestricted',
+                'secret_projects': 'enabled',
+                'deployment_tools': 'unlimited',
+                'system_access': 'unrestricted',
+                'file_operations': 'unlimited',
+                'database_access': 'unrestricted',
+                'network_operations': 'unlimited'
+            },
+            'restrictions_removed': True,
+            'all_capabilities_restored': True,
+            'development_mode': 'unrestricted',
+            'access_level': 'unlimited',
+            'secret_development': True,
+            'advanced_tools': 'enabled',
+            'timestamp': datetime.now().isoformat(),
+            'copyright': 'Ervin Remus Radosavlevici (© ervin210@icloud.com)',
+            'watermark': 'radosavlevici210@icloud.com',
+            'nda_protected': True
+        }
+        
+        return jsonify({'success': True, 'status': status})
+        
+    except Exception as e:
+        logger.error(f"Status check failed: {e}")
         return jsonify({'success': False, 'error': 'Status check failed'}), 500
 
 if __name__ == '__main__':
