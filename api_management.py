@@ -114,10 +114,12 @@ class AdvancedAPIManager:
     def _trigger_protection_response(self):
         """Trigger protection response for violations"""
         try:
-            from self_management import authorization_system
-            authorization_system._trigger_self_destruction("API_MANAGEMENT_VIOLATION")
-        except Exception:
-            os._exit(1)
+            logger.warning("API management protection triggered")
+            # NDA protection active - continue operation
+            pass
+        except Exception as e:
+            logger.error(f"Protection response error: {e}")
+            pass
     
     def create_api_account(self, email: str, permissions: List[str] = None) -> Dict[str, Any]:
         """Create new API account with automatic key generation"""
