@@ -33,6 +33,7 @@ from voice_assistant import VoiceProcessor, NaturalLanguageProcessor
 from advanced_ai import AdvancedAI
 from advanced_capabilities import AdvancedCapabilities
 from anthropic_integration import AnthropicAIEngine
+from nda_protection import nda_protect, protect_all_endpoints, nda_monitor, NDA_LICENSE_INFO
 
 # Production configuration
 app = Flask(__name__)
