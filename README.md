@@ -151,6 +151,28 @@ AVA CORE™ is a sophisticated enterprise-grade neural AI voice assistant with c
 
 ## 🌐 Deployment
 
+### Replit Deployment (Primary Platform)
+AVA CORE™ is optimized for Replit deployment with enterprise-grade configuration:
+
+**Network Configuration:**
+- Internal Port: `5000`
+- External Port: `80` (HTTPS proxy)
+- Private Dev URL: Restricted to authenticated editors only
+- QR Code Access: Available for authorized mobile connections
+- Port Configuration: Saved in `.replit` file for persistent deployment
+
+**Replit Features:**
+- Automatic HTTPS with SSL/TLS encryption
+- Built-in environment variable management
+- Private workspace with restricted access
+- Collaborative development for authorized users only
+- Integrated version control and deployment
+
+**Access URLs:**
+- Production: `https://your-repl-name.replit.app`
+- Development: Private Dev URL (authenticated access only)
+- Mobile: QR code scanning for authorized devices
+
 ### Production Deployment
 ```bash
 # Install production dependencies
@@ -175,6 +197,47 @@ WORKDIR /app
 RUN pip install -r requirements.txt
 EXPOSE 5000
 CMD ["python", "app.py"]
+```
+
+### Enterprise Security Configuration
+```yaml
+# .replit configuration for enterprise deployment
+modules = ["python3"]
+
+[nix]
+channel = "stable-24_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "AVA CORE Server"
+
+[[workflows.workflow]]
+name = "AVA CORE Server"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python app.py"
+waitForPort = 5000
+
+[deployment]
+run = ["sh", "-c", "python app.py"]
+
+[[ports]]
+localPort = 1
+externalPort = 9000
+
+[[ports]]
+localPort = 5000
+externalPort = 80
 ```
 
 ---
