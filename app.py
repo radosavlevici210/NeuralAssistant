@@ -237,6 +237,54 @@ def get_security_policy():
     except Exception as e:
         return jsonify({'error': f'Failed to load Security Policy: {str(e)}'}), 500
 
+@app.route('/analytics')
+def analytics_dashboard():
+    """Enterprise analytics dashboard - AUTHORIZED USERS ONLY"""
+    return render_template('analytics.html')
+
+@app.route('/api/analytics/system')
+def get_system_analytics():
+    """Get system-wide analytics data"""
+    try:
+        days = request.args.get('days', 30, type=int)
+        analytics_data = enterprise_analytics.get_system_analytics(days)
+        return jsonify(analytics_data)
+    except Exception as e:
+        return jsonify({'error': f'Failed to get system analytics: {str(e)}'}), 500
+
+@app.route('/api/analytics/user')
+def get_user_analytics():
+    """Get user-specific analytics data"""
+    try:
+        user_id = request.args.get('user_id')
+        days = request.args.get('days', 30, type=int)
+        
+        if not user_id:
+            return jsonify({'error': 'User ID required'}), 400
+        
+        analytics_data = enterprise_analytics.get_user_analytics(user_id, days)
+        return jsonify(analytics_data)
+    except Exception as e:
+        return jsonify({'error': f'Failed to get user analytics: {str(e)}'}), 500
+
+@app.route('/api/analytics/security')
+def get_security_dashboard():
+    """Get security dashboard data"""
+    try:
+        security_data = enterprise_analytics.get_security_dashboard()
+        return jsonify(security_data)
+    except Exception as e:
+        return jsonify({'error': f'Failed to get security dashboard: {str(e)}'}), 500
+
+@app.route('/api/analytics/compliance')
+def get_compliance_report():
+    """Get compliance and audit report"""
+    try:
+        compliance_data = enterprise_analytics.generate_compliance_report()
+        return jsonify(compliance_data)
+    except Exception as e:
+        return jsonify({'error': f'Failed to generate compliance report: {str(e)}'}), 500
+
 @app.route('/api/status')
 def get_status():
     """Get current assistant status"""
