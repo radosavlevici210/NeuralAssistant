@@ -120,7 +120,7 @@ NeuralAssistant/
 ### Setup Instructions for radosavlevici210
 
 **Initial Repository Setup:**
-1. Create new repository: AVA-CORE-Enterprise
+1. Create new repository: NeuralAssistant
 2. Upload all project files maintaining structure
 3. Configure repository settings for business use
 4. Enable GitHub Actions for CI/CD pipeline
@@ -171,4 +171,4 @@ NeuralAssistant/
 
 **© 2025 Ervin Remus Radosavlevici. All Rights Reserved.**  
 **Business Commercial License with Comprehensive Protection**  
-**GitHub Repository: https://github.com/radosavlevici210/AVA-CORE-Enterprise**
+**GitHub Repository: https://github.com/radosavlevici210/NeuralAssistant**

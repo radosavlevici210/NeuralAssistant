@@ -780,7 +780,7 @@ def create_app():
             return jsonify({
                 'success': True,
                 'github_integration_prepared': result,
-                'repository_url': 'https://github.com/radosavlevici210/AVA-CORE-Enterprise',
+                'repository_url': 'https://github.com/radosavlevici210/NeuralAssistant',
                 'deployment_files_created': True,
                 'production_ready': True,
                 'real_world_connections': True,
