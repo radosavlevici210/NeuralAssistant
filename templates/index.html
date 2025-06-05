@@ -7,11 +7,24 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="AVA CORE">
     <meta name="theme-color" content="#1e293b">
-    <title>Neural Assistant - Interactive Water Effects</title>
+    <title>Neural Assistant - AVA (© Ervin Remus Radosavlevici)</title>
+    
+    <!-- PWA Manifest for iPhone Installation -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    
+    <!-- iPhone Specific Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AVA">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='black_theme.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='water_effects.css') }}">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231e293b'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='white'>🌊</text></svg>">
+    
+    <!-- App Icons -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23001a2e' rx='16'/><circle cx='50' cy='30' r='12' fill='%2300b4ff'/><circle cx='35' cy='50' r='8' fill='%2300d4ff' opacity='0.8'/><circle cx='65' cy='50' r='8' fill='%2300d4ff' opacity='0.8'/><path d='M25 70 Q50 80 75 70' stroke='%2300c4ff' stroke-width='2' fill='none'/><text x='50' y='90' font-size='8' text-anchor='middle' fill='white'>AVA</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' fill='%23001a2e' rx='32'/><circle cx='90' cy='50' r='20' fill='%2300b4ff'/><circle cx='70' cy='85' r='15' fill='%2300d4ff' opacity='0.8'/><circle cx='110' cy='85' r='15' fill='%2300d4ff' opacity='0.8'/><circle cx='90' cy='120' r='22' fill='%2300a4ef' opacity='0.9'/><path d='M50 140 Q90 155 130 140' stroke='%2300c4ff' stroke-width='4' fill='none'/><text x='90' y='170' font-size='12' text-anchor='middle' fill='white' font-weight='bold'>AVA</text></svg>">
     
     <!-- Socket.IO -->
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
@@ -313,6 +326,73 @@
                 </div>
             </div>
 
+            <!-- iPhone App Installation -->
+            <div class="card">
+                <h2>
+                    <i data-feather="smartphone"></i>
+                    Install on iPhone - Add to Home Screen
+                </h2>
+                
+                <div class="installation-guide">
+                    <h3>📱 Install AVA on Your iPhone</h3>
+                    <div class="instruction-steps">
+                        <div class="step">
+                            <span class="step-number">1</span>
+                            <div class="step-content">
+                                <strong>Connect to Same WiFi Network</strong>
+                                <p>Make sure your iPhone is connected to the same WiFi network as this computer</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <span class="step-number">2</span>
+                            <div class="step-content">
+                                <strong>Open Safari on iPhone</strong>
+                                <p>Go to: <span class="connection-url" id="iphoneUrl">Getting local IP address...</span></p>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <span class="step-number">3</span>
+                            <div class="step-content">
+                                <strong>Add to Home Screen</strong>
+                                <p>Tap Share button (box with arrow) → "Add to Home Screen" → "Add"</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <span class="step-number">4</span>
+                            <div class="step-content">
+                                <strong>Use as Standalone App</strong>
+                                <p>Tap the AVA icon on your home screen. Say "Hey AVA" to activate voice control</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="app-features">
+                        <h4>🌊 App Features</h4>
+                        <ul>
+                            <li>Interactive water effects on touch</li>
+                            <li>Voice activation with "Hey AVA"</li>
+                            <li>Works offline with cached responses</li>
+                            <li>Standalone app experience</li>
+                            <li>Local network connectivity</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button id="getIpBtn" class="btn btn-primary">
+                        <i data-feather="wifi"></i>
+                        Get Connection URL
+                    </button>
+                    <button id="testVoiceBtn" class="btn btn-secondary">
+                        <i data-feather="mic"></i>
+                        Test Voice Recognition
+                    </button>
+                </div>
+            </div>
+
             <!-- Network Discovery & Connection -->
             <div class="card">
                 <h2>
@@ -466,6 +546,170 @@
     <script src="{{ url_for('static', filename='interactive_water_effects.js') }}"></script>
     
     <script>
+        // Service Worker Registration for iPhone App Installation
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/static/sw.js')
+                    .then(function(registration) {
+                        console.log('Neural Assistant SW registered: ', registration.scope);
+                        console.log('Copyright: Ervin Remus Radosavlevici (© ervin210@icloud.com, radosavlevici210@icloud.com)');
+                        console.log('Authorized Contacts: ervin210@icloud.com, radosavlevici210@icloud.com');
+                    })
+                    .catch(function(error) {
+                        console.log('SW registration failed: ', error);
+                    });
+            });
+        }
+        
+        // Voice Recognition for Standalone iPhone App
+        let recognition = null;
+        let isListening = false;
+        
+        function initVoiceRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = 'en-US';
+                
+                recognition.onstart = function() {
+                    isListening = true;
+                    updateVoiceStatus('Listening for "Hey AVA"...');
+                };
+                
+                recognition.onresult = function(event) {
+                    let transcript = '';
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        transcript += event.results[i][0].transcript;
+                    }
+                    
+                    if (transcript.toLowerCase().includes('hey ava') || transcript.toLowerCase().includes('ava')) {
+                        handleVoiceCommand(transcript);
+                    }
+                };
+                
+                recognition.onerror = function(event) {
+                    console.log('Voice recognition error:', event.error);
+                    updateVoiceStatus('Voice recognition error');
+                };
+                
+                recognition.onend = function() {
+                    isListening = false;
+                    if (document.visibilityState === 'visible') {
+                        // Restart listening if app is active
+                        setTimeout(() => recognition.start(), 1000);
+                    }
+                };
+                
+                return true;
+            }
+            return false;
+        }
+        
+        function startVoiceListening() {
+            if (recognition && !isListening) {
+                try {
+                    recognition.start();
+                    updateVoiceStatus('Voice activation ready');
+                } catch (error) {
+                    console.log('Could not start voice recognition:', error);
+                }
+            }
+        }
+        
+        function handleVoiceCommand(command) {
+            updateVoiceStatus('Processing: ' + command);
+            
+            // Send command to AVA
+            fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: command,
+                    voice_activated: true,
+                    timestamp: new Date().toISOString(),
+                    copyright: 'Ervin Remus Radosavlevici (© ervin210@icloud.com, radosavlevici210@icloud.com)',
+                    authorized_contacts: 'ervin210@icloud.com, radosavlevici210@icloud.com',
+                    access_restricted_to: ['ervin210@icloud.com', 'radosavlevici210@icloud.com']
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.response) {
+                    speakResponse(data.response);
+                    updateVoiceStatus('AVA responded');
+                }
+            })
+            .catch(error => {
+                console.log('Voice command error:', error);
+                updateVoiceStatus('Network error');
+            });
+        }
+        
+        function speakResponse(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.9;
+                utterance.pitch = 1.1;
+                utterance.volume = 0.8;
+                speechSynthesis.speak(utterance);
+            }
+        }
+        
+        function updateVoiceStatus(status) {
+            const statusElement = document.getElementById('voiceStatus');
+            if (statusElement) {
+                statusElement.textContent = status;
+            }
+        }
+        
+        // Auto-start voice recognition when app loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add voice status indicator
+            const header = document.querySelector('.header-content h1');
+            if (header) {
+                const voiceStatus = document.createElement('div');
+                voiceStatus.id = 'voiceStatus';
+                voiceStatus.style.cssText = `
+                    font-size: 12px;
+                    color: #00b4ff;
+                    margin-top: 5px;
+                    font-weight: normal;
+                `;
+                voiceStatus.textContent = 'Initializing voice recognition...';
+                header.appendChild(voiceStatus);
+            }
+            
+            // Initialize voice recognition
+            if (initVoiceRecognition()) {
+                // Request microphone permission and start listening
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(function(stream) {
+                        stream.getTracks().forEach(track => track.stop());
+                        startVoiceListening();
+                        updateVoiceStatus('Say "Hey AVA" to activate');
+                    })
+                    .catch(function(error) {
+                        console.log('Microphone permission denied:', error);
+                        updateVoiceStatus('Microphone access required for voice features');
+                    });
+            } else {
+                updateVoiceStatus('Voice recognition not supported');
+            }
+            
+            // Handle app visibility changes
+            document.addEventListener('visibilitychange', function() {
+                if (document.visibilityState === 'visible' && recognition && !isListening) {
+                    startVoiceListening();
+                } else if (document.visibilityState === 'hidden' && recognition && isListening) {
+                    recognition.stop();
+                }
+            });
+        
         // Enhanced button interactions with water effects
         document.addEventListener('DOMContentLoaded', function() {
             // Add water-interactive class to all buttons and clickable elements
