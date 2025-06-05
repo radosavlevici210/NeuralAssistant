@@ -2,39 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="AVA CORE">
-    <meta name="theme-color" content="#1e293b">
-    <title>Neural Assistant - AVA (© Ervin Remus Radosavlevici) - NDA Protected</title>
-    
-    <!-- NDA and Copyright Protection - AUTHORIZED OWNER -->
-    <meta name="copyright" content="Ervin Remus Radosavlevici (© ervin210@icloud.com, radosavlevici210@icloud.com)">
-    <meta name="watermark" content="radosavlevici210@icloud.com">
-    <meta name="authorized-contacts" content="ervin210@icloud.com, radosavlevici210@icloud.com">
-    <meta name="copyright-owner" content="Ervin Remus Radosavlevici">
-    <meta name="nda-protected" content="true">
-    <meta name="local-development" content="Authorized for ervin210@icloud.com, radosavlevici210@icloud.com">
-    <meta name="external-development" content="Authorized for ervin210@icloud.com, radosavlevici210@icloud.com">
-    <meta name="timestamp" content="2025-06-05 04:20:00 UTC">
-    
-    <!-- PWA Manifest for iPhone Installation -->
-    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
-    
-    <!-- iPhone Specific Meta Tags -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="AVA">
-    <meta name="mobile-web-app-capable" content="yes">
-    
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='black_theme.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='water_effects.css') }}">
-    
-    <!-- App Icons -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23001a2e' rx='16'/><circle cx='50' cy='30' r='12' fill='%2300b4ff'/><circle cx='35' cy='50' r='8' fill='%2300d4ff' opacity='0.8'/><circle cx='65' cy='50' r='8' fill='%2300d4ff' opacity='0.8'/><path d='M25 70 Q50 80 75 70' stroke='%2300c4ff' stroke-width='2' fill='none'/><text x='50' y='90' font-size='8' text-anchor='middle' fill='white'>AVA</text></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' fill='%23001a2e' rx='32'/><circle cx='90' cy='50' r='20' fill='%2300b4ff'/><circle cx='70' cy='85' r='15' fill='%2300d4ff' opacity='0.8'/><circle cx='110' cy='85' r='15' fill='%2300d4ff' opacity='0.8'/><circle cx='90' cy='120' r='22' fill='%2300a4ef' opacity='0.9'/><path d='M50 140 Q90 155 130 140' stroke='%2300c4ff' stroke-width='4' fill='none'/><text x='90' y='170' font-size='12' text-anchor='middle' fill='white' font-weight='bold'>AVA</text></svg>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVA CORE - Neural AI Voice Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
     
     <!-- Socket.IO -->
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
@@ -42,44 +13,17 @@
     <!-- Feather Icons -->
     <script src="https://unpkg.com/feather-icons"></script>
 </head>
-<body class="water-container">
-    <!-- Water Effects Background -->
-    <div class="water-background"></div>
-    
-    <!-- Water Particles -->
-    <div class="water-particles">
-        <div class="water-particle"></div>
-        <div class="water-particle"></div>
-        <div class="water-particle"></div>
-        <div class="water-particle"></div>
-        <div class="water-particle"></div>
-        <div class="water-particle"></div>
-        <div class="water-particle"></div>
-        <div class="water-particle"></div>
-        <div class="water-particle"></div>
-    </div>
-    
-    <!-- Bubble Effects -->
-    <div class="bubble-container">
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-    </div>
-    
-    <!-- Water Waves -->
-    <div class="water-waves"></div>
+<body>
     <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="header-content">
                 <h1>
                     <i data-feather="cpu" style="width: 40px; height: 40px; vertical-align: middle; margin-right: 12px;"></i>
-                    ALPHA CORE
+                    AVA CORE
                 </h1>
-                <p>Neural AI Voice Assistant</p>
+                <p>Neural AI Voice Assistant with Speech Recognition & Text-to-Speech</p>
+                <p class="copyright">Copyright and Trademark: Ervin Radosavlevici</p>
                 
                 <!-- Navigation -->
                 <nav class="nav">
@@ -133,63 +77,22 @@
                     <span id="currentStatus" class="text-muted">System ready</span>
                 </div>
                 
-                <!-- Modern Floating Control -->
-                <div class="modern-control-wrapper">
-                    <button id="modernControlBtn" class="modern-control-btn">
-                        <i data-feather="command"></i>
+                <!-- Control Panel -->
+                <div class="controls">
+                    <button id="startBtn" class="btn btn-success">
+                        <i data-feather="play"></i>
+                        Start Listening
                     </button>
-                </div>
-                
-                <!-- Modern Control Panel -->
-                <div id="modernPanel" class="modern-panel hidden">
-                    <div class="modern-panel-header">
-                        <span class="panel-title">AVA CORE</span>
-                        <button id="closeModernBtn" class="modern-close-btn">
-                            <i data-feather="x"></i>
-                        </button>
-                    </div>
-                    <div class="modern-panel-grid">
-                        <button id="startBtn" class="modern-btn start-btn">
-                            <i data-feather="play"></i>
-                            <span>Start</span>
-                        </button>
-                        <button id="stopBtn" class="modern-btn stop-btn" disabled>
-                            <i data-feather="square"></i>
-                            <span>Stop</span>
-                        </button>
-                        <button id="securityBtn" class="modern-btn security-btn">
-                            <i data-feather="shield"></i>
-                            <span>Security</span>
-                        </button>
-                        <button id="memoryBtn" class="modern-btn memory-btn">
-                            <i data-feather="database"></i>
-                            <span>Memory</span>
-                        </button>
-                        <button id="upgradeBtn" class="modern-btn upgrade-btn">
-                            <i data-feather="upload"></i>
-                            <span>Upgrade</span>
-                        </button>
-                        <button id="repairBtn" class="modern-btn repair-btn">
-                            <i data-feather="tool"></i>
-                            <span>Repair</span>
-                        </button>
-                        <button id="networkBtn" class="modern-btn network-btn">
-                            <i data-feather="wifi"></i>
-                            <span>Network</span>
-                        </button>
-                        <button id="devBtn" class="modern-btn dev-btn">
-                            <i data-feather="code"></i>
-                            <span>Dev</span>
-                        </button>
-                        <button id="workBtn" class="modern-btn work-btn">
-                            <i data-feather="briefcase"></i>
-                            <span>Work</span>
-                        </button>
-                        <button id="refreshBtn" class="modern-btn refresh-btn">
-                            <i data-feather="refresh-cw"></i>
-                            <span>Refresh</span>
-                        </button>
-                    </div>
+                    
+                    <button id="stopBtn" class="btn btn-error" disabled>
+                        <i data-feather="stop"></i>
+                        Stop Assistant
+                    </button>
+                    
+                    <button id="refreshBtn" class="btn btn-secondary">
+                        <i data-feather="refresh-cw"></i>
+                        Refresh
+                    </button>
                 </div>
             </div>
 
@@ -218,49 +121,6 @@
                 </form>
             </div>
 
-            <!-- Computer Control Panel -->
-            <div class="card automation-panel">
-                <h2>
-                    <i data-feather="settings"></i>
-                    Computer Control & Automation
-                </h2>
-                
-                <div class="automation-controls">
-                    <div class="quick-commands">
-                        <h3>Quick Commands</h3>
-                        <div class="command-grid">
-                            <button class="quick-cmd-btn" data-command="AVA take control of my computer">
-                                <i data-feather="cpu"></i>
-                                Take Control
-                            </button>
-                            <button class="quick-cmd-btn" data-command="AVA fix this computer issue">
-                                <i data-feather="tool"></i>
-                                Fix Issues
-                            </button>
-                            <button class="quick-cmd-btn" data-command="AVA setup development environment">
-                                <i data-feather="code"></i>
-                                Setup Dev
-                            </button>
-                            <button class="quick-cmd-btn" data-command="AVA navigate to google.com">
-                                <i data-feather="globe"></i>
-                                Browse Web
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="automation-status">
-                        <div class="status-item">
-                            <span class="status-label">Automation Status:</span>
-                            <span id="automationStatus" class="status offline">Ready</span>
-                        </div>
-                        <div class="status-item">
-                            <span class="status-label">Permissions:</span>
-                            <span id="automationPermissions" class="permissions">Basic</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- AI Chat Interface -->
             <div class="card">
                 <h2>
@@ -270,11 +130,11 @@
                 
                 <form id="chatForm">
                     <div class="input-group">
-                        <label for="chatInput">Command AVA:</label>
+                        <label for="chatInput">Ask AVA anything:</label>
                         <textarea 
                             id="chatInput" 
-                            rows="3" 
-                            placeholder="Try: 'AVA take control computer', 'fix this issue', 'setup development for React', 'navigate to GitHub', 'close this deal for me'..."
+                            rows="2" 
+                            placeholder="Ask for advice, help with tasks, device control, or just chat..."
                             maxlength="1000"
                         ></textarea>
                     </div>
@@ -282,32 +142,15 @@
                     <div class="controls">
                         <button type="submit" id="chatBtn" class="btn btn-primary">
                             <i data-feather="send"></i>
-                            Execute Command
+                            Send Message
                         </button>
                         
                         <button type="button" id="clearChatBtn" class="btn btn-secondary">
                             <i data-feather="trash-2"></i>
                             Clear Chat
                         </button>
-                        
-                        <button type="button" id="automationHistoryBtn" class="btn btn-secondary">
-                            <i data-feather="clock"></i>
-                            History
-                        </button>
                     </div>
                 </form>
-                
-                <div class="automation-examples">
-                    <h4>Example Commands:</h4>
-                    <div class="example-commands">
-                        <span class="example-cmd">"AVA take control computer"</span>
-                        <span class="example-cmd">"Fix this bug for me"</span>
-                        <span class="example-cmd">"Setup React development"</span>
-                        <span class="example-cmd">"Navigate to YouTube"</span>
-                        <span class="example-cmd">"Open calculator"</span>
-                        <span class="example-cmd">"Create new project"</span>
-                    </div>
-                </div>
             </div>
 
             <!-- Recent Conversation -->
@@ -336,518 +179,6 @@
                 </div>
             </div>
 
-            <!-- Live System Preview -->
-            <div class="card">
-                <h2>
-                    <i data-feather="globe"></i>
-                    Live System Access
-                </h2>
-                
-                <div class="preview-section">
-                    <h3>🌐 Access Neural Assistant</h3>
-                    <div class="access-methods">
-                        <div class="access-item">
-                            <h4>Public URL (Works Everywhere)</h4>
-                            <div class="nda-protection-notice">
-                                <p><strong>NDA PROTECTED SYSTEM - AUTHORIZED OWNER</strong></p>
-                                <p>Copyright Owner: Ervin Remus Radosavlevici</p>
-                                <p>Copyright: (© ervin210@icloud.com, radosavlevici210@icloud.com)</p>
-                                <p>Watermark: radosavlevici210@icloud.com</p>
-                                <p>Timestamp: 2025-06-05 04:20:00 UTC</p>
-                                <p>Local Development: Authorized for ervin210@icloud.com, radosavlevici210@icloud.com</p>
-                                <p>External Development: Authorized for ervin210@icloud.com, radosavlevici210@icloud.com</p>
-                            </div>
-                            <p class="url-display">
-                                <a href="https://6b8ab92f-0e1c-4484-9a3a-7b1912596b3d-00-wivmddnymuta.worf.replit.dev" 
-                                   target="_blank" class="water-interactive">
-                                   https://6b8ab92f-0e1c-4484-9a3a-7b1912596b3d-00-wivmddnymuta.worf.replit.dev
-                                </a>
-                            </p>
-                            <p>Click above to open in new window - works on any device, anywhere</p>
-                        </div>
-                        
-                        <div class="access-item">
-                            <h4>Local Network Access</h4>
-                            <p class="url-display" id="localUrl">Getting local IP...</p>
-                            <p>Use this URL on devices connected to your local network</p>
-                        </div>
-                    </div>
-                    
-                    <div class="feature-preview">
-                        <h4>🌊 Features Preview</h4>
-                        <div class="feature-grid">
-                            <div class="feature-card water-interactive">
-                                <h5>Interactive Water Effects</h5>
-                                <p>Touch anywhere to create ripples and animations</p>
-                            </div>
-                            <div class="feature-card water-interactive">
-                                <h5>Voice Activation</h5>
-                                <p>Say "Hey AVA" to start voice conversation</p>
-                            </div>
-                            <div class="feature-card water-interactive">
-                                <h5>iPhone App Installation</h5>
-                                <p>Add to Home Screen for standalone app experience</p>
-                            </div>
-                            <div class="feature-card water-interactive">
-                                <h5>Local Network Control</h5>
-                                <p>Access from any device on your network</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Comprehensive Development Features -->
-            <div class="card">
-                <h2>
-                    <i data-feather="code"></i>
-                    Development Features & Settings
-                </h2>
-                
-                <div class="development-features">
-                    <div class="nda-protection-notice">
-                        <p><strong>NDA PROTECTED DEVELOPMENT ENVIRONMENT - AUTHORIZED OWNER</strong></p>
-                        <p>Copyright Owner: Ervin Remus Radosavlevici</p>
-                        <p>Copyright: (© ervin210@icloud.com, radosavlevici210@icloud.com)</p>
-                        <p>Watermark: radosavlevici210@icloud.com</p>
-                        <p>Timestamp: 2025-06-05 04:20:00 UTC</p>
-                        <p>Local Development: Authorized for ervin210@icloud.com, radosavlevici210@icloud.com</p>
-                        <p>External Development: Authorized for ervin210@icloud.com, radosavlevici210@icloud.com</p>
-                        <p>NDA Licensed: Business Commercial License with Comprehensive Protection</p>
-                    </div>
-                    
-                    <h3>🛠️ Complete Development Environment</h3>
-                    <div class="development-grid">
-                        <div class="development-item water-interactive">
-                            <h4>Python Development</h4>
-                            <div class="development-status">Full Stack + ML/AI Support</div>
-                            <p>Complete Python 3.11+ environment with unlimited libraries, machine learning frameworks, and enterprise deployment tools</p>
-                        </div>
-                        
-                        <div class="development-item water-interactive">
-                            <h4>JavaScript Development</h4>
-                            <div class="development-status">Modern Frameworks + PWA</div>
-                            <p>Node.js, React, Vue, Angular with TypeScript support, build tools, and Progressive Web App development</p>
-                        </div>
-                        
-                        <div class="development-item water-interactive">
-                            <h4>Database Systems</h4>
-                            <div class="development-status">Multi-Database Unlimited Access</div>
-                            <p>SQLite, PostgreSQL, MySQL, MongoDB with advanced query optimization and real-time synchronization</p>
-                        </div>
-                        
-                        <div class="development-item water-interactive">
-                            <h4>AI/ML Development</h4>
-                            <div class="development-status">Advanced Model Development</div>
-                            <p>TensorFlow, PyTorch, custom neural networks with MLOps and cloud deployment automation</p>
-                        </div>
-                        
-                        <div class="development-item water-interactive">
-                            <h4>Cloud Integration</h4>
-                            <div class="development-status">Multi-Cloud Container Orchestration</div>
-                            <p>Docker, Kubernetes, AWS, Azure, GCP with CI/CD pipelines and infrastructure automation</p>
-                        </div>
-                        
-                        <div class="development-item water-interactive">
-                            <h4>Security & Monitoring</h4>
-                            <div class="development-status">Enterprise-Grade Protection</div>
-                            <p>Advanced security protocols, real-time monitoring, performance analytics, and error tracking</p>
-                        </div>
-                    </div>
-                    
-                    <div class="controls">
-                        <button id="syncFeaturesBtn" class="btn btn-primary water-interactive">
-                            <i data-feather="refresh-cw"></i>
-                            Sync All Features
-                        </button>
-                        <button id="checkDevStatusBtn" class="btn btn-secondary water-interactive">
-                            <i data-feather="check-circle"></i>
-                            Check Development Status
-                        </button>
-                        <button id="verifyParityBtn" class="btn btn-secondary water-interactive">
-                            <i data-feather="git-compare"></i>
-                            Verify URL/Localhost Parity
-                        </button>
-                    </div>
-                    
-                    <div id="developmentStatus" class="development-status" style="display: none;">
-                        <h4>Feature Synchronization Status</h4>
-                        <div id="syncResults"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Single Device Control & Privacy Protection -->
-            <div class="card">
-                <h2>
-                    <i data-feather="shield"></i>
-                    Single Device Control & Privacy Protection
-                </h2>
-                
-                <div class="development-features">
-                    <div class="nda-protection-notice">
-                        <p><strong>SINGLE DEVICE ONLY - PRIVACY PROTECTED</strong></p>
-                        <p>Copyright Owner: Ervin Remus Radosavlevici</p>
-                        <p>Authorized Contact: ervin210@icloud.com</p>
-                        <p>Watermark: radosavlevici210@icloud.com</p>
-                        <p>Timestamp: 2025-06-05 04:40:00 UTC</p>
-                        <p>Authorization Required for All Changes</p>
-                        <p>Enterprise Features Only When Authorized</p>
-                    </div>
-                    
-                    <h3>🔒 Device Control & Authorization</h3>
-                    <div class="development-grid">
-                        <div class="development-item water-interactive">
-                            <h4>Single Device Policy</h4>
-                            <div class="development-status">One Device Only</div>
-                            <p>Only one authorized device allowed at a time with maximum privacy protection</p>
-                        </div>
-                        
-                        <div class="development-item water-interactive">
-                            <h4>Permission System</h4>
-                            <div class="development-status">Approval Required</div>
-                            <p>All changes require explicit approval from authorized contact</p>
-                        </div>
-                        
-                        <div class="development-item water-interactive">
-                            <h4>Enterprise Feature Access</h4>
-                            <div class="development-status">Authorization Protected</div>
-                            <p>Enterprise features only accessible with proper authorization</p>
-                        </div>
-                        
-                        <div class="development-item water-interactive">
-                            <h4>Privacy Protection</h4>
-                            <div class="development-status">Maximum Level</div>
-                            <p>Comprehensive privacy protection with violation logging and blocking</p>
-                        </div>
-                        
-                        <div class="development-item water-interactive">
-                            <h4>Unauthorized Access Wipe</h4>
-                            <div class="development-status">Complete Removal</div>
-                            <p>Automatic detection and removal of unauthorized access attempts</p>
-                        </div>
-                        
-                        <div class="development-item water-interactive">
-                            <h4>Authorization Enforcement</h4>
-                            <div class="development-status">Comprehensive Control</div>
-                            <p>All system policies enforced with complete authorization control</p>
-                        </div>
-                    </div>
-                    
-                    <div class="controls">
-                        <button id="checkDeviceControlBtn" class="btn btn-primary water-interactive">
-                            <i data-feather="shield"></i>
-                            Check Device Control Status
-                        </button>
-                        <button id="wipeUnauthorizedBtn" class="btn btn-secondary water-interactive">
-                            <i data-feather="trash-2"></i>
-                            Wipe Unauthorized Access
-                        </button>
-                        <button id="enforceAllAuthBtn" class="btn btn-secondary water-interactive">
-                            <i data-feather="lock"></i>
-                            Enforce All Authorizations
-                        </button>
-                    </div>
-                    
-                    <div id="deviceControlStatus" class="development-status" style="display: none;">
-                        <h4>Device Control & Authorization Status</h4>
-                        <div id="deviceControlResults"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Self-Destruction Policy & System Protection -->
-            <div class="card">
-                <h2>
-                    <i data-feather="alert-triangle"></i>
-                    Self-Destruction Policy & System Protection
-                </h2>
-                
-                <div class="development-features">
-                    <div class="nda-protection-notice">
-                        <p><strong>SELF-DESTRUCTION ACTIVE - UNAUTHORIZED CHANGES TRIGGER DESTRUCTION</strong></p>
-                        <p>Copyright Owner: Ervin Remus Radosavlevici</p>
-                        <p>Authorized Contact: ervin210@icloud.com</p>
-                        <p>Watermark: radosavlevici210@icloud.com</p>
-                        <p>Timestamp: 2025-06-05 04:45:00 UTC</p>
-                        <p>Destroy All Unauthorized Development and Settings</p>
-                        <p>Complete System Reconstruction on Policy Violations</p>
-                    </div>
-                    
-                    <h3>⚠️ Destruction Triggers & System Protection</h3>
-                    <div class="development-grid">
-                        <div class="development-item water-interactive">
-                            <h4>File Integrity Monitoring</h4>
-                            <div class="development-status">Active Destruction Trigger</div>
-                            <p>Unauthorized file modifications trigger immediate destruction and restoration</p>
-                        </div>
-                        
-                        <div class="development-item water-interactive">
-                            <h4>Process Monitoring</h4>
-                            <div class="development-status">Active Destruction Trigger</div>
-                            <p>Unauthorized processes and connections trigger system protection response</p>
-                        </div>
-                        
-                        <div class="development-item water-interactive">
-                            <h4>Configuration Protection</h4>
-                            <div class="development-status">Active Destruction Trigger</div>
-                            <p>Unauthorized settings changes trigger complete system reconstruction</p>
-                        </div>
-                        
-                        <div class="development-item water-interactive">
-                            <h4>Automatic Reconstruction</h4>
-                            <div class="development-status">System Protection Active</div>
-                            <p>Complete system restoration from authorized baseline when needed</p>
-                        </div>
-                        
-                        <div class="development-item water-interactive">
-                            <h4>Manual Destruction Control</h4>
-                            <div class="development-status">Authorized Contact Only</div>
-                            <p>Manual destruction triggers for comprehensive unauthorized element removal</p>
-                        </div>
-                        
-                        <div class="development-item water-interactive">
-                            <h4>Comprehensive Policy Enforcement</h4>
-                            <div class="development-status">All Policies Active</div>
-                            <p>Complete enforcement of all authorization and protection policies</p>
-                        </div>
-                    </div>
-                    
-                    <div class="controls">
-                        <button id="checkDestructionPolicyBtn" class="btn btn-primary water-interactive">
-                            <i data-feather="alert-triangle"></i>
-                            Check Destruction Policy Status
-                        </button>
-                        <button id="destroyAllUnauthorizedBtn" class="btn btn-secondary water-interactive">
-                            <i data-feather="trash-2"></i>
-                            Destroy All Unauthorized
-                        </button>
-                        <button id="completeSystemResetBtn" class="btn btn-secondary water-interactive">
-                            <i data-feather="refresh-cw"></i>
-                            Complete System Reset
-                        </button>
-                        <button id="enforceComprehensivePoliciesBtn" class="btn btn-secondary water-interactive">
-                            <i data-feather="shield"></i>
-                            Enforce All Policies
-                        </button>
-                    </div>
-                    
-                    <div id="destructionPolicyStatus" class="development-status" style="display: none;">
-                        <h4>Self-Destruction Policy & System Protection Status</h4>
-                        <div id="destructionPolicyResults"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Secret Enterprise Development -->
-            <div class="card">
-                <h2>
-                    <i data-feather="lock"></i>
-                    Secret Enterprise Development
-                </h2>
-                
-                <div class="development-features">
-                    <div class="nda-protection-notice">
-                        <p><strong>SECRET ENTERPRISE SYSTEM - AUTHORIZED OWNER ONLY</strong></p>
-                        <p>Copyright Owner: Ervin Remus Radosavlevici</p>
-                        <p>Authorized Contacts: ervin210@icloud.com, radosavlevici210@icloud.com</p>
-                        <p>Watermark: radosavlevici210@icloud.com</p>
-                        <p>Timestamp: 2025-06-05 04:25:00 UTC</p>
-                        <p>Enterprise Only - All Non-Enterprise Features Removed</p>
-                        <p>Secret Development Capabilities Activated</p>
-                    </div>
-                    
-                    <h3>🔒 Enterprise-Only Capabilities</h3>
-                    <div class="development-grid">
-                        <div class="development-item water-interactive">
-                            <h4>Enterprise AI Engine</h4>
-                            <div class="development-status">Premium Exclusive with Secret Optimization</div>
-                            <p>Advanced neural networks with proprietary algorithms and unlimited processing power</p>
-                        </div>
-                        
-                        <div class="development-item water-interactive">
-                            <h4>Enterprise Development Suite</h4>
-                            <div class="development-status">Ultimate Access with Proprietary Tools</div>
-                            <p>Multi-language development with unlimited frameworks and secret optimization tools</p>
-                        </div>
-                        
-                        <div class="development-item water-interactive">
-                            <h4>Enterprise Database Systems</h4>
-                            <div class="development-status">Unlimited Access with Secret Protocols</div>
-                            <p>Multi-database integration with secret optimization and enterprise-grade performance</p>
-                        </div>
-                        
-                        <div class="development-item water-interactive">
-                            <h4>Enterprise Cloud Integration</h4>
-                            <div class="development-status">Multi-Cloud Premium with Automation</div>
-                            <p>Container orchestration with secret scaling protocols and unlimited capacity</p>
-                        </div>
-                        
-                        <div class="development-item water-interactive">
-                            <h4>Enterprise Security Suite</h4>
-                            <div class="development-status">Maximum Protection with Secret Algorithms</div>
-                            <p>Advanced threat detection with proprietary algorithms and automated response</p>
-                        </div>
-                        
-                        <div class="development-item water-interactive">
-                            <h4>Secret Development Tools</h4>
-                            <div class="development-status">Enterprise Exclusive Access</div>
-                            <p>Proprietary code generation, analytics engine, and deployment orchestration</p>
-                        </div>
-                    </div>
-                    
-                    <div class="controls">
-                        <button id="removeNonEnterpriseBtn" class="btn btn-primary water-interactive">
-                            <i data-feather="trash-2"></i>
-                            Remove Non-Enterprise Features
-                        </button>
-                        <button id="activateSecretBtn" class="btn btn-secondary water-interactive">
-                            <i data-feather="unlock"></i>
-                            Activate Secret Enterprise
-                        </button>
-                        <button id="checkSecretStatusBtn" class="btn btn-secondary water-interactive">
-                            <i data-feather="shield"></i>
-                            Check Secret Status
-                        </button>
-                    </div>
-                    
-                    <div id="secretEnterpriseStatus" class="development-status" style="display: none;">
-                        <h4>Secret Enterprise Status</h4>
-                        <div id="secretResults"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- iPhone App Installation -->
-            <div class="card">
-                <h2>
-                    <i data-feather="smartphone"></i>
-                    Install on iPhone - Add to Home Screen
-                </h2>
-                
-                <div class="installation-guide">
-                    <h3>📱 Install AVA on Your iPhone</h3>
-                    <div class="instruction-steps">
-                        <div class="step">
-                            <span class="step-number">1</span>
-                            <div class="step-content">
-                                <strong>Connect to Same WiFi Network</strong>
-                                <p>Make sure your iPhone is connected to the same WiFi network as this computer</p>
-                            </div>
-                        </div>
-                        
-                        <div class="step">
-                            <span class="step-number">2</span>
-                            <div class="step-content">
-                                <strong>Open Safari on iPhone</strong>
-                                <p>Go to: <span class="connection-url" id="iphoneUrl">Getting local IP address...</span></p>
-                            </div>
-                        </div>
-                        
-                        <div class="step">
-                            <span class="step-number">3</span>
-                            <div class="step-content">
-                                <strong>Add to Home Screen</strong>
-                                <p>Tap Share button (box with arrow) → "Add to Home Screen" → "Add"</p>
-                            </div>
-                        </div>
-                        
-                        <div class="step">
-                            <span class="step-number">4</span>
-                            <div class="step-content">
-                                <strong>Use as Standalone App</strong>
-                                <p>Tap the AVA icon on your home screen. Say "Hey AVA" to activate voice control</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="app-features">
-                        <h4>🌊 App Features</h4>
-                        <ul>
-                            <li>Interactive water effects on touch</li>
-                            <li>Voice activation with "Hey AVA"</li>
-                            <li>Works offline with cached responses</li>
-                            <li>Standalone app experience</li>
-                            <li>Local network connectivity</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="controls">
-                    <button id="getIpBtn" class="btn btn-primary">
-                        <i data-feather="wifi"></i>
-                        Get Connection URL
-                    </button>
-                    <button id="testVoiceBtn" class="btn btn-secondary">
-                        <i data-feather="mic"></i>
-                        Test Voice Recognition
-                    </button>
-                </div>
-            </div>
-
-            <!-- Network Discovery & Connection -->
-            <div class="card">
-                <h2>
-                    <i data-feather="wifi"></i>
-                    Network Discovery
-                </h2>
-                
-                <div class="controls">
-                    <button id="networkDiscoveryBtn" class="btn btn-secondary">
-                        <i data-feather="search"></i>
-                        Start Network Discovery
-                    </button>
-                    <button id="refreshNetworkBtn" class="btn btn-secondary">
-                        <i data-feather="refresh-cw"></i>
-                        Refresh Devices
-                    </button>
-                </div>
-                
-                <div id="networkStatus" class="status-display">
-                    <span class="status-text">Network discovery inactive</span>
-                </div>
-                
-                <div id="discoveredDevices" class="device-list" style="display: none;">
-                    <h4>Discovered Devices</h4>
-                    <div id="devicesList"></div>
-                </div>
-                
-                <div class="usage-instructions">
-                    <h3>How to Connect Other Devices</h3>
-                    <div class="instruction-grid">
-                        <div class="instruction-item">
-                            <h4><i data-feather="smartphone"></i> Phones & Tablets</h4>
-                            <ol>
-                                <li>Connect to same WiFi network</li>
-                                <li>Open browser (Safari/Chrome)</li>
-                                <li>Go to: <span id="connectionUrl" class="connection-url">http://[getting-ip]:5000</span></li>
-                                <li>Bookmark for easy access</li>
-                            </ol>
-                        </div>
-                        
-                        <div class="instruction-item">
-                            <h4><i data-feather="monitor"></i> Computers</h4>
-                            <ol>
-                                <li>Ensure same network connection</li>
-                                <li>Open any web browser</li>
-                                <li>Navigate to the address above</li>
-                                <li>Full AVA features available instantly</li>
-                            </ol>
-                        </div>
-                        
-                        <div class="instruction-item">
-                            <h4><i data-feather="tv"></i> Smart TVs & Other Devices</h4>
-                            <ol>
-                                <li>Connect to home WiFi</li>
-                                <li>Open web browser app</li>
-                                <li>Enter the connection address</li>
-                                <li>No installation required</li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- System Information -->
             <div class="card">
                 <h2>
@@ -873,25 +204,25 @@
                             </li>
                             <li style="padding: 0.25rem 0;">
                                 <i data-feather="wifi" style="width: 16px; height: 16px; color: hsl(220 70% 50%);"></i>
-                                Network Auto-Discovery
+                                Real-time WebSocket Updates
                             </li>
                         </ul>
                     </div>
                     
                     <div>
-                        <h3>Network Capabilities</h3>
+                        <h3>Controls</h3>
                         <ul style="list-style: none; padding: 0;">
                             <li style="padding: 0.25rem 0;">
-                                <strong>Zero Installation:</strong> Works on any device with browser
+                                <strong>Start/Stop:</strong> Control voice listening
                             </li>
                             <li style="padding: 0.25rem 0;">
-                                <strong>Auto-Discovery:</strong> Finds all network devices
+                                <strong>Manual Speech:</strong> Make AVA speak any text
                             </li>
                             <li style="padding: 0.25rem 0;">
-                                <strong>Cross-Platform:</strong> Phones, computers, smart devices
+                                <strong>Monitor:</strong> View detailed conversation history
                             </li>
                             <li style="padding: 0.25rem 0;">
-                                <strong>Real-time:</strong> Live updates across all connections
+                                <strong>Real-time:</strong> Live status and conversation updates
                             </li>
                         </ul>
                     </div>
@@ -900,11 +231,7 @@
         </div>
     </main>
 
-    <!-- Small copyright at bottom -->
-    <div class="copyright">© E.R.</div>
-
     <!-- Scripts -->
-    <script src="{{ url_for('static', filename='gravity_ball.js') }}"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script>
         // Initialize Feather icons
@@ -931,251 +258,6 @@
                     this.style.height = this.scrollHeight + 'px';
                 });
             }
-        });
-    </script>
-    
-    <!-- Interactive Water Effects JavaScript -->
-    <script src="{{ url_for('static', filename='interactive_water_effects.js') }}"></script>
-    
-    <script>
-        // Service Worker Registration for iPhone App Installation
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/static/sw.js')
-                    .then(function(registration) {
-                        console.log('Neural Assistant SW registered: ', registration.scope);
-                        console.log('Copyright: Ervin Remus Radosavlevici (© ervin210@icloud.com, radosavlevici210@icloud.com)');
-                        console.log('Authorized Contacts: ervin210@icloud.com, radosavlevici210@icloud.com');
-                    })
-                    .catch(function(error) {
-                        console.log('SW registration failed: ', error);
-                    });
-            });
-        }
-        
-        // Voice Recognition for Standalone iPhone App
-        let recognition = null;
-        let isListening = false;
-        
-        function initVoiceRecognition() {
-            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                recognition = new SpeechRecognition();
-                
-                recognition.continuous = true;
-                recognition.interimResults = true;
-                recognition.lang = 'en-US';
-                
-                recognition.onstart = function() {
-                    isListening = true;
-                    updateVoiceStatus('Listening for "Hey AVA"...');
-                };
-                
-                recognition.onresult = function(event) {
-                    let transcript = '';
-                    for (let i = event.resultIndex; i < event.results.length; i++) {
-                        transcript += event.results[i][0].transcript;
-                    }
-                    
-                    if (transcript.toLowerCase().includes('hey ava') || transcript.toLowerCase().includes('ava')) {
-                        handleVoiceCommand(transcript);
-                    }
-                };
-                
-                recognition.onerror = function(event) {
-                    console.log('Voice recognition error:', event.error);
-                    updateVoiceStatus('Voice recognition error');
-                };
-                
-                recognition.onend = function() {
-                    isListening = false;
-                    if (document.visibilityState === 'visible') {
-                        // Restart listening if app is active
-                        setTimeout(() => recognition.start(), 1000);
-                    }
-                };
-                
-                return true;
-            }
-            return false;
-        }
-        
-        function startVoiceListening() {
-            if (recognition && !isListening) {
-                try {
-                    recognition.start();
-                    updateVoiceStatus('Voice activation ready');
-                } catch (error) {
-                    console.log('Could not start voice recognition:', error);
-                }
-            }
-        }
-        
-        function handleVoiceCommand(command) {
-            updateVoiceStatus('Processing: ' + command);
-            
-            // Send command to AVA
-            fetch('/api/chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    message: command,
-                    voice_activated: true,
-                    timestamp: new Date().toISOString(),
-                    copyright: 'Ervin Remus Radosavlevici (© ervin210@icloud.com, radosavlevici210@icloud.com)',
-                    authorized_contacts: 'ervin210@icloud.com, radosavlevici210@icloud.com',
-                    access_restricted_to: ['ervin210@icloud.com', 'radosavlevici210@icloud.com']
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.response) {
-                    speakResponse(data.response);
-                    updateVoiceStatus('AVA responded');
-                }
-            })
-            .catch(error => {
-                console.log('Voice command error:', error);
-                updateVoiceStatus('Network error');
-            });
-        }
-        
-        function speakResponse(text) {
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.rate = 0.9;
-                utterance.pitch = 1.1;
-                utterance.volume = 0.8;
-                speechSynthesis.speak(utterance);
-            }
-        }
-        
-        function updateVoiceStatus(status) {
-            const statusElement = document.getElementById('voiceStatus');
-            if (statusElement) {
-                statusElement.textContent = status;
-            }
-        }
-        
-        // Auto-start voice recognition when app loads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add voice status indicator
-            const header = document.querySelector('.header-content h1');
-            if (header) {
-                const voiceStatus = document.createElement('div');
-                voiceStatus.id = 'voiceStatus';
-                voiceStatus.style.cssText = `
-                    font-size: 12px;
-                    color: #00b4ff;
-                    margin-top: 5px;
-                    font-weight: normal;
-                `;
-                voiceStatus.textContent = 'Initializing voice recognition...';
-                header.appendChild(voiceStatus);
-            }
-            
-            // Initialize voice recognition
-            if (initVoiceRecognition()) {
-                // Request microphone permission and start listening
-                navigator.mediaDevices.getUserMedia({ audio: true })
-                    .then(function(stream) {
-                        stream.getTracks().forEach(track => track.stop());
-                        startVoiceListening();
-                        updateVoiceStatus('Say "Hey AVA" to activate');
-                    })
-                    .catch(function(error) {
-                        console.log('Microphone permission denied:', error);
-                        updateVoiceStatus('Microphone access required for voice features');
-                    });
-            } else {
-                updateVoiceStatus('Voice recognition not supported');
-            }
-            
-            // Handle app visibility changes
-            document.addEventListener('visibilitychange', function() {
-                if (document.visibilityState === 'visible' && recognition && !isListening) {
-                    startVoiceListening();
-                } else if (document.visibilityState === 'hidden' && recognition && isListening) {
-                    recognition.stop();
-                }
-            });
-        
-        // Enhanced button interactions with water effects
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add water-interactive class to all buttons and clickable elements
-            const interactiveElements = document.querySelectorAll('button, .btn, .modern-btn, .quick-cmd-btn, .nav-link');
-            interactiveElements.forEach(element => {
-                element.classList.add('water-interactive');
-                
-                // Add custom ripple effect on click
-                element.addEventListener('click', function(e) {
-                    const rect = this.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    
-                    const ripple = document.createElement('div');
-                    ripple.className = 'ripple-effect';
-                    ripple.style.left = x + 'px';
-                    ripple.style.top = y + 'px';
-                    ripple.style.width = '20px';
-                    ripple.style.height = '20px';
-                    
-                    this.appendChild(ripple);
-                    
-                    setTimeout(() => {
-                        ripple.remove();
-                    }, 800);
-                });
-            });
-            
-            // Add water text effect to headers
-            const headers = document.querySelectorAll('h1, h2, h3');
-            headers.forEach(header => {
-                header.classList.add('water-text');
-            });
-            
-            // Create floating water particles on mouse movement
-            let particleTimeout;
-            document.addEventListener('mousemove', function(e) {
-                clearTimeout(particleTimeout);
-                particleTimeout = setTimeout(() => {
-                    createFloatingParticle(e.clientX, e.clientY);
-                }, 100);
-            });
-            
-            function createFloatingParticle(x, y) {
-                const particle = document.createElement('div');
-                particle.style.cssText = `
-                    position: fixed;
-                    left: ${x}px;
-                    top: ${y}px;
-                    width: 4px;
-                    height: 4px;
-                    background: rgba(255, 255, 255, 0.6);
-                    border-radius: 50%;
-                    pointer-events: none;
-                    z-index: 1001;
-                    animation: fadeParticle 2s ease-out forwards;
-                `;
-                
-                document.body.appendChild(particle);
-                
-                setTimeout(() => {
-                    particle.remove();
-                }, 2000);
-            }
-            
-            // Add CSS for fade particle animation
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes fadeParticle {
-                    0% { opacity: 0.8; transform: scale(1); }
-                    100% { opacity: 0; transform: scale(0) translateY(-50px); }
-                }
-            `;
-            document.head.appendChild(style);
         });
     </script>
 </body>
