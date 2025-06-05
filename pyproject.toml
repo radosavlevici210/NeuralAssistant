@@ -6,8 +6,13 @@ requires-python = ">=3.11"
 dependencies = [
     "flask>=3.1.1",
     "flask-socketio>=5.5.1",
+    "librosa>=0.11.0",
+    "numpy>=2.2.6",
     "openai>=1.83.0",
     "pyaudio>=0.2.14",
     "pyttsx3>=2.98",
+    "scipy>=1.15.3",
+    "sounddevice>=0.5.2",
     "speechrecognition>=3.14.3",
+    "webrtcvad>=2.0.10",
 ]
