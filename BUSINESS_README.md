@@ -3,7 +3,7 @@
 **Copyright:** Ervin Remus Radosavlevici (© ervin210@icloud.com)  
 **Watermark:** radosavlevici210@icloud.com  
 **Contact:** radosavlevici210@icloud.com  
-**GitHub Repository:** https://github.com/radosavlevici210/AVA-CORE-Enterprise  
+**GitHub Repository:** https://github.com/radosavlevici210/NeuralAssistant  
 **Business License:** [Business Commercial License with Comprehensive Protection](LICENSE)  
 **Timestamp:** 2025-06-05 02:07:00 UTC
 

@@ -4,7 +4,7 @@
 **Watermark:** radosavlevici210@icloud.com  
 **Contact:** radosavlevici210@icloud.com  
 **Timestamp:** 2025-06-05 02:07:00 UTC  
-**GitHub Repository:** https://github.com/radosavlevici210/AVA-CORE-Enterprise
+**GitHub Repository:** https://github.com/radosavlevici210/NeuralAssistant
 
 ## COMPREHENSIVE NON-DISCLOSURE AGREEMENT
 
