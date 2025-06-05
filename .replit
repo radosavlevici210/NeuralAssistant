@@ -20,6 +20,14 @@ args = "Enterprise Production System"
 task = "workflow.run"
 args = "Multi-Port Enterprise System"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Production Enterprise System"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Clean Production System"
+
 [[workflows.workflow]]
 name = "Enterprise Production System"
 author = "agent"
@@ -36,6 +44,24 @@ author = "agent"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python multi_port_enterprise_server.py"
+waitForPort = 5000
+
+[[workflows.workflow]]
+name = "Production Enterprise System"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python production_enterprise_core.py"
+waitForPort = 5000
+
+[[workflows.workflow]]
+name = "Clean Production System"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python clean_production_system.py"
 waitForPort = 5000
 
 [deployment]
