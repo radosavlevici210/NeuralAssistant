@@ -30,4 +30,8 @@ run = ["sh", "-c", "python app.py"]
 
 [[ports]]
 localPort = 5000
-externalPort = 4200
+externalPort = 80
+
+[[ports]]
+localPort = 50035
+externalPort = 3002

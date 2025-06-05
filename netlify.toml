@@ -1,32 +1,26 @@
-# Netlify Configuration for AVA CORE™ Neural AI Assistant
-# Copyright © 2025 Ervin Remus Radosavlevici
-# Enterprise Production Deployment
+# AVA CORE™ Netlify Deployment Configuration
+# Copyright © 2025 Ervin Remus Radosavlevici. All Rights Reserved.
+# Watermark: radosavlevici210@icloud.com
 
 [build]
-  publish = "dist/"
-  command = "npm run build"
+  publish = "."
+  command = "echo 'AVA CORE Enterprise Deployment'"
 
 [build.environment]
-  NODE_VERSION = "18"
   PYTHON_VERSION = "3.11"
-
-# Production redirects and rewrites
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
-[[redirects]]
-  from = "/ws/*"
-  to = "/.netlify/functions/websocket"
-  status = 200
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# Security headers for enterprise deployment
+[context.production]
+  environment = { NODE_ENV = "production" }
+
+[context.deploy-preview]
+  environment = { NODE_ENV = "preview" }
+
+# Headers for security and legal compliance
 [[headers]]
   for = "/*"
   [headers.values]
@@ -34,37 +28,38 @@
     X-Content-Type-Options = "nosniff"
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.socket.io https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' wss: ws:;"
-    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.socket.io https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
+    X-Copyright = "Copyright © 2025 Ervin Remus Radosavlevici. All Rights Reserved."
+    X-Watermark = "radosavlevici210@icloud.com"
+    X-Legal-Notice = "Protected by NDA and Enterprise License Agreement"
+    X-Authorized-Users = "radosavlevici210@icloud.com, ervin210@icloud.com"
 
-# Enterprise watermark and copyright protection
+# Legal documentation headers
+[[headers]]
+  for = "/legal"
+  [headers.values]
+    X-Legal-Framework = "Enterprise Compliance Active"
+    X-NDA-Required = "true"
+    X-License-Type = "Proprietary Enterprise"
+
+# API security headers
 [[headers]]
   for = "/api/*"
   [headers.values]
-    X-Copyright = "Ervin Remus Radosavlevici"
-    X-Watermark = "radosavlevici210@icloud.com"
-    X-Enterprise-System = "AVA-CORE"
-    X-Timestamp = "2025-06-05T12:15:00Z"
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+    X-API-Protection = "Enterprise Security Active"
 
-# Functions configuration
-[functions]
-  directory = "netlify/functions"
-  node_bundler = "esbuild"
+# Static assets caching
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
 
-# Environment variables for production
-[context.production.environment]
-  NODE_ENV = "production"
-  ENTERPRISE_MODE = "true"
-  COPYRIGHT_OWNER = "Ervin Remus Radosavlevici"
-  WATERMARK = "radosavlevici210@icloud.com"
-  AUTHORIZED_CONTACT = "ervin210@icloud.com"
-
-# Development environment
-[context.deploy-preview.environment]
-  NODE_ENV = "development"
-  ENTERPRISE_MODE = "true"
-
-# Branch deploys
-[context.branch-deploy.environment]
-  NODE_ENV = "staging"
-  ENTERPRISE_MODE = "true"
+# Manifest and service worker
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Content-Type = "application/json"
+    Cache-Control = "public, max-age=86400"
