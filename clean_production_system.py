@@ -296,7 +296,7 @@ def create_production_app():
     @app.route('/')
     def index():
         """Main application interface"""
-        return render_template('index.html')
+        return render_template('production_index.html')
     
     @app.route('/static/<path:filename>')
     def static_files(filename):
