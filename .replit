@@ -1,8 +1,7 @@
-modules = ["python-3.11", "python3"]
+modules = ["python3"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["espeak-ng", "ffmpeg-full", "libxcrypt", "pkg-config", "portaudio", "xsimd"]
 
 [workflows]
 runButton = "Project"
