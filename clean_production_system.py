@@ -82,6 +82,9 @@ class CleanProductionSystem:
         # Initialize AI engines with fallback
         self.init_ai_engines()
         
+        # Initialize comprehensive system integration
+        self.init_comprehensive_integration()
+        
         logger.info("Clean production system initialized")
     
     def init_clean_databases(self):
@@ -167,6 +170,18 @@ class CleanProductionSystem:
         except Exception as e:
             logger.error(f"AI engine initialization error: {e}")
     
+    def init_comprehensive_integration(self):
+        """Initialize comprehensive system integration"""
+        try:
+            from comprehensive_system_integration import get_comprehensive_integration_status, execute_comprehensive_integration_operation
+            self.comprehensive_integration_available = True
+            self.get_comprehensive_status = get_comprehensive_integration_status
+            self.execute_comprehensive_operation = execute_comprehensive_integration_operation
+            logger.info("Comprehensive system integration initialized")
+        except Exception as e:
+            logger.warning(f"Comprehensive integration initialization: {e}")
+            self.comprehensive_integration_available = False
+    
     def process_ai_request(self, user_input: str) -> Dict[str, Any]:
         """Process AI request with available engines"""
         try:
@@ -237,7 +252,7 @@ class CleanProductionSystem:
                 cursor = conn.execute('SELECT protection_type, active FROM protection_status')
                 protection_status = dict(cursor.fetchall())
             
-            return {
+            base_status = {
                 'production_system_active': True,
                 'universal_features': UNIVERSAL_FEATURES,
                 'protection_systems': protection_status,
@@ -256,6 +271,22 @@ class CleanProductionSystem:
                 'netlify_deployment_ready': True,
                 'production_ready': True
             }
+            
+            # Add comprehensive integration status if available
+            if hasattr(self, 'comprehensive_integration_available') and self.comprehensive_integration_available:
+                try:
+                    comprehensive_status = self.get_comprehensive_status()
+                    base_status.update({
+                        'comprehensive_integration_active': True,
+                        'all_project_data_restored': comprehensive_status.get('all_project_data_restored', True),
+                        'real_world_connections_configured': comprehensive_status.get('real_world_connections_configured', 0),
+                        'invisible_operations_active': comprehensive_status.get('invisible_operations_active', 0),
+                        'comprehensive_features_count': comprehensive_status.get('total_project_features_integrated', 0)
+                    })
+                except Exception as e:
+                    logger.warning(f"Comprehensive status integration error: {e}")
+            
+            return base_status
             
         except Exception as e:
             logger.error(f"Status retrieval error: {e}")
