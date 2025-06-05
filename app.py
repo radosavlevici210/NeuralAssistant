@@ -40,7 +40,7 @@ app.config.update({
 })
 
 # Initialize SocketIO for real-time communication
-socketio = SocketIO(app, cors_allowed_origins="*", path='/ws')
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Global voice assistant instance
 voice_assistant = None

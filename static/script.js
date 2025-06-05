@@ -30,12 +30,9 @@ class AVAInterface {
     
     initWebSocket() {
         try {
-            // Connect to WebSocket server using the correct protocol and path
-            const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-            const wsUrl = `${protocol}//${window.location.host}/ws`;
-            
-            this.socket = io(wsUrl, {
-                path: '/ws',
+            // Connect to SocketIO server using the correct path
+            this.socket = io({
+                path: '/socket.io',
                 transports: ['websocket', 'polling']
             });
             
