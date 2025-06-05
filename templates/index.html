@@ -461,5 +461,86 @@
             }
         });
     </script>
+    
+    <!-- Interactive Water Effects JavaScript -->
+    <script src="{{ url_for('static', filename='interactive_water_effects.js') }}"></script>
+    
+    <script>
+        // Enhanced button interactions with water effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add water-interactive class to all buttons and clickable elements
+            const interactiveElements = document.querySelectorAll('button, .btn, .modern-btn, .quick-cmd-btn, .nav-link');
+            interactiveElements.forEach(element => {
+                element.classList.add('water-interactive');
+                
+                // Add custom ripple effect on click
+                element.addEventListener('click', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const ripple = document.createElement('div');
+                    ripple.className = 'ripple-effect';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.style.width = '20px';
+                    ripple.style.height = '20px';
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 800);
+                });
+            });
+            
+            // Add water text effect to headers
+            const headers = document.querySelectorAll('h1, h2, h3');
+            headers.forEach(header => {
+                header.classList.add('water-text');
+            });
+            
+            // Create floating water particles on mouse movement
+            let particleTimeout;
+            document.addEventListener('mousemove', function(e) {
+                clearTimeout(particleTimeout);
+                particleTimeout = setTimeout(() => {
+                    createFloatingParticle(e.clientX, e.clientY);
+                }, 100);
+            });
+            
+            function createFloatingParticle(x, y) {
+                const particle = document.createElement('div');
+                particle.style.cssText = `
+                    position: fixed;
+                    left: ${x}px;
+                    top: ${y}px;
+                    width: 4px;
+                    height: 4px;
+                    background: rgba(255, 255, 255, 0.6);
+                    border-radius: 50%;
+                    pointer-events: none;
+                    z-index: 1001;
+                    animation: fadeParticle 2s ease-out forwards;
+                `;
+                
+                document.body.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 2000);
+            }
+            
+            // Add CSS for fade particle animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeParticle {
+                    0% { opacity: 0.8; transform: scale(1); }
+                    100% { opacity: 0; transform: scale(0) translateY(-50px); }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
 </body>
 </html>
