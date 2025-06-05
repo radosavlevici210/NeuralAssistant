@@ -44,6 +44,10 @@ args = "Fresh Development System"
 task = "workflow.run"
 args = "Enhanced Voice Network System"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Unified Production System"
+
 [[workflows.workflow]]
 name = "Enterprise Production System"
 author = "agent"
@@ -116,12 +120,25 @@ task = "shell.exec"
 args = "python enhanced_voice_network_system.py"
 waitForPort = 9000
 
+[[workflows.workflow]]
+name = "Unified Production System"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python unified_production_system.py"
+waitForPort = 7000
+
 [deployment]
 run = ["sh", "-c", "python app.py"]
 
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 7000
+externalPort = 3000
 
 [[ports]]
 localPort = 8000
