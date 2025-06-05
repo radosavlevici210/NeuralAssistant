@@ -21,6 +21,7 @@ import logging
 from voice_assistant import VoiceAssistant
 from production_config import ProductionConfig, EnterpriseLogger
 from network_control import NetworkDeviceController
+from ultimate_security import ultimate_security, require_ultimate_authorization
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -336,8 +337,8 @@ def get_system_status():
         return jsonify({'error': f'Failed to get system status: {str(e)}'}), 500
 
 @app.route('/api/network/authenticate', methods=['POST'])
-def authenticate_root_user():
-    """Authenticate root user for network control"""
+def authenticate_ultimate_user():
+    """ULTIMATE IMMUTABLE AUTHENTICATION - PERMANENT LOCK TO TWO USERS"""
     try:
         data = request.json
         user_email = data.get('user_email')
@@ -345,23 +346,40 @@ def authenticate_root_user():
         if not user_email:
             return jsonify({'error': 'User email required'}), 400
         
-        authenticated = network_controller.authenticate_root_user(user_email)
+        # Check system destruction status
+        if ultimate_security.is_system_destroyed():
+            return jsonify({'error': 'System destroyed - access denied', 'destroyed': True}), 410
+        
+        # Use ultimate immutable security
+        authenticated = ultimate_security.authenticate_user(user_email)
         
         if authenticated:
-            logger.info(f"ROOT USER AUTHENTICATED: {user_email}")
+            # Also authenticate with network controller
+            network_controller.authenticate_root_user(user_email)
+            
+            logger.critical(f"🔒 ULTIMATE SECURITY: AUTHORIZED ACCESS - {user_email}")
             return jsonify({
                 'success': True,
-                'message': 'Root user authenticated',
+                'message': 'ULTIMATE IMMUTABLE SECURITY - ACCESS GRANTED',
                 'user': user_email,
-                'authorized_users': network_controller.get_authorized_users()
+                'authorized_users': ultimate_security.get_authorized_users(),
+                'security_level': 'ULTIMATE_PROTECTION',
+                'permanent_lock': True,
+                'self_destruction_armed': True
             })
         else:
-            logger.warning(f"UNAUTHORIZED ACCESS ATTEMPT: {user_email}")
-            return jsonify({'error': 'Unauthorized user'}), 403
+            # Authentication failed - system will self-destruct
+            logger.critical(f"🚨 ULTIMATE SECURITY VIOLATION: {user_email}")
+            return jsonify({
+                'error': 'UNAUTHORIZED ACCESS - SYSTEM DESTRUCTION TRIGGERED',
+                'authorized_users': ultimate_security.get_authorized_users(),
+                'destroyed': True
+            }), 403
             
     except Exception as e:
-        logger.error(f"Authentication error: {str(e)}")
-        return jsonify({'error': f'Authentication failed: {str(e)}'}), 500
+        logger.critical(f"Ultimate security error: {str(e)}")
+        ultimate_security.force_lockdown()
+        return jsonify({'error': 'Security violation - system destroyed', 'destroyed': True}), 500
 
 @app.route('/api/network/scan')
 def scan_network_devices():
@@ -433,6 +451,91 @@ def get_connected_devices():
     except Exception as e:
         logger.error(f"Get devices error: {str(e)}")
         return jsonify({'error': f'Failed to get devices: {str(e)}'}), 500
+
+@app.route('/api/security/status')
+def get_security_status():
+    """Get immutable security system status"""
+    try:
+        status = security_lock.get_security_status()
+        
+        response_data = {
+            'immutable_security': True,
+            'authorized_users_only': True,
+            'tamper_protection': True,
+            **status,
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        return jsonify(response_data)
+        
+    except Exception as e:
+        logger.error(f"Security status error: {str(e)}")
+        return jsonify({'error': f'Failed to get security status: {str(e)}'}), 500
+
+@app.route('/api/security/access-log')
+def get_access_log():
+    """Get security access log - AUTHORIZED USERS ONLY"""
+    try:
+        # Check if user is authorized
+        current_user = getattr(security_lock, '_current_authenticated_user', None)
+        
+        if not current_user or not security_lock.is_authenticated(current_user):
+            return jsonify({'error': 'Authorization required'}), 403
+        
+        access_log = security_lock.get_access_log()
+        
+        return jsonify({
+            'success': True,
+            'access_log': access_log,
+            'total_attempts': len(access_log),
+            'requesting_user': current_user
+        })
+        
+    except Exception as e:
+        logger.error(f"Access log error: {str(e)}")
+        return jsonify({'error': f'Failed to get access log: {str(e)}'}), 500
+
+@app.route('/api/secure-chat', methods=['POST'])
+def secure_chat_with_ava():
+    """Secure chat with AVA using advanced AI capabilities - IMMUTABLE PROTECTION"""
+    try:
+        data = request.json
+        user_message = data.get('message')
+        
+        if not user_message:
+            return jsonify({'error': 'Message is required'}), 400
+        
+        # Set request info for security
+        set_request_info(
+            request.remote_addr or 'unknown',
+            request.headers.get('User-Agent', 'unknown')
+        )
+        
+        # Get AI response through the web assistant
+        response = web_assistant.voice_assistant.advanced_ai.generate_contextual_response(
+            user_message, 
+            intent="conversation"
+        )
+        
+        # Log conversation
+        web_assistant.log_conversation("User", user_message)
+        web_assistant.log_conversation("AVA", response)
+        
+        logger.info(f"Chat processed - User: {user_message[:50]}...")
+        
+        return jsonify({
+            'success': True,
+            'response': response,
+            'timestamp': datetime.now().isoformat(),
+            'protected_by': 'AVA CORE™ Immutable Security'
+        })
+        
+    except Exception as e:
+        logger.error(f"Chat error: {str(e)}")
+        return jsonify({
+            'error': 'I apologize, but I encountered an issue processing your request. Please try again.',
+            'timestamp': datetime.now().isoformat()
+        }), 500
 
 @socketio.on('connect')
 def handle_connect():
