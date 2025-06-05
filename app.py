@@ -156,6 +156,86 @@ def network_control():
     """Network device control interface - ROOT ACCESS ONLY"""
     return render_template('network.html')
 
+@app.route('/legal')
+def legal_documentation():
+    """Legal documentation and compliance center"""
+    return render_template('legal.html')
+
+@app.route('/api/legal/nda')
+def get_nda():
+    """Get Non-Disclosure Agreement"""
+    try:
+        with open('NDA.md', 'r') as file:
+            nda_content = file.read()
+        return jsonify({
+            'success': True,
+            'content': nda_content,
+            'type': 'NDA',
+            'last_updated': '2025-06-05'
+        })
+    except Exception as e:
+        return jsonify({'error': f'Failed to load NDA: {str(e)}'}), 500
+
+@app.route('/api/legal/license')
+def get_license():
+    """Get Software License Agreement"""
+    try:
+        with open('LICENSE.md', 'r') as file:
+            license_content = file.read()
+        return jsonify({
+            'success': True,
+            'content': license_content,
+            'type': 'LICENSE',
+            'last_updated': '2025-06-05'
+        })
+    except Exception as e:
+        return jsonify({'error': f'Failed to load License: {str(e)}'}), 500
+
+@app.route('/api/legal/enterprise-license')
+def get_enterprise_license():
+    """Get Enterprise License Agreement"""
+    try:
+        with open('ENTERPRISE_LICENSE.md', 'r') as file:
+            enterprise_content = file.read()
+        return jsonify({
+            'success': True,
+            'content': enterprise_content,
+            'type': 'ENTERPRISE_LICENSE',
+            'last_updated': '2025-06-05'
+        })
+    except Exception as e:
+        return jsonify({'error': f'Failed to load Enterprise License: {str(e)}'}), 500
+
+@app.route('/api/legal/terms')
+def get_terms():
+    """Get Terms of Service"""
+    try:
+        with open('TERMS_OF_SERVICE.md', 'r') as file:
+            terms_content = file.read()
+        return jsonify({
+            'success': True,
+            'content': terms_content,
+            'type': 'TERMS',
+            'last_updated': '2025-06-05'
+        })
+    except Exception as e:
+        return jsonify({'error': f'Failed to load Terms of Service: {str(e)}'}), 500
+
+@app.route('/api/legal/security-policy')
+def get_security_policy():
+    """Get Security Policy"""
+    try:
+        with open('SECURITY_POLICY.md', 'r') as file:
+            security_content = file.read()
+        return jsonify({
+            'success': True,
+            'content': security_content,
+            'type': 'SECURITY_POLICY',
+            'last_updated': '2025-06-05'
+        })
+    except Exception as e:
+        return jsonify({'error': f'Failed to load Security Policy: {str(e)}'}), 500
+
 @app.route('/api/status')
 def get_status():
     """Get current assistant status"""
