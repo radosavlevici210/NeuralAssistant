@@ -35,7 +35,7 @@ class ProductionDeploymentConfig:
             'app_name': 'AVA-CORE-Enterprise',
             'version': '1.0.0',
             'environment': 'production',
-            'repository': f'https://github.com/{self.github_username}/AVA-CORE-Enterprise',
+            'repository': f'https://github.com/{self.github_username}/NeuralAssistant',
             'deployment_url': 'https://6b8ab92f-0e1c-4484-9a3a-7b1912596b3d-00-wivmddnymuta.worf.replit.dev/',
             'ports': [5000, 80, 443],
             'features': {
