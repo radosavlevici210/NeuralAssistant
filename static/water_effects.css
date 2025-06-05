@@ -333,6 +333,75 @@
     margin: 0;
 }
 
+/* NDA Protection Notice Styles */
+.nda-protection-notice {
+    background: linear-gradient(135deg, rgba(255, 0, 0, 0.1), rgba(200, 0, 0, 0.05));
+    border: 2px solid rgba(255, 100, 100, 0.3);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.nda-protection-notice p {
+    margin: 0.25rem 0;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.nda-protection-notice strong {
+    color: #ff6b6b;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Development Features Section */
+.development-features {
+    background: linear-gradient(135deg, rgba(0, 255, 0, 0.1), rgba(0, 200, 0, 0.05));
+    border-radius: 16px;
+    padding: 2rem;
+    margin: 1rem 0;
+    border: 1px solid rgba(0, 255, 0, 0.2);
+}
+
+.development-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.development-item {
+    background: rgba(0, 255, 0, 0.03);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 255, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.development-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 255, 0, 0.2);
+    border-color: rgba(0, 255, 0, 0.3);
+}
+
+.development-item h4 {
+    color: #00ff88;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.development-status {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.5rem;
+    border-radius: 6px;
+    margin: 0.5rem 0;
+    border-left: 3px solid #00ff88;
+    font-family: monospace;
+    font-size: 0.85rem;
+}
+
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
     .water-background,
