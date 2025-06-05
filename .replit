@@ -28,6 +28,10 @@ args = "Production Enterprise System"
 task = "workflow.run"
 args = "Clean Production System"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Netlify Production System"
+
 [[workflows.workflow]]
 name = "Enterprise Production System"
 author = "agent"
@@ -62,6 +66,15 @@ author = "agent"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python clean_production_system.py"
+waitForPort = 5000
+
+[[workflows.workflow]]
+name = "Netlify Production System"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python netlify_production_app.py"
 waitForPort = 5000
 
 [deployment]
