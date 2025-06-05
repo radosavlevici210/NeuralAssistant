@@ -3,7 +3,7 @@
 **Copyright:** Ervin Remus Radosavlevici (© ervin210@icloud.com)  
 **Watermark:** radosavlevici210@icloud.com  
 **Contact:** radosavlevici210@icloud.com  
-**GitHub Repository:** https://github.com/radosavlevici210/AVA-CORE-Enterprise  
+**GitHub Repository:** https://github.com/radosavlevici210/NeuralAssistant  
 **Business License:** Business Commercial License with Comprehensive Protection  
 **Timestamp:** 2025-06-05 02:07:00 UTC
 
@@ -14,16 +14,16 @@ This guide provides complete instructions for setting up the AVA CORE Enterprise
 ### Repository Configuration
 
 **Repository Details:**
-- **Repository Name:** AVA-CORE-Enterprise
+- **Repository Name:** NeuralAssistant
 - **GitHub Username:** radosavlevici210
-- **Repository URL:** https://github.com/radosavlevici210/AVA-CORE-Enterprise
+- **Repository URL:** https://github.com/radosavlevici210/NeuralAssistant
 - **Visibility:** Public (with NDA protection for sensitive components)
 - **License:** Business Commercial License with Comprehensive Protection
 
 ### Repository Structure
 
 ```
-AVA-CORE-Enterprise/
+NeuralAssistant/
 ├── LICENSE                           # Business Commercial License
 ├── NDA_LICENSE.md                   # Comprehensive NDA Agreement
 ├── README.md                        # Main project documentation
