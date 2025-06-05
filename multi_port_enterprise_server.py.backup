@@ -108,6 +108,7 @@ from unified_comprehensive_integration import get_unified_comprehensive_status, 
 from comprehensive_development_features import get_comprehensive_development_status, execute_comprehensive_development_operation
 from secret_enterprise_development import get_secret_enterprise_status, execute_secret_enterprise_operation
 from simplified_no_parallels_policy import get_simplified_policy_status, verify_simplified_authorized_access, destroy_simplified_parallels, remove_non_working_features, enforce_simplified_no_parallels_policy
+from single_device_control import get_device_control_status, verify_device_authorization, request_permission, approve_permission, check_enterprise_feature_access, wipe_unauthorized_access, enforce_single_device_control
 
 # Universal Features Applied Everywhere
 UNIVERSAL_FEATURES = {
@@ -1270,6 +1271,223 @@ def create_app():
                 'simplified_policy_active': True,
                 'single_session_enforced': True,
                 'authorized_contact_confirmed': 'ervin210@icloud.com',
+                'timestamp': TIMESTAMP,
+                'copyright': COPYRIGHT,
+                'watermark': WATERMARK
+            })
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)})
+    
+    @app.route('/api/single_device_control_status', methods=['GET'])
+    def single_device_control_status():
+        """Get single device control status - Authorized Contact Only"""
+        try:
+            device_status = get_device_control_status()
+            return jsonify({
+                'success': True,
+                'single_device_control': device_status,
+                'authorized_contact_only': 'ervin210@icloud.com',
+                'privacy_protection_enabled': True,
+                'authorization_required_for_changes': True,
+                'enterprise_features_only': True,
+                'copyright_owner': COPYRIGHT_OWNER,
+                'timestamp': TIMESTAMP,
+                'copyright': COPYRIGHT,
+                'watermark': WATERMARK
+            })
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)})
+    
+    @app.route('/api/verify_device_authorization', methods=['POST'])
+    def verify_device_authorization_endpoint():
+        """Verify device authorization - Privacy Protected"""
+        try:
+            data = request.get_json()
+            
+            device_info = {
+                'device_id': data.get('device_id', ''),
+                'contact': data.get('contact', '')
+            }
+            
+            is_authorized = verify_device_authorization(device_info)
+            
+            return jsonify({
+                'success': True,
+                'device_authorized': is_authorized,
+                'authorized_contact': 'ervin210@icloud.com' if is_authorized else None,
+                'privacy_protection_active': True,
+                'single_device_policy_enforced': True,
+                'timestamp': TIMESTAMP,
+                'copyright': COPYRIGHT,
+                'watermark': WATERMARK
+            })
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)})
+    
+    @app.route('/api/request_permission', methods=['POST'])
+    def request_permission_endpoint():
+        """Request permission for changes - Authorization Required"""
+        try:
+            data = request.get_json()
+            
+            permission_type = data.get('permission_type', '')
+            action = data.get('action', '')
+            details = data.get('details', {})
+            
+            # Verify device authorization first
+            device_info = {
+                'device_id': details.get('device_id', ''),
+                'contact': details.get('contact', '')
+            }
+            
+            if not verify_device_authorization(device_info):
+                return jsonify({
+                    'access_denied': True,
+                    'message': 'Unauthorized device - Permission requests restricted to authorized devices only',
+                    'authorized_contact': 'ervin210@icloud.com',
+                    'privacy_protection_active': True
+                })
+            
+            request_id = request_permission(permission_type, action, details)
+            
+            return jsonify({
+                'success': True,
+                'permission_request_id': request_id,
+                'permission_status': 'pending_approval',
+                'requires_approval_from': 'ervin210@icloud.com',
+                'privacy_protection_active': True,
+                'timestamp': TIMESTAMP,
+                'copyright': COPYRIGHT,
+                'watermark': WATERMARK
+            })
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)})
+    
+    @app.route('/api/approve_permission', methods=['POST'])
+    def approve_permission_endpoint():
+        """Approve permission request - Authorized Contact Only"""
+        try:
+            data = request.get_json()
+            
+            request_id = data.get('request_id', '')
+            approver_contact = data.get('contact', '')
+            
+            # Verify authorized contact
+            if approver_contact != 'ervin210@icloud.com':
+                return jsonify({
+                    'access_denied': True,
+                    'message': 'Unauthorized - Permission approval restricted to ervin210@icloud.com only',
+                    'authorized_contact': 'ervin210@icloud.com',
+                    'privacy_protection_active': True
+                })
+            
+            approval_result = approve_permission(request_id, approver_contact)
+            
+            return jsonify({
+                'success': True,
+                'permission_approved': approval_result,
+                'approved_by': approver_contact if approval_result else None,
+                'authorization_confirmed': approval_result,
+                'timestamp': TIMESTAMP,
+                'copyright': COPYRIGHT,
+                'watermark': WATERMARK
+            })
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)})
+    
+    @app.route('/api/check_enterprise_feature_access', methods=['POST'])
+    def check_enterprise_feature_access_endpoint():
+        """Check enterprise feature access - Authorization Required"""
+        try:
+            data = request.get_json()
+            
+            feature_name = data.get('feature_name', '')
+            device_info = {
+                'device_id': data.get('device_id', ''),
+                'contact': data.get('contact', '')
+            }
+            
+            has_access = check_enterprise_feature_access(feature_name, device_info)
+            
+            return jsonify({
+                'success': True,
+                'enterprise_feature_access': has_access,
+                'feature_name': feature_name,
+                'access_level': 'enterprise_only' if has_access else 'unauthorized',
+                'authorization_required': True,
+                'authorized_contact_verified': has_access,
+                'timestamp': TIMESTAMP,
+                'copyright': COPYRIGHT,
+                'watermark': WATERMARK
+            })
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)})
+    
+    @app.route('/api/wipe_unauthorized_access', methods=['POST'])
+    def wipe_unauthorized_access_endpoint():
+        """Wipe all unauthorized access - Authorized Contact Only"""
+        try:
+            data = request.get_json()
+            
+            contact = data.get('contact', '')
+            
+            # Verify authorized contact
+            if contact != 'ervin210@icloud.com':
+                return jsonify({
+                    'access_denied': True,
+                    'message': 'Unauthorized - Access wipe restricted to ervin210@icloud.com only',
+                    'authorized_contact': 'ervin210@icloud.com',
+                    'privacy_protection_active': True
+                })
+            
+            wipe_result = wipe_unauthorized_access()
+            
+            return jsonify({
+                'success': True,
+                'unauthorized_access_wipe': wipe_result,
+                'enterprise_features_only_enforced': True,
+                'privacy_protection_restored': True,
+                'authorized_contact_confirmed': contact,
+                'timestamp': TIMESTAMP,
+                'copyright': COPYRIGHT,
+                'watermark': WATERMARK
+            })
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)})
+    
+    @app.route('/api/enforce_all_authorizations', methods=['POST'])
+    def enforce_all_authorizations_endpoint():
+        """Enforce all authorization policies - Complete System Control"""
+        try:
+            data = request.get_json()
+            
+            contact = data.get('contact', '')
+            
+            # Verify authorized contact
+            if contact != 'ervin210@icloud.com':
+                return jsonify({
+                    'access_denied': True,
+                    'message': 'Unauthorized - System control restricted to ervin210@icloud.com only',
+                    'authorized_contact': 'ervin210@icloud.com',
+                    'all_protections_active': True
+                })
+            
+            # Enforce all policies
+            device_control_result = enforce_single_device_control()
+            simplified_policy_result = enforce_simplified_no_parallels_policy()
+            secret_enterprise_result = get_secret_enterprise_status()
+            
+            return jsonify({
+                'success': True,
+                'all_authorizations_enforced': True,
+                'single_device_control': device_control_result,
+                'no_parallels_policy': simplified_policy_result,
+                'secret_enterprise_features': secret_enterprise_result,
+                'privacy_protection_maximum': True,
+                'enterprise_features_only': True,
+                'unauthorized_access_blocked': True,
+                'authorized_contact_confirmed': contact,
+                'comprehensive_protection_active': True,
                 'timestamp': TIMESTAMP,
                 'copyright': COPYRIGHT,
                 'watermark': WATERMARK
