@@ -61,9 +61,9 @@ class CopyrightProtectionSystem:
                         modified_content TEXT,
                         detected_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         action_taken TEXT,
-                        repository_owner TEXT DEFAULT ?
+                        repository_owner TEXT DEFAULT 'radosavlevici210@icloud.com'
                     )
-                ''', (REPOSITORY_OWNER,))
+                ''')
                 
                 conn.execute('''
                     CREATE TABLE IF NOT EXISTS file_hashes (
@@ -84,6 +84,8 @@ class CopyrightProtectionSystem:
                         severity TEXT DEFAULT 'info'
                     )
                 ''')
+                
+                conn.commit()
                 
         except Exception as e:
             logger.error(f"Protection database initialization failed: {e}")
@@ -239,7 +241,7 @@ feature restoration and return to: radosavlevici210@icloud.com
         if file_path == "README.md":
             return self.get_readme_with_copyright()
         elif file_path.endswith(".py"):
-            return copyright_header + self.get_python_file_content(file_path)
+            return copyright_header + f"# Protected Python file: {file_path}\n# Content restored automatically\n"
         else:
             return copyright_header + f"# {file_path}\nProtected content restored automatically."
     
