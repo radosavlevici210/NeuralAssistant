@@ -109,6 +109,8 @@ from comprehensive_development_features import get_comprehensive_development_sta
 from secret_enterprise_development import get_secret_enterprise_status, execute_secret_enterprise_operation
 from simplified_no_parallels_policy import get_simplified_policy_status, verify_simplified_authorized_access, destroy_simplified_parallels, remove_non_working_features, enforce_simplified_no_parallels_policy
 from single_device_control import get_device_control_status, verify_device_authorization, request_permission, approve_permission, check_enterprise_feature_access, wipe_unauthorized_access, enforce_single_device_control
+from self_destruction_policy import get_destruction_policy_status, manual_destruction_trigger, trigger_unauthorized_change_destruction, enforce_self_destruction_policy
+from impossible_reproduction_protection import get_impossible_protection_status, trigger_silent_destruction, enforce_impossible_reproduction_protection
 
 # Universal Features Applied Everywhere
 UNIVERSAL_FEATURES = {
@@ -1488,6 +1490,171 @@ def create_app():
                 'unauthorized_access_blocked': True,
                 'authorized_contact_confirmed': contact,
                 'comprehensive_protection_active': True,
+                'timestamp': TIMESTAMP,
+                'copyright': COPYRIGHT,
+                'watermark': WATERMARK
+            })
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)})
+    
+    @app.route('/api/self_destruction_policy_status', methods=['GET'])
+    def self_destruction_policy_status():
+        """Get self-destruction policy status - Authorized Contact Only"""
+        try:
+            destruction_status = get_destruction_policy_status()
+            return jsonify({
+                'success': True,
+                'self_destruction_policy': destruction_status,
+                'authorized_contact_only': 'ervin210@icloud.com',
+                'unauthorized_changes_trigger_destruction': True,
+                'monitoring_system_active': True,
+                'automatic_reconstruction_enabled': True,
+                'copyright_owner': COPYRIGHT_OWNER,
+                'timestamp': TIMESTAMP,
+                'copyright': COPYRIGHT,
+                'watermark': WATERMARK
+            })
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)})
+    
+    @app.route('/api/manual_destruction_trigger', methods=['POST'])
+    def manual_destruction_trigger_endpoint():
+        """Manual destruction trigger - Authorized Contact Only"""
+        try:
+            data = request.get_json()
+            
+            contact = data.get('contact', '')
+            destruction_type = data.get('destruction_type', '')
+            reason = data.get('reason', '')
+            
+            # Verify authorized contact
+            if contact != 'ervin210@icloud.com':
+                return jsonify({
+                    'access_denied': True,
+                    'message': 'Unauthorized - Manual destruction restricted to ervin210@icloud.com only',
+                    'authorized_contact': 'ervin210@icloud.com',
+                    'self_destruction_policy_active': True
+                })
+            
+            result = manual_destruction_trigger(contact, destruction_type, reason)
+            
+            return jsonify({
+                'success': True,
+                'manual_destruction': result,
+                'destruction_type': destruction_type,
+                'authorized_by': contact,
+                'destruction_reason': reason,
+                'timestamp': TIMESTAMP,
+                'copyright': COPYRIGHT,
+                'watermark': WATERMARK
+            })
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)})
+    
+    @app.route('/api/destroy_all_unauthorized', methods=['POST'])
+    def destroy_all_unauthorized_endpoint():
+        """Destroy all unauthorized development and settings - Authorized Contact Only"""
+        try:
+            data = request.get_json()
+            
+            contact = data.get('contact', '')
+            
+            # Verify authorized contact
+            if contact != 'ervin210@icloud.com':
+                return jsonify({
+                    'access_denied': True,
+                    'message': 'Unauthorized - Destruction operations restricted to ervin210@icloud.com only',
+                    'authorized_contact': 'ervin210@icloud.com',
+                    'destruction_policy_active': True
+                })
+            
+            # Trigger comprehensive destruction of unauthorized elements
+            destruction_result = manual_destruction_trigger(contact, 'destroy_all_unauthorized', 'comprehensive_cleanup_requested')
+            
+            return jsonify({
+                'success': True,
+                'all_unauthorized_destroyed': True,
+                'destruction_result': destruction_result,
+                'authorized_system_restored': True,
+                'enterprise_features_only_enforced': True,
+                'authorized_contact_verified': contact,
+                'timestamp': TIMESTAMP,
+                'copyright': COPYRIGHT,
+                'watermark': WATERMARK
+            })
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)})
+    
+    @app.route('/api/complete_system_reset', methods=['POST'])
+    def complete_system_reset_endpoint():
+        """Complete system reset to authorized baseline - Authorized Contact Only"""
+        try:
+            data = request.get_json()
+            
+            contact = data.get('contact', '')
+            
+            # Verify authorized contact
+            if contact != 'ervin210@icloud.com':
+                return jsonify({
+                    'access_denied': True,
+                    'message': 'Unauthorized - System reset restricted to ervin210@icloud.com only',
+                    'authorized_contact': 'ervin210@icloud.com',
+                    'system_protection_active': True
+                })
+            
+            # Trigger complete system reset
+            reset_result = manual_destruction_trigger(contact, 'complete_system_reset', 'full_system_restoration_requested')
+            
+            return jsonify({
+                'success': True,
+                'complete_system_reset_executed': True,
+                'reset_result': reset_result,
+                'authorized_baseline_restored': True,
+                'system_reconstruction_completed': True,
+                'authorized_contact_verified': contact,
+                'timestamp': TIMESTAMP,
+                'copyright': COPYRIGHT,
+                'watermark': WATERMARK
+            })
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)})
+    
+    @app.route('/api/enforce_comprehensive_policies', methods=['POST'])
+    def enforce_comprehensive_policies_endpoint():
+        """Enforce all comprehensive policies - Complete System Control"""
+        try:
+            data = request.get_json()
+            
+            contact = data.get('contact', '')
+            
+            # Verify authorized contact
+            if contact != 'ervin210@icloud.com':
+                return jsonify({
+                    'access_denied': True,
+                    'message': 'Unauthorized - Comprehensive policy enforcement restricted to ervin210@icloud.com only',
+                    'authorized_contact': 'ervin210@icloud.com',
+                    'all_policies_protected': True
+                })
+            
+            # Enforce all comprehensive policies
+            self_destruction_result = enforce_self_destruction_policy()
+            device_control_result = enforce_single_device_control()
+            no_parallels_result = enforce_simplified_no_parallels_policy()
+            secret_enterprise_result = get_secret_enterprise_status()
+            
+            return jsonify({
+                'success': True,
+                'comprehensive_policies_enforced': True,
+                'self_destruction_policy': self_destruction_result,
+                'single_device_control': device_control_result,
+                'no_parallels_policy': no_parallels_result,
+                'secret_enterprise_features': secret_enterprise_result,
+                'unauthorized_changes_trigger_destruction': True,
+                'privacy_protection_maximum': True,
+                'enterprise_features_only': True,
+                'complete_authorization_control': True,
+                'authorized_contact_confirmed': contact,
+                'all_policies_active': True,
                 'timestamp': TIMESTAMP,
                 'copyright': COPYRIGHT,
                 'watermark': WATERMARK
