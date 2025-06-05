@@ -37,6 +37,7 @@ from nda_protection import nda_protect, protect_all_endpoints, nda_monitor, NDA_
 from api_management import api_manager, AdvancedAPIManager
 from comprehensive_development import comprehensive_dev
 from copyright_protection import copyright_protection, verify_copyright_integrity
+from enterprise_subscription import enterprise_subscription, get_enterprise_status, track_usage, check_limits
 
 # Production configuration
 app = Flask(__name__)
@@ -2667,6 +2668,127 @@ def repository_owner_info():
     except Exception as e:
         logger.error(f"Repository owner info failed: {e}")
         return jsonify({'success': False, 'error': 'Owner info retrieval failed'}), 500
+
+# ====================================================
+# ENTERPRISE SUBSCRIPTION ENDPOINTS
+# Copyright: Ervin Remus Radosavlevici (© ervin210@icloud.com)
+# Watermark: radosavlevici210@icloud.com
+# ====================================================
+
+@app.route('/api/enterprise/subscription', methods=['GET'])
+@nda_protect('enterprise_subscription')
+def get_enterprise_subscription():
+    """Get enterprise subscription status - NDA Protected"""
+    try:
+        status = get_enterprise_status()
+        return jsonify({'success': True, 'enterprise_subscription': status})
+        
+    except Exception as e:
+        logger.error(f"Enterprise subscription check failed: {e}")
+        return jsonify({'success': False, 'error': 'Subscription check failed'}), 500
+
+@app.route('/api/enterprise/billing', methods=['GET'])
+@nda_protect('enterprise_billing')
+def get_enterprise_billing():
+    """Get enterprise billing information - NDA Protected"""
+    try:
+        billing_info = enterprise_subscription.get_billing_summary()
+        return jsonify({'success': True, 'billing_info': billing_info})
+        
+    except Exception as e:
+        logger.error(f"Enterprise billing check failed: {e}")
+        return jsonify({'success': False, 'error': 'Billing check failed'}), 500
+
+@app.route('/api/enterprise/activate', methods=['POST'])
+@nda_protect('enterprise_activation')
+def activate_enterprise_features():
+    """Activate enterprise features - NDA Protected"""
+    try:
+        # Enterprise activation is automatic
+        enterprise_subscription.activate_enterprise_tier()
+        status = get_enterprise_status()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Enterprise features activated',
+            'enterprise_status': status,
+            'unlimited_ai': True,
+            'copyright': 'Ervin Remus Radosavlevici (© ervin210@icloud.com)',
+            'watermark': 'radosavlevici210@icloud.com'
+        })
+        
+    except Exception as e:
+        logger.error(f"Enterprise activation failed: {e}")
+        return jsonify({'success': False, 'error': 'Activation failed'}), 500
+
+@app.route('/api/chat', methods=['POST'])
+@nda_protect('ai_chat')
+def enhanced_chat_with_enterprise_ai():
+    """Enhanced chat with enterprise AI capabilities - NDA Protected"""
+    try:
+        data = request.get_json()
+        user_message = data.get('message', '')
+        session_id = data.get('session_id', 'default')
+        
+        if not user_message:
+            return jsonify({'success': False, 'error': 'No message provided'}), 400
+        
+        # Check enterprise subscription
+        enterprise_status = get_enterprise_status()
+        
+        # Store user message
+        store_conversation_entry(session_id, 'user', user_message)
+        
+        # Try Anthropic AI first (enterprise tier)
+        try:
+            ai_response = anthropic_engine.generate_response(
+                user_message, 
+                system_context="You are AVA CORE, an advanced enterprise AI assistant with comprehensive business intelligence capabilities. Provide detailed, professional responses."
+            )
+            track_usage('anthropic', 'chat_completion', 2)
+            ai_engine_used = 'anthropic_claude'
+            response_text = ai_response.get('response', ai_response) if isinstance(ai_response, dict) else ai_response
+            
+        except Exception as anthropic_error:
+            logger.warning(f"Anthropic AI unavailable, using fallback: {anthropic_error}")
+            
+            # Enterprise fallback with comprehensive response
+            response_text = f"""AVA CORE Enterprise AI Assistant
+
+Hello! I'm operational with enterprise-level capabilities. While some AI engines may have temporary limitations, I can still assist you with:
+
+• Business strategy and analysis
+• Technical development guidance  
+• Project planning and management
+• Process automation recommendations
+• Strategic decision support
+
+How can I help you today? Please describe what you'd like to work on.
+
+Enterprise Status: {enterprise_status.get('tier', 'active')}
+Copyright: Ervin Remus Radosavlevici"""
+            
+            ai_engine_used = 'enterprise_assistant'
+        
+        # Store AI response
+        store_conversation_entry(session_id, 'assistant', response_text)
+        
+        return jsonify({
+            'success': True,
+            'response': response_text,
+            'session_id': session_id,
+            'ai_engine': ai_engine_used,
+            'enterprise_tier': enterprise_status.get('tier', 'standard'),
+            'unlimited_usage': enterprise_status.get('unlimited_usage', False),
+            'privacy_protected': True,
+            'nda_compliant': True,
+            'copyright': 'Ervin Remus Radosavlevici (© ervin210@icloud.com)',
+            'watermark': 'radosavlevici210@icloud.com'
+        })
+        
+    except Exception as e:
+        logger.error(f"Enhanced chat error: {e}")
+        return jsonify({'success': False, 'error': 'Chat system temporarily unavailable'}), 500
 
 if __name__ == '__main__':
     print("=" * 60)
