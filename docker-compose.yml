@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  ava-core-enterprise:
+    build: .
+    container_name: ava-core-enterprise
+    ports:
+      - "5000:5000"
+      - "80:80"
+      - "443:443"
+    environment:
+      - FLASK_ENV=production
+      - DEBUG=False
+      - COPYRIGHT=Ervin Remus Radosavlevici (© ervin210@icloud.com)
+      - WATERMARK=radosavlevici210@icloud.com
+      - CONTACT=radosavlevici210@icloud.com
+      - NDA_LICENSE=Business Commercial License with Comprehensive Protection
+      - TIMESTAMP=2025-06-05 01:12:00 UTC
+      - GITHUB_USERNAME=radosavlevici210
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
