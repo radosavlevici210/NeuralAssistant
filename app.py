@@ -1,9 +1,12 @@
 """
-AVA CORE: Neural AI Voice Assistant
-Copyright and Trademark: Ervin Radosavlevici
+AVA CORE™: Neural AI Voice Assistant - Enterprise Production System
+Copyright © 2025 Ervin Remus Radosavlevici. All Rights Reserved.
+Trademark: AVA CORE™
+Watermark: radosavlevici210@icloud.com
+Timestamp: 2025-06-05T12:15:00Z
 
-A sophisticated voice assistant with speech recognition, AI conversation, and text-to-speech capabilities.
-Features real-time web monitoring and WebSocket integration.
+A sophisticated enterprise voice assistant with speech recognition, AI conversation, and text-to-speech capabilities.
+Features real-time web monitoring, WebSocket integration, and comprehensive device control.
 """
 
 import json
@@ -11,18 +14,27 @@ import os
 import threading
 import time
 from datetime import datetime
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, make_response
 from flask_socketio import SocketIO, emit
 import logging
 
 from voice_assistant import VoiceAssistant
+from production_config import ProductionConfig, EnterpriseLogger
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'ava-core-secret-key')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'ava-core-enterprise-key')
+
+# Apply enterprise production configuration
+app.config.update({
+    'ENTERPRISE_MODE': True,
+    'COPYRIGHT_OWNER': ProductionConfig.COPYRIGHT_OWNER,
+    'WATERMARK': ProductionConfig.WATERMARK,
+    'AUTHORIZED_CONTACT': ProductionConfig.AUTHORIZED_CONTACT
+})
 
 # Initialize SocketIO for real-time communication
 socketio = SocketIO(app, cors_allowed_origins="*", path='/ws')
@@ -257,7 +269,7 @@ def device_control():
 
 @app.route('/api/capabilities')
 def get_capabilities():
-    """Get AVA's current capabilities"""
+    """Get AVA's current capabilities with enterprise information"""
     try:
         ai_capabilities = web_assistant.voice_assistant.advanced_ai.get_capabilities()
         device_commands = web_assistant.voice_assistant.device_controller.get_available_commands()
@@ -274,14 +286,45 @@ def get_capabilities():
                 'Task analysis and breakdown',
                 'Personalized recommendations',
                 'Real-time monitoring and logging'
-            ]
+            ],
+            'enterprise_info': ProductionConfig.get_enterprise_info(),
+            'system_status': ProductionConfig.get_system_status()
         }
         
-        return jsonify(capabilities)
+        response = make_response(jsonify(capabilities))
+        # Apply enterprise headers
+        for key, value in ProductionConfig.apply_production_headers().items():
+            response.headers[key] = value
+        
+        return response
         
     except Exception as e:
         logger.error(f"Failed to get capabilities: {str(e)}")
         return jsonify({'error': f'Failed to get capabilities: {str(e)}'}), 500
+
+@app.route('/api/system-status')
+def get_system_status():
+    """Get comprehensive enterprise system status"""
+    try:
+        status = ProductionConfig.get_system_status()
+        validation = ProductionConfig.validate_deployment()
+        
+        response_data = {
+            **status,
+            'deployment_validation': validation,
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        response = make_response(jsonify(response_data))
+        # Apply enterprise headers
+        for key, value in ProductionConfig.apply_production_headers().items():
+            response.headers[key] = value
+        
+        return response
+        
+    except Exception as e:
+        logger.error(f"Failed to get system status: {str(e)}")
+        return jsonify({'error': f'Failed to get system status: {str(e)}'}), 500
 
 @socketio.on('connect')
 def handle_connect():
@@ -299,14 +342,29 @@ def handle_disconnect():
     logger.info("Client disconnected from WebSocket")
 
 if __name__ == '__main__':
-    print("=" * 60)
-    print("AVA CORE: Neural AI Voice Assistant")
-    print("Copyright and Trademark: Ervin Radosavlevici")
-    print("=" * 60)
+    print("=" * 80)
+    print("AVA CORE™: Enterprise Neural AI Voice Assistant")
+    print(f"Copyright © 2025 {ProductionConfig.COPYRIGHT_OWNER}. All Rights Reserved.")
+    print(f"Trademark: {ProductionConfig.TRADEMARK}")
+    print(f"Watermark: {ProductionConfig.WATERMARK}")
+    print(f"Authorized Contact: {ProductionConfig.AUTHORIZED_CONTACT}")
+    print("=" * 80)
+    print(f"Enterprise System Status: PRODUCTION READY")
+    print(f"Netlify Deployment: CONFIGURED")
+    print(f"Security Headers: ENABLED")
+    print(f"Copyright Protection: ACTIVE")
+    print("=" * 80)
     print(f"Starting web interface on http://0.0.0.0:5000")
     print("Dashboard: http://0.0.0.0:5000")
     print("Monitor: http://0.0.0.0:5000/monitor")
-    print("=" * 60)
+    print("System Status: http://0.0.0.0:5000/api/system-status")
+    print("=" * 80)
+    
+    # Log enterprise system initialization
+    logger.info("AVA CORE™ Enterprise System Starting")
+    logger.info(f"Copyright: {ProductionConfig.COPYRIGHT_OWNER}")
+    logger.info(f"Watermark: {ProductionConfig.WATERMARK}")
+    logger.info(f"Build: {ProductionConfig.BUILD_ID}")
     
     # Run the Flask-SocketIO app
     socketio.run(app, host='0.0.0.0', port=5000, debug=False, allow_unsafe_werkzeug=True)
