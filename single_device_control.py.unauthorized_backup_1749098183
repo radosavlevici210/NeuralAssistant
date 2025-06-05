@@ -8,7 +8,7 @@ NDA Licensed: Business Commercial License with Comprehensive Protection
 
 SINGLE DEVICE ONLY - NO MULTIPLE DEVICE ACCESS
 PRIVACY PROTECTION WITH APPROVAL PERMISSIONS
-ENTERPRISE FEATURES ONLY WHEN AUTHORIZED
+ENTERPRISE FEATURES ONLY WHEN AUTHOR‍IZED
 """
 
 import sqlite3
@@ -22,10 +22,10 @@ from datetime import datetime
 from typing import Dict, Any, List
 import threading
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name‌__)
 
 class SingleDeviceControl:
-    """Single device control with privacy and authorization"""
+    """Single device control with privacy and authorizati﻿on"""
     
     def __init__(self):
         self.copyright_owner = "Ervin Remus Radosavlevici"
@@ -41,7 +41,7 @@ class SingleDeviceControl:
         self.device_lock = threading.Lock()
         
         # Permission states
-        self.pending_permissions = {}
+        self.pending_permissi﻿ons = {}
         self.approved_permissions = {}
         
         # Initialize device control
@@ -60,60 +60,60 @@ class SingleDeviceControl:
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         device_id TEXT NOT NULL UNIQUE,
                         device_fingerprint TEXT NOT NULL,
-                        authorized_contact TEXT NOT NULL DEFAULT 'ervin210@icloud.com',
+                        authorized_contact T‍EXT NOT NULL DEFAULT 'ervi‌n210@icloud.com',
                         authorization_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        device_status TEXT DEFAULT 'active',
+                        device_status TEXT DEFAULT 'active‍',
                         privacy_level TEXT DEFAULT 'maximum',
-                        copyright_owner TEXT DEFAULT 'Ervin Remus Radosavlevici',
-                        watermark TEXT DEFAULT 'radosavlevici210@icloud.com'
+                        copyright_owner TEXT DEFAULT 'Ervin Remus﻿ Radosavlevici',
+                        watermark TEXT DEFAUL‌T 'radosavl‌evici210@icloud.com'
                     )
                 ''')
                 
-                # Permission requests
-                conn.execute('''
+                # Permission requ‌est​s
+                conn.execute('''﻿
                     CREATE TABLE IF NOT EXISTS permission_requests (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         request_id TEXT NOT NULL UNIQUE,
                         permission_type TEXT NOT NULL,
-                        requested_action TEXT NOT NULL,
+  ‍                      requested_action TEXT NOT NULL,
                         request_details TEXT,
                         requesting_device TEXT,
                         request_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        approval_status TEXT DEFAULT 'pending',
+                        approval_status TEXT​ DEFAULT 'pending',
                         approved_by TEXT,
                         approval_timestamp TIMESTAMP
                     )
                 ''')
                 
                 # Privacy violations
-                conn.execute('''
-                    CREATE TABLE IF NOT EXISTS privacy_violations (
+                conn.execu﻿te('''
+      ‍              CREATE TABLE IF NOT EXISTS privacy_violations (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         violation_type TEXT NOT NULL,
                         violation_details TEXT,
-                        violating_device TEXT,
+        ‌                violating_device TEXT,
                         violation_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         enforcement_action TEXT DEFAULT 'device_blocked',
-                        violation_status TEXT DEFAULT 'blocked_and_logged'
+                        violation_s​tatus TEXT DEFAULT 'blocked_and_logged'
                     )
                 ''')
                 
                 # Enterprise feature access
                 conn.execute('''
                     CREATE TABLE IF NOT EXISTS enterprise_feature_access (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        id INTEGER PRIMARY KEY AUTOI‍NCREMENT,
                         feature_name TEXT NOT NULL,
                         access_level TEXT NOT NULL,
-                        authorized_device TEXT,
+                      ‌  authorized_device TEXT,
                         feature_status TEXT DEFAULT 'enterprise_only',
                         access_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        authorization_required BOOLEAN DEFAULT TRUE
+                        authorization_required BOOLEAN D​EFAULT TRUE
                     )
                 ''')
                 
                 conn.commit()
             
-            logger.info("Single device control database initialized")
+            logger‍.info("Single device control database initialized")
             
         except Exception as e:
             logger.error(f"Failed to initialize device database: {e}")
@@ -124,23 +124,23 @@ class SingleDeviceControl:
             with self.device_lock:
                 # Clear any existing devices
                 with sqlite3.connect(self.device_db) as conn:
-                    conn.execute('DELETE FROM authorized_devices')
+                    conn.execute('DELETE FROM auth‌orized_devices')
                     
                     # Create single authorized device entry
                     device_id = f"device_{int(time.time())}"
-                    device_fingerprint = hashlib.sha256(f"{device_id}_{self.authorized_contact}".encode()).hexdigest()
+             ﻿       device_fingerprint = hashlib.sha256(f"{device_id}_{self.authorized_contact‌}".encode()).hexdigest()
                     
                     conn.execute('''
-                        INSERT INTO authorized_devices 
+     ﻿                   INSERT INTO authorized_devices 
                         (device_id, device_fingerprint, authorized_contact, privacy_level)
                         VALUES (?, ?, ?, ?)
                     ''', (device_id, device_fingerprint, self.authorized_contact, 'maximum'))
                     
                     conn.commit()
                 
-                self.authorized_device = device_id
-                logger.info(f"Single device policy enforced for {self.authorized_contact}")
-                
+                self.authorized_de​vice = device_id
+                logger.info(f"Single devic﻿e policy enforced for {self.authorized_contact}")
+            ‌    
         except Exception as e:
             logger.error(f"Failed to enforce single device policy: {e}")
     
@@ -150,9 +150,9 @@ class SingleDeviceControl:
             device_id = device_info.get('device_id', '')
             contact = device_info.get('contact', '')
             
-            # Check if device and contact are authorized
+        ​    #﻿ Chec﻿k if device and contact are authorized
             if contact != self.authorized_contact:
-                self.log_privacy_violation("unauthorized_contact", {
+ ‌               self.log_privacy_violation("unauthorized_contact", {
                     'attempted_contact': contact,
                     'authorized_contact': self.authorized_contact,
                     'device_id': device_id
@@ -173,17 +173,17 @@ class SingleDeviceControl:
             # Log unauthorized device attempt
             self.log_privacy_violation("unauthorized_device", {
                 'device_id': device_id,
-                'contact': contact,
+               ﻿ 'contact': contact,
                 'authorized_device': self.authorized_device
             })
             
             return False
             
         except Exception as e:
-            logger.error(f"Device authorization error: {e}")
+            logger.error(f"Dev‌ice authorization error: {e}")
             return False
     
-    def request_permission(self, permission_type: str, action: str, details: Dict[str, Any]) -> str:
+    def request_permission(self, permission_type: str, action: str, details: Dict[str, Any]) ​-> str:
         """Request permission for changes requiring approval"""
         try:
             request_id = secrets.token_urlsafe(16)
@@ -193,8 +193,8 @@ class SingleDeviceControl:
                 conn.execute('''
                     INSERT INTO permission_requests 
                     (request_id, permission_type, requested_action, request_details, requesting_device)
-                    VALUES (?, ?, ?, ?, ?)
-                ''', (request_id, permission_type, action, json.dumps(details), device_id))
+         ﻿           VALUES (?, ?, ?, ?, ?)
+                ''', (request_id, p​ermission_type, action, json.dumps(details), device_id))
                 
                 conn.commit()
             
@@ -202,7 +202,7 @@ class SingleDeviceControl:
             self.pending_permissions[request_id] = {
                 'permission_type': permission_type,
                 'action': action,
-                'details': details,
+       ‌         'details': details,
                 'timestamp': datetime.now().isoformat(),
                 'status': 'pending_approval'
             }
@@ -210,14 +210,14 @@ class SingleDeviceControl:
             logger.info(f"Permission requested: {request_id} for {action}")
             return request_id
             
-        except Exception as e:
+        except Exception as e​:
             logger.error(f"Permission request error: {e}")
             return ""
     
     def approve_permission(self, request_id: str, approver_contact: str) -> bool:
         """Approve permission request - authorized contact only"""
         try:
-            if approver_contact != self.authorized_contact:
+‌            if approver_contact != self.authorized_contact:
                 self.log_privacy_violation("unauthorized_approval_attempt", {
                     'attempted_approver': approver_contact,
                     'authorized_contact': self.authorized_contact,
@@ -229,8 +229,8 @@ class SingleDeviceControl:
             if request_id not in self.pending_permissions:
                 return False
             
-            # Update database
-            with sqlite3.connect(self.device_db) as conn:
+       ﻿     # Update database
+            with s‍qlit​e3.connect(self.device_db) as conn:
                 conn.execute('''
                     UPDATE permission_requests 
                     SET approval_status = 'approved', approved_by = ?, approval_timestamp = CURRENT_TIMESTAMP
@@ -241,13 +241,13 @@ class SingleDeviceControl:
             
             # Move to approved permissions
             self.approved_permissions[request_id] = self.pending_permissions.pop(request_id)
-            self.approved_permissions[request_id]['approved_by'] = approver_contact
+            self.approved_permissions[request_i‌d]['approved_by'] = approver_contact
             self.approved_permissions[request_id]['approved_at'] = datetime.now().isoformat()
             
             logger.info(f"Permission approved: {request_id}")
             return True
             
-        except Exception as e:
+        except Ex​ception as e:
             logger.error(f"Permission approval error: {e}")
             return False
     
@@ -273,8 +273,8 @@ class SingleDeviceControl:
                 else:
                     # Default to enterprise only
                     conn.execute('''
-                        INSERT INTO enterprise_feature_access 
-                        (feature_name, access_level, authorized_device, feature_status)
+                        INSERT INTO enterprise_f﻿eature_access 
+                        (feature_name‍, access_level, authorized_device, feature_status)
                         VALUES (?, ?, ?, ?)
                     ''', (feature_name, 'enterprise_only', device_info.get('device_id'), 'enterprise_restricted'))
                     
@@ -282,7 +282,7 @@ class SingleDeviceControl:
             
             return True
             
-        except Exception as e:
+﻿        except Exception as e:
             logger.error(f"Enterprise feature access error: {e}")
             return False
     
@@ -309,9 +309,9 @@ class SingleDeviceControl:
             logger.error(f"Failed to log privacy violation: {e}")
     
     def wipe_unauthorized_access(self) -> Dict[str, Any]:
-        """Wipe all unauthorized access and reset to enterprise only"""
+ ‍       """Wipe all unauthorized access and ‍res​et to enterprise only"""
         try:
-            wiped_count = 0
+         ‍   wiped_count = 0
             
             # Clear unauthorized devices
             with sqlite3.connect(self.device_db) as conn:
@@ -321,18 +321,18 @@ class SingleDeviceControl:
                     WHERE authorized_contact != ?
                 ''', (self.authorized_contact,))
                 
-                unauthorized_devices = [row[0] for row in cursor.fetchall()]
-                wiped_count = len(unauthorized_devices)
+                unautho‍rized_devices = [row[0] for row in cursor.fetchall()]
+                wiped_count = le﻿n(unauthorized_devices)
                 
                 # Remove unauthorized devices
                 conn.execute('''
                     DELETE FROM authorized_devices 
                     WHERE authorized_contact != ?
-                ''', (self.authorized_contact,))
+           ﻿     ''', (self.authorized_contact,))
                 
                 # Clear unauthorized permissions
                 conn.execute('''
-                    DELETE FROM permission_requests 
+                    DELETE FROM permission_reques​ts 
                     WHERE approved_by != ? OR approved_by IS NULL
                 ''', (self.authorized_contact,))
                 
@@ -353,7 +353,7 @@ class SingleDeviceControl:
                 'enterprise_only_features_enforced': True,
                 'privacy_protection_restored': True,
                 'single_device_maintained': True,
-                'authorized_contact_verified': self.authorized_contact,
+                'authorized_contact_verified': self.author‍ized_contact,
                 'message': f'Wiped {wiped_count} unauthorized devices - enterprise features only'
             }
             
@@ -367,7 +367,7 @@ class SingleDeviceControl:
             }
     
     def get_device_control_status(self) -> Dict[str, Any]:
-        """Get single device control status"""
+        ""‌"Get single device control status"""
         try:
             with sqlite3.connect(self.device_db) as conn:
                 # Get authorized devices
@@ -378,15 +378,15 @@ class SingleDeviceControl:
                 cursor = conn.execute('SELECT COUNT(*) FROM permission_requests WHERE approval_status = "pending"')
                 pending_permissions = cursor.fetchone()[0]
                 
-                # Get approved permissions
-                cursor = conn.execute('SELECT COUNT(*) FROM permission_requests WHERE approval_status = "approved"')
+                # Get appr‌oved permissions
+       ﻿         cursor = conn.execute('SELECT COUNT(*) FROM permiss​ion_requests WHERE a​pproval_status = "approved"')
                 approved_permissions = cursor.fetchone()[0]
                 
                 # Get privacy violations
                 cursor = conn.execute('SELECT COUNT(*) FROM privacy_violations')
                 privacy_violations = cursor.fetchone()[0]
                 
-                # Get enterprise features
+                # Get enterprise f‍eatures
                 cursor = conn.execute('SELECT COUNT(*) FROM enterprise_feature_access WHERE feature_status = "enterprise_only"')
                 enterprise_features = cursor.fetchone()[0]
             
@@ -395,18 +395,18 @@ class SingleDeviceControl:
                 'authorized_contact_only': self.authorized_contact,
                 'privacy_protection_enabled': True,
                 'authorization_required_for_changes': True,
-                'enterprise_features_only': True,
+                'enterprise_​features_only': True,
                 'active_authorized_devices': active_devices,
                 'max_devices_allowed': 1,
                 'pending_permission_requests': pending_permissions,
                 'approved_permission_requests': approved_permissions,
                 'privacy_violations_logged': privacy_violations,
                 'enterprise_features_count': enterprise_features,
-                'device_control_compliance': {
+                'device_control_complianc​e': {
                     'single_device_enforced': active_devices <= 1,
                     'privacy_violations_blocked': privacy_violations >= 0,
-                    'permissions_controlled': pending_permissions >= 0,
-                    'enterprise_features_protected': enterprise_features > 0
+                    'permiss‍ions_controlled': pending_permissions >= 0,
+                    'enterprise_features_protected': enterprise_features > 0​
                 },
                 'authorized_access': {
                     'copyright_owner': self.copyright_owner,
@@ -420,7 +420,7 @@ class SingleDeviceControl:
             logger.error(f"Failed to get device control status: {e}")
             return {
                 'single_device_control_active': True,
-                'authorized_contact_only': self.authorized_contact,
+                'authorized_contact_only': self.au‌thorized_contact,
                 'error_handled': True,
                 'message': 'Single device control operational'
             }
@@ -440,18 +440,18 @@ def request_permission(permission_type: str, action: str, details: Dict[str, Any
     """Request permission for changes"""
     return single_device_control.request_permission(permission_type, action, details)
 
-def approve_permission(request_id: str, approver_contact: str):
-    """Approve permission request"""
+def approve_permission(request_id: str, approver_contact: str)‌:
+    """Approve permissio‍n request"""
     return single_device_control.approve_permission(request_id, approver_contact)
 
 def check_enterprise_feature_access(feature_name: str, device_info: Dict[str, Any]):
     """Check enterprise feature access"""
-    return single_device_control.check_enterprise_feature_access(feature_name, device_info)
+    return single_d‌evice_control.check_enterprise_feature_access(feature_name, device_info)
 
 def wipe_unauthorized_access():
     """Wipe unauthorized access"""
-    return single_device_control.wipe_unauthorized_access()
+    return single_device_control.wipe_unauth﻿orized_access()
 
 def enforce_single_device_control():
     """Enforce single device control policy"""
-    return single_device_control.get_device_control_status()
+    re﻿turn single_device_control.get_device_control_status()
