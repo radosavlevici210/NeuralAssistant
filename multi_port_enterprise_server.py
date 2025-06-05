@@ -960,6 +960,45 @@ def create_app():
         except Exception as e:
             return jsonify({'success': False, 'error': str(e)})
     
+    @app.route('/api/network_info', methods=['GET'])
+    def network_info():
+        """Get network information for iPhone installation"""
+        try:
+            import socket
+            hostname = socket.gethostname()
+            local_ip = socket.gethostbyname(hostname)
+            
+            # Try alternative method if first one fails
+            if local_ip.startswith('127.'):
+                s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                s.connect(("8.8.8.8", 80))
+                local_ip = s.getsockname()[0]
+                s.close()
+            
+            return jsonify({
+                'success': True,
+                'ip': local_ip,
+                'hostname': hostname,
+                'port': 5000,
+                'url': f'http://{local_ip}:5000',
+                'installation_instructions': {
+                    'step1': 'Connect iPhone to same WiFi network',
+                    'step2': f'Open Safari and go to http://{local_ip}:5000',
+                    'step3': 'Tap Share button → Add to Home Screen',
+                    'step4': 'Tap AVA icon and say "Hey AVA" to activate'
+                },
+                'authorized_contacts': ['ervin210@icloud.com', 'radosavlevici210@icloud.com'],
+                'copyright': COPYRIGHT,
+                'watermark': WATERMARK
+            })
+        except Exception as e:
+            return jsonify({
+                'success': False, 
+                'error': str(e),
+                'fallback_ip': '192.168.1.100',
+                'message': 'Use your computer IP address manually'
+            })
+    
     return app
 
 def run_server(port):
