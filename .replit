@@ -40,6 +40,10 @@ args = "Fresh Development with Data Preservation"
 task = "workflow.run"
 args = "Fresh Development System"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Enhanced Voice Network System"
+
 [[workflows.workflow]]
 name = "Enterprise Production System"
 author = "agent"
@@ -103,6 +107,15 @@ task = "shell.exec"
 args = "python fresh_development_system.py"
 waitForPort = 8000
 
+[[workflows.workflow]]
+name = "Enhanced Voice Network System"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python enhanced_voice_network_system.py"
+waitForPort = 9000
+
 [deployment]
 run = ["sh", "-c", "python app.py"]
 
@@ -113,6 +126,10 @@ externalPort = 80
 [[ports]]
 localPort = 8000
 externalPort = 8000
+
+[[ports]]
+localPort = 9000
+externalPort = 9000
 # ====================================================
 # 🔒 This code is generated based on direct instructions
 # from Ervin Remus Radosavlevici (© ervin210@icloud.com) radosavlevici210@icloud.com timestamp and watermark
