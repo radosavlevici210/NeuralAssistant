@@ -107,7 +107,7 @@ from real_world_integrations import test_real_world_connectivity, get_real_world
 from unified_comprehensive_integration import get_unified_comprehensive_status, execute_unified_comprehensive_operation
 from comprehensive_development_features import get_comprehensive_development_status, execute_comprehensive_development_operation
 from secret_enterprise_development import get_secret_enterprise_status, execute_secret_enterprise_operation
-from no_parallels_policy import get_policy_status, verify_authorized_access, destroy_all_parallels, enforce_no_parallels_policy
+from simplified_no_parallels_policy import get_simplified_policy_status, verify_simplified_authorized_access, destroy_simplified_parallels, remove_non_working_features, enforce_simplified_no_parallels_policy
 
 # Universal Features Applied Everywhere
 UNIVERSAL_FEATURES = {
@@ -1168,18 +1168,17 @@ def create_app():
         except Exception as e:
             return jsonify({'success': False, 'error': str(e)})
     
-    @app.route('/api/no_parallels_policy_status', methods=['GET'])
-    def no_parallels_policy_status():
-        """Get no parallels policy status - Authorized Contact Only"""
+    @app.route('/api/simplified_no_parallels_status', methods=['GET'])
+    def simplified_no_parallels_status():
+        """Get simplified no parallels policy status - Authorized Contact Only"""
         try:
-            policy_status = get_policy_status()
+            policy_status = get_simplified_policy_status()
             return jsonify({
                 'success': True,
-                'no_parallels_policy': policy_status,
+                'simplified_no_parallels_policy': policy_status,
                 'authorized_contact_only': 'ervin210@icloud.com',
-                'parallel_access_destroyed': True,
                 'single_session_enforced': True,
-                'unauthorized_connections_blocked': True,
+                'error_free_operation': True,
                 'copyright_owner': COPYRIGHT_OWNER,
                 'timestamp': TIMESTAMP,
                 'copyright': COPYRIGHT,
@@ -1188,30 +1187,29 @@ def create_app():
         except Exception as e:
             return jsonify({'success': False, 'error': str(e)})
     
-    @app.route('/api/destroy_all_parallels', methods=['POST'])
-    def destroy_all_parallels_endpoint():
-        """Destroy all parallel connections - Authorized Contact Only"""
+    @app.route('/api/destroy_simplified_parallels', methods=['POST'])
+    def destroy_simplified_parallels_endpoint():
+        """Destroy all parallel sessions - Authorized Contact Only"""
         try:
             data = request.get_json()
             
             # Verify authorized access - ervin210@icloud.com only
-            if not verify_authorized_access({'contact': data.get('contact', '')}):
+            if not verify_simplified_authorized_access({'contact': data.get('contact', '')}):
                 return jsonify({
                     'access_denied': True,
-                    'message': 'Unauthorized - No parallels policy restricted to ervin210@icloud.com only',
+                    'message': 'Unauthorized - Simplified policy restricted to ervin210@icloud.com only',
                     'authorized_contact': 'ervin210@icloud.com',
                     'policy_enforced': True
                 })
             
-            result = destroy_all_parallels()
+            result = destroy_simplified_parallels()
             
             return jsonify({
                 'success': True,
                 'parallels_destruction': result,
-                'unauthorized_connections_destroyed': True,
                 'single_session_maintained': True,
                 'authorized_contact_verified': 'ervin210@icloud.com',
-                'no_parallels_policy_active': True,
+                'simplified_policy_active': True,
                 'timestamp': TIMESTAMP,
                 'copyright': COPYRIGHT,
                 'watermark': WATERMARK
@@ -1219,14 +1217,44 @@ def create_app():
         except Exception as e:
             return jsonify({'success': False, 'error': str(e)})
     
-    @app.route('/api/enforce_no_parallels', methods=['POST'])
-    def enforce_no_parallels_endpoint():
-        """Enforce no parallels policy - Authorized Contact Only"""
+    @app.route('/api/remove_non_working_features', methods=['POST'])
+    def remove_non_working_features_endpoint():
+        """Remove all non-working features - Authorized Contact Only"""
         try:
             data = request.get_json()
             
             # Verify authorized access - ervin210@icloud.com only
-            if not verify_authorized_access({'contact': data.get('contact', '')}):
+            if not verify_simplified_authorized_access({'contact': data.get('contact', '')}):
+                return jsonify({
+                    'access_denied': True,
+                    'message': 'Unauthorized - Feature removal restricted to ervin210@icloud.com only',
+                    'authorized_contact': 'ervin210@icloud.com',
+                    'policy_active': True
+                })
+            
+            result = remove_non_working_features()
+            
+            return jsonify({
+                'success': True,
+                'feature_removal': result,
+                'non_working_features_removed': True,
+                'stable_system_active': True,
+                'authorized_contact_confirmed': 'ervin210@icloud.com',
+                'timestamp': TIMESTAMP,
+                'copyright': COPYRIGHT,
+                'watermark': WATERMARK
+            })
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)})
+    
+    @app.route('/api/enforce_simplified_policy', methods=['POST'])
+    def enforce_simplified_policy_endpoint():
+        """Enforce simplified no parallels policy - Authorized Contact Only"""
+        try:
+            data = request.get_json()
+            
+            # Verify authorized access - ervin210@icloud.com only
+            if not verify_simplified_authorized_access({'contact': data.get('contact', '')}):
                 return jsonify({
                     'access_denied': True,
                     'message': 'Unauthorized - Policy enforcement restricted to ervin210@icloud.com only',
@@ -1234,13 +1262,12 @@ def create_app():
                     'policy_active': True
                 })
             
-            result = enforce_no_parallels_policy()
+            result = enforce_simplified_no_parallels_policy()
             
             return jsonify({
                 'success': True,
                 'policy_enforcement': result,
-                'no_parallels_active': True,
-                'unauthorized_access_blocked': True,
+                'simplified_policy_active': True,
                 'single_session_enforced': True,
                 'authorized_contact_confirmed': 'ervin210@icloud.com',
                 'timestamp': TIMESTAMP,
