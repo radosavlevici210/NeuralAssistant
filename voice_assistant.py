@@ -12,12 +12,33 @@ from openai import OpenAI
 from device_control import DeviceController
 from advanced_ai import AdvancedAI
 
+# Optional enhanced audio imports - graceful degradation
+try:
+    import numpy as np
+    import sounddevice as sd
+    from audio_system import VoiceAssistantAudio
+    ENHANCED_AUDIO_AVAILABLE = True
+except ImportError:
+    ENHANCED_AUDIO_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 class VoiceAssistant:
     """Core voice assistant with speech recognition, AI conversation, and TTS"""
     
     def __init__(self):
+        # Initialize enhanced audio system if available
+        self.enhanced_audio = None
+        self.enhanced_audio_initialized = False
+        
+        if ENHANCED_AUDIO_AVAILABLE:
+            try:
+                self.enhanced_audio = VoiceAssistantAudio()
+                self.enhanced_audio_initialized = self.enhanced_audio.initialize_audio_system()
+                logger.info("Enhanced audio system initialized")
+            except Exception as e:
+                logger.warning(f"Enhanced audio system failed: {str(e)}")
+        
         # Initialize speech recognition
         self.recognizer = sr.Recognizer()
         self.microphone = None
@@ -35,6 +56,10 @@ class VoiceAssistant:
         except Exception as e:
             logger.warning(f"Audio hardware not available: {str(e)}")
             logger.info("Running in text-only mode")
+            # Try enhanced audio system as backup
+            if self.enhanced_audio_initialized:
+                self.audio_available = True
+                logger.info("Enhanced audio system available as backup")
         
         # Initialize text-to-speech engine
         self.tts_engine = None
