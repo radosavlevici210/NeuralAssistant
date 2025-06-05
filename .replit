@@ -26,27 +26,11 @@ args = "Production Enterprise System"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Clean Production System"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
 args = "Netlify Production System"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
 args = "Fresh Development with Data Preservation"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Fresh Development System"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Enhanced Voice Network System"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Unified Production System"
 
 [[workflows.workflow]]
 name = "Enterprise Production System"
@@ -76,15 +60,6 @@ args = "python production_enterprise_core.py"
 waitForPort = 5000
 
 [[workflows.workflow]]
-name = "Clean Production System"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python clean_production_system.py"
-waitForPort = 5000
-
-[[workflows.workflow]]
 name = "Netlify Production System"
 author = "agent"
 
@@ -102,51 +77,12 @@ task = "shell.exec"
 args = "python comprehensive_rollback_with_data_preservation.py"
 waitForPort = 5000
 
-[[workflows.workflow]]
-name = "Fresh Development System"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python fresh_development_system.py"
-waitForPort = 8000
-
-[[workflows.workflow]]
-name = "Enhanced Voice Network System"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python enhanced_voice_network_system.py"
-waitForPort = 9000
-
-[[workflows.workflow]]
-name = "Unified Production System"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python unified_production_system.py"
-waitForPort = 7000
-
 [deployment]
 run = ["sh", "-c", "python app.py"]
 
 [[ports]]
 localPort = 5000
 externalPort = 80
-
-[[ports]]
-localPort = 7000
-externalPort = 3000
-
-[[ports]]
-localPort = 8000
-externalPort = 8000
-
-[[ports]]
-localPort = 9000
-externalPort = 9000
 # ====================================================
 # 🔒 This code is generated based on direct instructions
 # from Ervin Remus Radosavlevici (© ervin210@icloud.com) radosavlevici210@icloud.com timestamp and watermark
