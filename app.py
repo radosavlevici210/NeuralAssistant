@@ -20,6 +20,7 @@ import logging
 
 from voice_assistant import VoiceAssistant
 from production_config import ProductionConfig, EnterpriseLogger
+from network_control import NetworkDeviceController
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -43,6 +44,9 @@ socketio = SocketIO(app, cors_allowed_origins="*", path='/ws')
 voice_assistant = None
 assistant_thread = None
 is_listening = False
+
+# Global network controller instance - ROOT ACCESS ONLY
+network_controller = NetworkDeviceController()
 
 # Conversation history for web interface
 conversation_history = []
@@ -325,6 +329,105 @@ def get_system_status():
     except Exception as e:
         logger.error(f"Failed to get system status: {str(e)}")
         return jsonify({'error': f'Failed to get system status: {str(e)}'}), 500
+
+@app.route('/api/network/authenticate', methods=['POST'])
+def authenticate_root_user():
+    """Authenticate root user for network control"""
+    try:
+        data = request.json
+        user_email = data.get('user_email')
+        
+        if not user_email:
+            return jsonify({'error': 'User email required'}), 400
+        
+        authenticated = network_controller.authenticate_root_user(user_email)
+        
+        if authenticated:
+            logger.info(f"ROOT USER AUTHENTICATED: {user_email}")
+            return jsonify({
+                'success': True,
+                'message': 'Root user authenticated',
+                'user': user_email,
+                'authorized_users': network_controller.get_authorized_users()
+            })
+        else:
+            logger.warning(f"UNAUTHORIZED ACCESS ATTEMPT: {user_email}")
+            return jsonify({'error': 'Unauthorized user'}), 403
+            
+    except Exception as e:
+        logger.error(f"Authentication error: {str(e)}")
+        return jsonify({'error': f'Authentication failed: {str(e)}'}), 500
+
+@app.route('/api/network/scan')
+def scan_network_devices():
+    """Scan local network for connected devices - ROOT ACCESS ONLY"""
+    try:
+        devices = network_controller.scan_network_devices()
+        
+        if not network_controller.current_user:
+            return jsonify({'error': 'Root user authentication required'}), 403
+        
+        return jsonify({
+            'success': True,
+            'devices': devices,
+            'total_devices': len(devices),
+            'authorized_user': network_controller.current_user
+        })
+        
+    except Exception as e:
+        logger.error(f"Network scan error: {str(e)}")
+        return jsonify({'error': f'Network scan failed: {str(e)}'}), 500
+
+@app.route('/api/network/status')
+def get_network_status():
+    """Get network status and device information"""
+    try:
+        status = network_controller.get_network_status()
+        return jsonify(status)
+        
+    except Exception as e:
+        logger.error(f"Network status error: {str(e)}")
+        return jsonify({'error': f'Network status failed: {str(e)}'}), 500
+
+@app.route('/api/network/control', methods=['POST'])
+def control_network_device():
+    """Control network device - ROOT ACCESS ONLY"""
+    try:
+        data = request.json
+        device_ip = data.get('device_ip')
+        command = data.get('command')
+        parameters = data.get('parameters', {})
+        
+        if not device_ip or not command:
+            return jsonify({'error': 'Device IP and command required'}), 400
+        
+        result = network_controller.control_device(device_ip, command, parameters)
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Device control error: {str(e)}")
+        return jsonify({'error': f'Device control failed: {str(e)}'}), 500
+
+@app.route('/api/network/devices')
+def get_connected_devices():
+    """Get list of connected network devices"""
+    try:
+        if not network_controller.current_user:
+            return jsonify({'error': 'Authentication required'}), 403
+        
+        devices = network_controller.connected_devices
+        
+        return jsonify({
+            'success': True,
+            'devices': devices,
+            'count': len(devices),
+            'network_range': network_controller.network_range
+        })
+        
+    except Exception as e:
+        logger.error(f"Get devices error: {str(e)}")
+        return jsonify({'error': f'Failed to get devices: {str(e)}'}), 500
 
 @socketio.on('connect')
 def handle_connect():
