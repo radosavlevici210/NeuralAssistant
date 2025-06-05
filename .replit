@@ -16,6 +16,10 @@ author = "agent"
 task = "workflow.run"
 args = "Enterprise Production System"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Ultimate Enterprise Server"
+
 [[workflows.workflow]]
 name = "Enterprise Production System"
 author = "agent"
@@ -23,6 +27,15 @@ author = "agent"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python production_enterprise_core.py"
+waitForPort = 5000
+
+[[workflows.workflow]]
+name = "Ultimate Enterprise Server"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python ultimate_enterprise_server.py"
 waitForPort = 5000
 
 [deployment]
