@@ -132,12 +132,16 @@ UNIVERSAL_FEATURES = {
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Copyright and protection constants
-COPYRIGHT = "Ervin Remus Radosavlevici (© ervin210@icloud.com)"
+# Copyright and protection constants - AUTHORIZED OWNER
+COPYRIGHT = "Ervin Remus Radosavlevici (© ervin210@icloud.com, radosavlevici210@icloud.com)"
 WATERMARK = "radosavlevici210@icloud.com"
-CONTACT = "radosavlevici210@icloud.com"
-NDA_LICENSE = "Business Commercial License with Comprehensive Protection"
-TIMESTAMP = "2025-06-05 01:05:00 UTC"
+CONTACT = "ervin210@icloud.com, radosavlevici210@icloud.com"
+NDA_LICENSE = "Business Commercial License with Comprehensive NDA Protection"
+TIMESTAMP = "2025-06-05 04:20:00 UTC"
+AUTHORIZED_CONTACTS = ["ervin210@icloud.com", "radosavlevici210@icloud.com"]
+COPYRIGHT_OWNER = "Ervin Remus Radosavlevici"
+LOCAL_DEVELOPMENT = "Authorized for ervin210@icloud.com, radosavlevici210@icloud.com"
+EXTERNAL_DEVELOPMENT = "Authorized for ervin210@icloud.com, radosavlevici210@icloud.com"
 
 class MultiPortEnterpriseAI:
     """Multi-port enterprise AI system"""
