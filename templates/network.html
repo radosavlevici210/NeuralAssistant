@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVA CORE™ Network Control - ROOT ACCESS</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .network-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .auth-panel {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 2px solid #2563eb;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .device-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .device-card {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 1px solid #2563eb;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .device-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+        
+        .device-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .device-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-connected {
+            background: #065f46;
+            color: #10b981;
+        }
+        
+        .status-responsive {
+            background: #1e40af;
+            color: #3b82f6;
+        }
+        
+        .device-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .control-btn {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-1px);
+        }
+        
+        .control-btn:disabled {
+            background: #374151;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .scan-button {
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+        }
+        
+        .scan-button:hover {
+            background: linear-gradient(135deg, #047857, #065f46);
+            transform: translateY(-2px);
+        }
+        
+        .auth-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px;
+            border: 2px solid #2563eb;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        
+        .auth-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .warning-banner {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .network-info {
+            background: rgba(37, 99, 235, 0.1);
+            border: 1px solid #2563eb;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #2563eb;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .command-output {
+            background: #000;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="network-container">
+        <h1>🔒 AVA CORE™ Network Control System</h1>
+        
+        <div class="warning-banner">
+            ⚠️ ROOT ACCESS REQUIRED - AUTHORIZED USERS ONLY ⚠️
+        </div>
+        
+        <div id="auth-panel" class="auth-panel">
+            <h2>🔐 Root User Authentication</h2>
+            <p>Only authorized root users can access network device control</p>
+            <input type="email" id="user-email" class="auth-input" placeholder="Enter your authorized email address" />
+            <br>
+            <button onclick="authenticateUser()" class="scan-button">🔓 Authenticate Root Access</button>
+            <div id="auth-status"></div>
+        </div>
+        
+        <div id="network-panel" style="display: none;">
+            <div class="network-info">
+                <h3>📡 Network Information</h3>
+                <div id="network-status">
+                    <p><strong>Authorized User:</strong> <span id="current-user">Not authenticated</span></p>
+                    <p><strong>Network Range:</strong> <span id="network-range">Unknown</span></p>
+                    <p><strong>Connected Devices:</strong> <span id="device-count">0</span></p>
+                    <p><strong>Last Scan:</strong> <span id="last-scan">Never</span></p>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button onclick="scanNetwork()" class="scan-button" id="scan-btn">
+                    🔍 Scan Local Network Devices
+                </button>
+                <button onclick="refreshDevices()" class="control-btn">🔄 Refresh</button>
+                <button onclick="exportDeviceList()" class="control-btn">📋 Export Device List</button>
+            </div>
+            
+            <div id="devices-container">
+                <h3>🖥️ Discovered Network Devices</h3>
+                <div id="device-grid" class="device-grid">
+                    <!-- Devices will be populated here -->
+                </div>
+            </div>
+        </div>
+        
+        <div id="command-results" style="display: none;">
+            <h3>📟 Command Output</h3>
+            <div id="output-display" class="command-output"></div>
+            <button onclick="clearOutput()" class="control-btn">🗑️ Clear Output</button>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let networkDevices = {};
+        
+        async function authenticateUser() {
+            const email = document.getElementById('user-email').value.trim();
+            
+            if (!email) {
+                alert('Please enter your email address');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/network/authenticate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user_email: email
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentUser = result.user;
+                    document.getElementById('current-user').textContent = currentUser;
+                    document.getElementById('auth-panel').style.display = 'none';
+                    document.getElementById('network-panel').style.display = 'block';
+                    
+                    // Load initial network status
+                    await loadNetworkStatus();
+                    
+                    alert(`✅ ROOT ACCESS GRANTED for ${currentUser}`);
+                } else {
+                    alert(`❌ AUTHENTICATION FAILED: ${result.error}`);
+                }
+                
+            } catch (error) {
+                console.error('Authentication error:', error);
+                alert('Authentication failed: ' + error.message);
+            }
+        }
+        
+        async function loadNetworkStatus() {
+            try {
+                const response = await fetch('/api/network/status');
+                const status = await response.json();
+                
+                if (status.network_range) {
+                    document.getElementById('network-range').textContent = status.network_range;
+                }
+                
+                if (status.total_devices !== undefined) {
+                    document.getElementById('device-count').textContent = status.total_devices;
+                }
+                
+                if (status.last_scan) {
+                    document.getElementById('last-scan').textContent = new Date(status.last_scan * 1000).toLocaleString();
+                }
+                
+            } catch (error) {
+                console.error('Failed to load network status:', error);
+            }
+        }
+        
+        async function scanNetwork() {
+            const scanBtn = document.getElementById('scan-btn');
+            scanBtn.innerHTML = '<span class="loading"></span> Scanning Network...';
+            scanBtn.disabled = true;
+            
+            try {
+                const response = await fetch('/api/network/scan');
+                const result = await response.json();
+                
+                if (result.success) {
+                    networkDevices = result.devices;
+                    displayDevices(result.devices);
+                    document.getElementById('device-count').textContent = result.total_devices;
+                    document.getElementById('last-scan').textContent = new Date().toLocaleString();
+                    
+                    showOutput(`Network scan completed: Found ${result.total_devices} devices`);
+                } else {
+                    alert('Scan failed: ' + result.error);
+                }
+                
+            } catch (error) {
+                console.error('Scan error:', error);
+                alert('Network scan failed: ' + error.message);
+            } finally {
+                scanBtn.innerHTML = '🔍 Scan Local Network Devices';
+                scanBtn.disabled = false;
+            }
+        }
+        
+        function displayDevices(devices) {
+            const grid = document.getElementById('device-grid');
+            grid.innerHTML = '';
+            
+            if (Object.keys(devices).length === 0) {
+                grid.innerHTML = '<p>No devices found. Try running a network scan.</p>';
+                return;
+            }
+            
+            for (const [ip, device] of Object.entries(devices)) {
+                const card = createDeviceCard(ip, device);
+                grid.appendChild(card);
+            }
+        }
+        
+        function createDeviceCard(ip, device) {
+            const card = document.createElement('div');
+            card.className = 'device-card';
+            
+            const statusClass = device.status === 'connected' ? 'status-connected' : 'status-responsive';
+            const deviceType = device.type || 'unknown_device';
+            const hostname = device.hostname || 'Unknown Host';
+            const mac = device.mac || 'Unknown MAC';
+            
+            card.innerHTML = `
+                <div class="device-header">
+                    <h4>${hostname}</h4>
+                    <span class="device-status ${statusClass}">${device.status}</span>
+                </div>
+                <div class="device-info">
+                    <p><strong>IP:</strong> ${ip}</p>
+                    <p><strong>MAC:</strong> ${mac}</p>
+                    <p><strong>Type:</strong> ${deviceType}</p>
+                    ${device.open_ports ? `<p><strong>Open Ports:</strong> ${device.open_ports.join(', ')}</p>` : ''}
+                    <p><strong>Discovered via:</strong> ${device.discovered_via}</p>
+                </div>
+                <div class="device-controls">
+                    <button class="control-btn" onclick="pingDevice('${ip}')">📡 Ping</button>
+                    <button class="control-btn" onclick="scanPorts('${ip}')">🔍 Scan Ports</button>
+                    <button class="control-btn" onclick="getDeviceInfo('${ip}')">ℹ️ Info</button>
+                    ${device.mac ? `<button class="control-btn" onclick="wakeDevice('${ip}')">⚡ Wake</button>` : ''}
+                    <button class="control-btn" onclick="sshConnect('${ip}')">🔧 SSH</button>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        async function controlDevice(ip, command, parameters = {}) {
+            try {
+                const response = await fetch('/api/network/control', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        device_ip: ip,
+                        command: command,
+                        parameters: parameters
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showOutput(`Command '${command}' on ${ip}:\n${result.output || JSON.stringify(result, null, 2)}`);
+                } else {
+                    showOutput(`Command '${command}' failed on ${ip}:\n${result.error}`);
+                }
+                
+                return result;
+                
+            } catch (error) {
+                const errorMsg = `Command '${command}' error on ${ip}: ${error.message}`;
+                showOutput(errorMsg);
+                console.error(errorMsg, error);
+            }
+        }
+        
+        async function pingDevice(ip) {
+            await controlDevice(ip, 'ping');
+        }
+        
+        async function scanPorts(ip) {
+            await controlDevice(ip, 'scan_ports');
+        }
+        
+        async function getDeviceInfo(ip) {
+            await controlDevice(ip, 'get_info');
+        }
+        
+        async function wakeDevice(ip) {
+            if (confirm(`Send Wake-on-LAN packet to ${ip}?`)) {
+                await controlDevice(ip, 'wake');
+            }
+        }
+        
+        async function sshConnect(ip) {
+            const username = prompt('SSH Username:', 'root');
+            const command = prompt('SSH Command:', 'uname -a');
+            
+            if (username && command) {
+                await controlDevice(ip, 'ssh_command', {
+                    username: username,
+                    command: command
+                });
+            }
+        }
+        
+        async function refreshDevices() {
+            try {
+                const response = await fetch('/api/network/devices');
+                const result = await response.json();
+                
+                if (result.success) {
+                    networkDevices = result.devices;
+                    displayDevices(result.devices);
+                    document.getElementById('device-count').textContent = result.count;
+                }
+                
+            } catch (error) {
+                console.error('Refresh failed:', error);
+            }
+        }
+        
+        function exportDeviceList() {
+            const data = JSON.stringify(networkDevices, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ava_network_devices_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        function showOutput(text) {
+            const outputDiv = document.getElementById('output-display');
+            const resultsDiv = document.getElementById('command-results');
+            
+            outputDiv.textContent += text + '\n\n';
+            resultsDiv.style.display = 'block';
+            outputDiv.scrollTop = outputDiv.scrollHeight;
+        }
+        
+        function clearOutput() {
+            document.getElementById('output-display').textContent = '';
+            document.getElementById('command-results').style.display = 'none';
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('AVA CORE™ Network Control Interface Loaded');
+        });
+    </script>
+</body>
+</html>

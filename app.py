@@ -150,6 +150,11 @@ def monitor():
     """Conversation monitoring page"""
     return render_template('monitor.html')
 
+@app.route('/network')
+def network_control():
+    """Network device control interface - ROOT ACCESS ONLY"""
+    return render_template('network.html')
+
 @app.route('/api/status')
 def get_status():
     """Get current assistant status"""
