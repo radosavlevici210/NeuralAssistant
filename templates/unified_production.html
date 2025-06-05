@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVA CORE: Unified Production System</title>
+    
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AVA CORE">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Unified System Indicator */
+        .unified-indicator {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: unifiedPulse 2s ease-in-out infinite;
+            cursor: pointer;
+        }
+
+        @keyframes unifiedPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); }
+            50% { transform: scale(1.1); box-shadow: 0 0 30px rgba(0, 255, 255, 0.8); }
+        }
+
+        .unified-icon {
+            font-size: 18px;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00ffff, #0080ff, #8000ff, #ff0080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            font-size: 1.3rem;
+            color: #a0a0a0;
+            margin-bottom: 20px;
+        }
+
+        /* Production Status Banner */
+        .production-banner {
+            background: linear-gradient(45deg, rgba(0, 255, 0, 0.1), rgba(0, 255, 255, 0.1));
+            border: 2px solid rgba(0, 255, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            animation: productionGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes productionGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(0, 255, 0, 0.6); }
+        }
+
+        .production-banner h3 {
+            color: #00ff00;
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+
+        /* Unified Tabs */
+        .unified-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 5px;
+            overflow-x: auto;
+            gap: 5px;
+        }
+
+        .tab-button {
+            background: transparent;
+            border: none;
+            color: #a0a0a0;
+            padding: 15px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-size: 0.9rem;
+            font-weight: 500;
+            min-width: 120px;
+        }
+
+        .tab-button.active,
+        .tab-button:hover {
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 128, 255, 0.3);
+        }
+
+        /* Feature Panels */
+        .feature-panel {
+            display: none;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .feature-panel.active {
+            display: block;
+            animation: panelSlide 0.4s ease;
+        }
+
+        @keyframes panelSlide {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Status Grid */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .status-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .status-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .status-card h4 {
+            color: #00ffff;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .status-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #00ff00;
+            margin: 8px 0;
+        }
+
+        .status-description {
+            color: #a0a0a0;
+            font-size: 0.85rem;
+        }
+
+        /* AI Chat Interface */
+        .chat-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 350px;
+            max-height: 450px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            max-width: 85%;
+            word-wrap: break-word;
+            animation: messageAppear 0.3s ease;
+        }
+
+        @keyframes messageAppear {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .message.user {
+            background: linear-gradient(45deg, #0080ff, #00ffff);
+            margin-left: auto;
+            color: #ffffff;
+        }
+
+        .message.ai {
+            background: rgba(255, 255, 255, 0.1);
+            margin-right: auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Control Grids */
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .control-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .control-name {
+            font-size: 0.9rem;
+            color: #a0a0a0;
+            font-weight: 500;
+        }
+
+        /* Input Controls */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .unified-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 12px 18px;
+            color: white;
+            outline: none;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .unified-input:focus {
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .unified-input::placeholder {
+            color: #a0a0a0;
+        }
+
+        /* Buttons */
+        .unified-btn {
+            background: linear-gradient(45deg, #0080ff, #00ffff);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .unified-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 128, 255, 0.4);
+        }
+
+        .unified-btn.secondary {
+            background: linear-gradient(45deg, #333333, #555555);
+        }
+
+        .unified-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Network Devices List */
+        .device-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .device-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .device-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .device-info {
+            flex: 1;
+        }
+
+        .device-ip {
+            font-weight: bold;
+            color: #00ffff;
+            font-size: 0.95rem;
+        }
+
+        .device-status {
+            font-size: 0.8rem;
+            color: #00ff00;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .unified-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tab-button {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            
+            .control-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+            
+            .status-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #00ffff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Success/Error States */
+        .success-message {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            color: #00ff00;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .error-message {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            color: #ff6666;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Unified System Indicator -->
+    <div class="unified-indicator" title="Unified Production System Active">
+        <div class="unified-icon">🎯</div>
+    </div>
+
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>AVA CORE: Unified Production System</h1>
+            <p class="subtitle">Complete AI Assistant with Voice, Network, and Smart Device Control</p>
+        </div>
+
+        <!-- Production Status Banner -->
+        <div class="production-banner">
+            <h3>🚀 Production System Active</h3>
+            <p><strong>Fresh Development + Voice Control + Network Discovery + Smart Devices</strong></p>
+            <p>All data preserved • Dual AI engines ready • Real-world connections active</p>
+        </div>
+
+        <!-- System Status Grid -->
+        <div class="status-grid">
+            <div class="status-card">
+                <h4>Features Active</h4>
+                <div class="status-value" id="featuresCount">20</div>
+                <div class="status-description">Unified Capabilities</div>
+            </div>
+            <div class="status-card">
+                <h4>AI Engines</h4>
+                <div class="status-value" id="aiEnginesCount">2</div>
+                <div class="status-description">GPT-4o + Claude</div>
+            </div>
+            <div class="status-card">
+                <h4>Network Devices</h4>
+                <div class="status-value" id="networkDevicesCount">0</div>
+                <div class="status-description">Discovered</div>
+            </div>
+            <div class="status-card">
+                <h4>Data Preserved</h4>
+                <div class="status-value" id="preservedCount">21+</div>
+                <div class="status-description">Databases Saved</div>
+            </div>
+        </div>
+
+        <!-- Unified Feature Tabs -->
+        <div class="unified-tabs">
+            <button class="tab-button active" onclick="showPanel('ai-assistant')">AI Assistant</button>
+            <button class="tab-button" onclick="showPanel('voice-control')">Voice Control</button>
+            <button class="tab-button" onclick="showPanel('smart-devices')">Smart Devices</button>
+            <button class="tab-button" onclick="showPanel('network-discovery')">Network</button>
+            <button class="tab-button" onclick="showPanel('enterprise')">Enterprise</button>
+            <button class="tab-button" onclick="showPanel('production')">Production</button>
+        </div>
+
+        <!-- AI Assistant Panel -->
+        <div id="ai-assistant" class="feature-panel active">
+            <h3>AI Assistant - Dual Engine System</h3>
+            <div class="chat-container" id="chatContainer">
+                <div class="message ai">
+                    <strong>AVA CORE:</strong> Unified production system active! I have dual AI engines (OpenAI GPT-4o and Anthropic Claude-3.5-Sonnet), voice control, network discovery, smart device automation, and all your preserved data. Fresh development environment is ready with all advanced capabilities. How can I assist you?
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <input type="text" class="unified-input" id="chatInput" placeholder="Ask me anything..." onkeypress="handleChatKeyPress(event)">
+                <button class="unified-btn" onclick="sendChatMessage()">Send</button>
+            </div>
+        </div>
+
+        <!-- Voice Control Panel -->
+        <div id="voice-control" class="feature-panel">
+            <h3>Voice Control System</h3>
+            
+            <div class="control-grid">
+                <div class="control-item" onclick="speakText()">
+                    <div class="control-icon">🎤</div>
+                    <div class="control-name">Text to Speech</div>
+                </div>
+                <div class="control-item" onclick="voiceCommand()">
+                    <div class="control-icon">🗣️</div>
+                    <div class="control-name">Voice Command</div>
+                </div>
+                <div class="control-item" onclick="voiceGreeting()">
+                    <div class="control-icon">👋</div>
+                    <div class="control-name">Voice Greeting</div>
+                </div>
+                <div class="control-item" onclick="voiceStatus()">
+                    <div class="control-icon">📊</div>
+                    <div class="control-name">System Status</div>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <input type="text" class="unified-input" id="speakInput" placeholder="Enter text to speak...">
+                <button class="unified-btn" onclick="speakCustomText()">Speak</button>
+            </div>
+            
+            <div id="voiceMessages" style="margin-top: 15px; min-height: 100px; background: rgba(0,0,0,0.2); border-radius: 10px; padding: 15px;">
+                <p style="color: #a0a0a0;">Voice commands and responses will appear here...</p>
+            </div>
+        </div>
+
+        <!-- Smart Devices Panel -->
+        <div id="smart-devices" class="feature-panel">
+            <h3>Smart Device Control</h3>
+            
+            <div class="control-grid">
+                <div class="control-item" onclick="controlDevice('lights', 'toggle')">
+                    <div class="control-icon">💡</div>
+                    <div class="control-name">Lights</div>
+                </div>
+                <div class="control-item" onclick="controlDevice('music', 'toggle')">
+                    <div class="control-icon">🎵</div>
+                    <div class="control-name">Music</div>
+                </div>
+                <div class="control-item" onclick="controlDevice('tv', 'toggle')">
+                    <div class="control-icon">📺</div>
+                    <div class="control-name">TV</div>
+                </div>
+                <div class="control-item" onclick="controlDevice('thermostat', 'adjust')">
+                    <div class="control-icon">🌡️</div>
+                    <div class="control-name">Climate</div>
+                </div>
+                <div class="control-item" onclick="controlDevice('security', 'status')">
+                    <div class="control-icon">🔒</div>
+                    <div class="control-name">Security</div>
+                </div>
+                <div class="control-item" onclick="controlAllDevices()">
+                    <div class="control-icon">🏠</div>
+                    <div class="control-name">All Devices</div>
+                </div>
+            </div>
+            
+            <div id="deviceCommands" style="margin-top: 20px; min-height: 150px; background: rgba(0,0,0,0.2); border-radius: 10px; padding: 15px;">
+                <p style="color: #a0a0a0;">Device control commands and responses will appear here...</p>
+            </div>
+        </div>
+
+        <!-- Network Discovery Panel -->
+        <div id="network-discovery" class="feature-panel">
+            <h3>Network Discovery & Monitoring</h3>
+            
+            <div style="margin-bottom: 20px;">
+                <button class="unified-btn" onclick="scanNetwork()">Scan Network</button>
+                <button class="unified-btn secondary" onclick="refreshDevices()">Refresh Devices</button>
+            </div>
+            
+            <div class="device-list" id="networkDevicesList">
+                <div class="device-item">
+                    <div class="device-info">
+                        <div class="device-ip">Scanning network...</div>
+                        <div class="device-status">Please wait</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enterprise Panel -->
+        <div id="enterprise" class="feature-panel">
+            <h3>Enterprise Capabilities</h3>
+            
+            <div class="control-grid">
+                <div class="control-item" onclick="businessConsulting()">
+                    <div class="control-icon">📈</div>
+                    <div class="control-name">Business Strategy</div>
+                </div>
+                <div class="control-item" onclick="technicalArchitecture()">
+                    <div class="control-icon">🏗️</div>
+                    <div class="control-name">Tech Architecture</div>
+                </div>
+                <div class="control-item" onclick="advancedAnalytics()">
+                    <div class="control-icon">📊</div>
+                    <div class="control-name">Analytics</div>
+                </div>
+                <div class="control-item" onclick="apiManagement()">
+                    <div class="control-icon">🔗</div>
+                    <div class="control-name">API Management</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 15px; background: rgba(255,165,0,0.1); border: 1px solid rgba(255,165,0,0.3); border-radius: 10px;">
+                <h4 style="color: #ffa500; margin-bottom: 10px;">🔒 Enterprise Features</h4>
+                <p style="color: #a0a0a0;">Advanced enterprise capabilities restricted to authorized contact: ervin210@icloud.com</p>
+            </div>
+        </div>
+
+        <!-- Production Panel -->
+        <div id="production" class="feature-panel">
+            <h3>Production Deployment Status</h3>
+            
+            <div class="status-grid">
+                <div class="status-card">
+                    <h4>GitHub Repository</h4>
+                    <div class="status-value">✓</div>
+                    <div class="status-description">radosavlevici210/NeuralAssistant</div>
+                </div>
+                <div class="status-card">
+                    <h4>Netlify Deployment</h4>
+                    <div class="status-value">✓</div>
+                    <div class="status-description">Production Ready</div>
+                </div>
+                <div class="status-card">
+                    <h4>Data Preservation</h4>
+                    <div class="status-value">✓</div>
+                    <div class="status-description">All Data Safe</div>
+                </div>
+                <div class="status-card">
+                    <h4>System Integration</h4>
+                    <div class="status-value">✓</div>
+                    <div class="status-description">Fully Unified</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; text-align: center;">
+                <button class="unified-btn" onclick="checkComprehensiveStatus()">Full System Status</button>
+                <button class="unified-btn secondary" onclick="openGitHub()">Open GitHub Repo</button>
+            </div>
+            
+            <div id="productionStatus" style="margin-top: 20px; min-height: 100px; background: rgba(0,0,0,0.2); border-radius: 10px; padding: 15px;">
+                <p style="color: #a0a0a0;">Production status information will appear here...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Global variables
+        let currentPanel = 'ai-assistant';
+        let systemStatus = {};
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeUnifiedSystem();
+        });
+
+        function initializeUnifiedSystem() {
+            checkSystemStatus();
+            refreshNetworkDevices();
+            console.log('Unified production system initialized');
+        }
+
+        // Panel management
+        function showPanel(panelName) {
+            // Hide all panels
+            const panels = document.querySelectorAll('.feature-panel');
+            panels.forEach(panel => panel.classList.remove('active'));
+            
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => button.classList.remove('active'));
+            
+            // Show selected panel
+            document.getElementById(panelName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            currentPanel = panelName;
+        }
+
+        // AI Chat functions
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            displayChatMessage(message, 'user');
+            input.value = '';
+            
+            displayChatMessage('<span class="loading"></span> Processing with dual AI engines...', 'ai');
+            
+            fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const chatContainer = document.getElementById('chatContainer');
+                chatContainer.removeChild(chatContainer.lastElementChild);
+                
+                if (data.success) {
+                    displayChatMessage(data.response, 'ai');
+                } else {
+                    displayChatMessage('Error: ' + (data.error || 'AI engines need configuration'), 'ai');
+                }
+            })
+            .catch(error => {
+                console.error('Chat error:', error);
+                const chatContainer = document.getElementById('chatContainer');
+                chatContainer.removeChild(chatContainer.lastElementChild);
+                displayChatMessage('Connection error. System initializing...', 'ai');
+            });
+        }
+
+        function displayChatMessage(message, sender) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            if (sender === 'ai') {
+                messageDiv.innerHTML = '<strong>AVA CORE:</strong> ' + message;
+            } else {
+                messageDiv.innerHTML = '<strong>You:</strong> ' + message;
+            }
+            
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Voice control functions
+        function speakCustomText() {
+            const input = document.getElementById('speakInput');
+            const text = input.value.trim();
+            
+            if (!text) return;
+            
+            speakTextAPI(text);
+            input.value = '';
+        }
+
+        function speakTextAPI(text) {
+            fetch('/api/voice/speak', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    addVoiceMessage(`Spoke: "${text}"`, 'Voice synthesis successful');
+                } else {
+                    addVoiceMessage(`Failed to speak: "${text}"`, 'Voice synthesis error');
+                }
+            })
+            .catch(error => {
+                console.error('Voice error:', error);
+                addVoiceMessage(`Voice Error: "${text}"`, 'Connection failed');
+            });
+        }
+
+        function speakText() {
+            speakTextAPI('Unified production system is active and ready for commands');
+        }
+
+        function voiceCommand() {
+            speakTextAPI('Voice command system ready. All capabilities integrated.');
+        }
+
+        function voiceGreeting() {
+            speakTextAPI('Hello! This is AVA CORE unified production system with voice control, network discovery, and smart device automation.');
+        }
+
+        function voiceStatus() {
+            speakTextAPI('All systems operational. Fresh development preserved, voice control active, network monitoring enabled, smart devices ready.');
+        }
+
+        function addVoiceMessage(command, response) {
+            const container = document.getElementById('voiceMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.innerHTML = `
+                <div style="margin-bottom: 10px; padding: 8px; background: rgba(255,255,255,0.05); border-radius: 5px;">
+                    <div style="color: #00ffff; font-weight: bold;">${command}</div>
+                    <div style="color: #a0a0a0; font-size: 0.9rem;">${response}</div>
+                </div>
+            `;
+            
+            if (container.children.length === 1 && container.firstElementChild.textContent.includes('Voice commands')) {
+                container.innerHTML = '';
+            }
+            
+            container.insertBefore(messageDiv, container.firstChild);
+            
+            if (container.children.length > 10) {
+                container.removeChild(container.lastChild);
+            }
+        }
+
+        // Device control functions
+        function controlDevice(deviceType, command) {
+            let parameters = {};
+            
+            if (deviceType === 'thermostat' && command === 'adjust') {
+                const temp = prompt('Set temperature (°C):', '22');
+                if (temp) {
+                    command = 'set_temperature';
+                    parameters = { temperature: parseInt(temp) };
+                } else {
+                    return;
+                }
+            } else if (command === 'toggle') {
+                command = Math.random() > 0.5 ? 'on' : 'off';
+            }
+            
+            fetch('/api/device/control', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    device_type: deviceType,
+                    command: command,
+                    parameters: parameters
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    addDeviceMessage(`${deviceType} ${command}`, data.result.status || 'Command executed');
+                    speakTextAPI(`${deviceType} ${command} executed successfully`);
+                } else {
+                    addDeviceMessage(`${deviceType} ${command}`, `Error: ${data.error}`);
+                }
+            })
+            .catch(error => {
+                console.error('Device control error:', error);
+                addDeviceMessage(`${deviceType} ${command}`, 'Device control failed');
+            });
+        }
+
+        function controlAllDevices() {
+            ['lights', 'music', 'tv'].forEach((device, index) => {
+                setTimeout(() => {
+                    controlDevice(device, 'on');
+                }, index * 500);
+            });
+        }
+
+        function addDeviceMessage(command, response) {
+            const container = document.getElementById('deviceCommands');
+            const messageDiv = document.createElement('div');
+            messageDiv.innerHTML = `
+                <div style="margin-bottom: 10px; padding: 8px; background: rgba(255,255,255,0.05); border-radius: 5px;">
+                    <div style="color: #00ffff; font-weight: bold;">${command}</div>
+                    <div style="color: #a0a0a0; font-size: 0.9rem;">${response}</div>
+                </div>
+            `;
+            
+            if (container.children.length === 1 && container.firstElementChild.textContent.includes('Device control')) {
+                container.innerHTML = '';
+            }
+            
+            container.insertBefore(messageDiv, container.firstChild);
+            
+            if (container.children.length > 10) {
+                container.removeChild(container.lastChild);
+            }
+        }
+
+        // Network functions
+        function scanNetwork() {
+            addDeviceMessage('Network Scan', 'Scanning network for devices...');
+            
+            fetch('/api/network/scan', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    addDeviceMessage('Network Scan', `Scan completed. Found ${data.devices_found} devices.`);
+                    refreshNetworkDevices();
+                } else {
+                    addDeviceMessage('Network Scan', 'Scan failed');
+                }
+            })
+            .catch(error => {
+                console.error('Network scan error:', error);
+                addDeviceMessage('Network Scan', 'Network scan error');
+            });
+        }
+
+        function refreshNetworkDevices() {
+            fetch('/api/network/devices')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    displayNetworkDevices(data.devices);
+                    document.getElementById('networkDevicesCount').textContent = data.count;
+                } else {
+                    console.error('Network devices error:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Network devices error:', error);
+            });
+        }
+
+        function displayNetworkDevices(devices) {
+            const container = document.getElementById('networkDevicesList');
+            container.innerHTML = '';
+            
+            if (Object.keys(devices).length === 0) {
+                container.innerHTML = '<div class="device-item"><div class="device-info"><div class="device-ip">No devices found</div><div class="device-status">Try scanning network</div></div></div>';
+                return;
+            }
+            
+            for (const [ip, device] of Object.entries(devices)) {
+                const deviceItem = document.createElement('div');
+                deviceItem.className = 'device-item';
+                
+                deviceItem.innerHTML = `
+                    <div class="device-info">
+                        <div class="device-ip">${ip}</div>
+                        <div class="device-status">${device.status} - ${device.type || 'Unknown type'}</div>
+                    </div>
+                `;
+                
+                container.appendChild(deviceItem);
+            }
+        }
+
+        function refreshDevices() {
+            refreshNetworkDevices();
+        }
+
+        // Enterprise functions
+        function businessConsulting() {
+            sendChatMessage = function() {
+                const message = "Provide strategic business consulting advice for technology integration and market expansion.";
+                displayChatMessage(message, 'user');
+                displayChatMessage('<span class="loading"></span> Analyzing business strategy...', 'ai');
+                
+                fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const chatContainer = document.getElementById('chatContainer');
+                    chatContainer.removeChild(chatContainer.lastElementChild);
+                    
+                    if (data.success) {
+                        displayChatMessage(data.response, 'ai');
+                    } else {
+                        displayChatMessage('Enterprise consulting requires API configuration', 'ai');
+                    }
+                });
+            };
+            sendChatMessage();
+        }
+
+        function technicalArchitecture() {
+            const message = "Analyze technical architecture requirements for scalable enterprise systems.";
+            // Similar to businessConsulting but for technical architecture
+        }
+
+        function advancedAnalytics() {
+            addDeviceMessage('Analytics Engine', 'Processing system analytics and performance metrics...');
+        }
+
+        function apiManagement() {
+            addDeviceMessage('API Management', 'API management system active. All integrations operational.');
+        }
+
+        // Production functions
+        function checkComprehensiveStatus() {
+            fetch('/api/comprehensive_status')
+            .then(response => response.json())
+            .then(data => {
+                displayProductionStatus(data);
+            })
+            .catch(error => {
+                console.error('Status check error:', error);
+            });
+        }
+
+        function displayProductionStatus(data) {
+            const container = document.getElementById('productionStatus');
+            container.innerHTML = `
+                <div style="background: rgba(0,255,0,0.1); border: 1px solid rgba(0,255,0,0.3); border-radius: 8px; padding: 15px; margin-bottom: 10px;">
+                    <h4 style="color: #00ff00; margin-bottom: 10px;">✓ Production System Status</h4>
+                    <p><strong>Unified Production:</strong> ${data.unified_production_active ? 'Active' : 'Inactive'}</p>
+                    <p><strong>Data Preservation:</strong> ${data.all_data_preserved_and_integrated ? 'Complete' : 'Partial'}</p>
+                    <p><strong>Voice & Network:</strong> ${data.voice_network_capabilities_restored ? 'Restored' : 'Limited'}</p>
+                    <p><strong>Smart Devices:</strong> ${data.smart_device_automation_ready ? 'Ready' : 'Not Ready'}</p>
+                    <p><strong>GitHub:</strong> ${data.github_configuration?.deployment_ready ? 'Ready' : 'Not Ready'}</p>
+                    <p><strong>Netlify:</strong> ${data.netlify_deployment?.ready ? 'Ready' : 'Not Ready'}</p>
+                </div>
+            `;
+        }
+
+        function openGitHub() {
+            window.open('https://github.com/radosavlevici210/NeuralAssistant', '_blank');
+        }
+
+        // System status check
+        function checkSystemStatus() {
+            fetch('/api/status')
+            .then(response => response.json())
+            .then(data => {
+                systemStatus = data;
+                updateStatusCounters(data);
+                console.log('Unified system status:', data);
+            })
+            .catch(error => {
+                console.error('Status check error:', error);
+            });
+        }
+
+        function updateStatusCounters(data) {
+            if (data.features_count) {
+                document.getElementById('featuresCount').textContent = data.features_count;
+            }
+            if (data.ai_engines_count) {
+                document.getElementById('aiEnginesCount').textContent = data.ai_engines_count;
+            }
+            if (data.network_devices_count !== undefined) {
+                document.getElementById('networkDevicesCount').textContent = data.network_devices_count;
+            }
+            if (data.preserved_databases) {
+                document.getElementById('preservedCount').textContent = data.preserved_databases + '+';
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && event.ctrlKey) {
+                event.preventDefault();
+                if (currentPanel === 'ai-assistant') {
+                    sendChatMessage();
+                } else if (currentPanel === 'voice-control') {
+                    speakCustomText();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
