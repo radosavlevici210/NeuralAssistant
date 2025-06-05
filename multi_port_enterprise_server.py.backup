@@ -632,7 +632,7 @@ def create_app():
         
         // Initial greeting
         window.onload = function() {
-            addMessage('Hello! I\'m AVA CORE Enterprise AI Assistant running on multiple ports (5000 & 80). I have voice interaction, natural conversation, memory persistence, and all enterprise capabilities permanently protected. How can I assist you today?', false);
+            addMessage('Hello! I am AVA CORE Enterprise AI Assistant running on multiple ports (5000 & 80). I have voice interaction, natural conversation, memory persistence, and all enterprise capabilities permanently protected. How can I assist you today?', false);
         };
     </script>
 </body>

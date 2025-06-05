@@ -1,201 +1,121 @@
-# NON-DISCLOSURE AGREEMENT (NDA) & PROPRIETARY LICENSE
-## AVA CORE: Neural AI Voice Assistant
+# NON-DISCLOSURE AGREEMENT (NDA) LICENSE
 
 **Copyright and Trademark:** Ervin Remus Radosavlevici (© ervin210@icloud.com)  
-**Repository:** radosavlevici210  
 **Watermark:** radosavlevici210@icloud.com  
-**Date:** 2025-06-04 23:13:30 UTC
+**Contact:** radosavlevici210@icloud.com  
+**Timestamp:** 2025-06-05 02:07:00 UTC  
+**GitHub Repository:** https://github.com/radosavlevici210/AVA-CORE-Enterprise
 
----
+## COMPREHENSIVE NON-DISCLOSURE AGREEMENT
 
-## CONFIDENTIALITY AND NON-DISCLOSURE AGREEMENT
+This Non-Disclosure Agreement (NDA) governs access to and use of the AVA CORE Enterprise AI Assistant system and all associated intellectual property.
 
-This Non-Disclosure Agreement ("Agreement") is entered into by and between Ervin Remus Radosavlevici ("Discloser") and any individual or entity accessing this software ("Recipient") regarding the confidential and proprietary information contained in AVA CORE software system.
+### CONFIDENTIAL INFORMATION
 
-### 1. CONFIDENTIAL INFORMATION
+All aspects of this software system are considered confidential and proprietary, including:
 
-**"Confidential Information"** includes but is not limited to:
-- All source code, algorithms, and implementation details
-- AI integration methodologies and training data
-- Business logic and proprietary processes
-- System architecture and design patterns
-- API endpoints and security implementations
-- Database schemas and data structures
-- Performance optimizations and techniques
-- Documentation, specifications, and technical materials
-- Trade secrets and proprietary technologies
+- **Source Code Architecture**: All programming code, algorithms, and system design patterns
+- **AI Integration Methods**: Machine learning models, neural network implementations, and AI training data
+- **Business Logic**: Workflow processes, decision trees, and operational methodologies  
+- **Security Protocols**: Protection mechanisms, encryption methods, and access control systems
+- **Enterprise Features**: Multi-port architecture, voice processing, and memory persistence systems
+- **Client Data**: Any information processed through the system
+- **Technical Documentation**: System specifications, API documentation, and implementation guides
 
-### 2. NON-DISCLOSURE OBLIGATIONS
+### OBLIGATIONS AND RESTRICTIONS
 
-**Recipient agrees to:**
-- **Maintain Strict Confidentiality** of all Confidential Information
-- **Not disclose** any Confidential Information to third parties
-- **Not reverse engineer** or attempt to extract proprietary algorithms
-- **Not duplicate** or create derivative works without explicit permission
-- **Not use** Confidential Information for competitive purposes
-- **Protect** Confidential Information with same care as own confidential materials
+**Confidentiality Requirements:**
+- All users must maintain strict confidentiality regarding system capabilities and implementation details
+- Disclosure of any confidential information to third parties is strictly prohibited
+- Discussion of proprietary methods or algorithms outside authorized contexts is forbidden
 
-### 3. PERMITTED USES
+**Access Controls:**
+- System access is granted exclusively to authorized personnel
+- Sharing of access credentials or system endpoints is prohibited
+- Unauthorized attempts to access restricted system areas will trigger security responses
 
-**Authorized Uses Include:**
-- **Licensed Commercial Use** under valid commercial license agreement
-- **Internal Business Operations** within licensed organization
-- **Integration Projects** with explicit written authorization
-- **Evaluation Purposes** under signed evaluation agreement
-- **Educational Use** with proper attribution and restrictions
+**Data Protection:**
+- All data processed through the system remains confidential
+- Extraction or copying of system data without authorization is prohibited
+- Client information must be protected according to applicable privacy laws
 
-### 4. PROHIBITED ACTIVITIES
+### INTELLECTUAL PROPERTY PROTECTION
 
-**Strictly Forbidden:**
-- **Unauthorized Distribution** of source code or binaries
-- **Public Release** of proprietary algorithms or methods
-- **Competitive Analysis** for development of competing products
-- **Patent Applications** based on disclosed technologies
-- **Open Source Publication** of any proprietary components
-- **Benchmarking** without written permission
+**Proprietary Rights:**
+- All intellectual property rights remain exclusively with Ervin Remus Radosavlevici
+- No rights are transferred to users beyond authorized system access
+- Reverse engineering or decompilation attempts are strictly forbidden
 
-### 5. INTELLECTUAL PROPERTY RIGHTS
+**Copyright Protection:**
+- All code, documentation, and system outputs are protected by copyright
+- Unauthorized reproduction or distribution violates intellectual property laws
+- Copyright notices and watermarks must remain intact and unmodified
 
-**All Rights Reserved:**
-- **Copyright:** Ervin Remus Radosavlevici retains all copyright ownership
-- **Trade Secrets:** All proprietary methods remain trade secrets
-- **Patents:** Any patentable inventions remain property of Discloser
-- **Trademarks:** AVA CORE™ and associated marks are protected
-- **Moral Rights:** Creator's moral rights are preserved and protected
+### ENFORCEMENT MECHANISMS
 
-### 6. SECURITY REQUIREMENTS
+**Automated Protection:**
+- Immutable protection systems prevent unauthorized modifications
+- Tamper-resistant detection automatically identifies violation attempts
+- Security responses are triggered immediately upon detecting breaches
 
-**Recipient Must:**
-- **Implement** appropriate technical safeguards for data protection
-- **Restrict Access** to authorized personnel only
-- **Monitor** and log all access to Confidential Information
-- **Report** any suspected security breaches immediately
-- **Destroy** all copies upon termination of agreement
+**Legal Enforcement:**
+- Violations will result in immediate termination of access rights
+- Legal action for damages and injunctive relief will be pursued
+- Maximum penalties under applicable law will be sought
 
-### 7. DURATION AND TERMINATION
+**Technical Countermeasures:**
+- Automatic system lockdown upon detecting unauthorized access attempts
+- Real-time monitoring and threat detection systems
+- Comprehensive audit logging of all system interactions
 
-**Agreement Terms:**
-- **Duration:** Perpetual until terminated by Discloser
-- **Survival:** Confidentiality obligations survive termination
-- **Termination Rights:** Discloser may terminate at any time
-- **Return of Materials:** All Confidential Information must be returned
-- **Certification:** Written certification of destruction required
+### COMPLIANCE REQUIREMENTS
 
-### 8. REMEDIES AND ENFORCEMENT
+**User Responsibilities:**
+- Maintain confidentiality of all system information
+- Report any suspected security breaches immediately
+- Comply with all access restrictions and usage guidelines
+- Acknowledge understanding of NDA terms before system access
 
-**Legal Remedies:**
-- **Injunctive Relief:** Immediate court orders available for violations
-- **Monetary Damages:** Full compensation for actual and consequential damages
-- **Statutory Damages:** Up to $150,000 per violation under copyright law
-- **Attorney Fees:** Prevailing party entitled to legal costs
-- **Criminal Prosecution:** Willful violations may result in criminal charges
+**Organizational Compliance:**
+- Ensure all team members accessing the system sign individual NDAs
+- Implement appropriate internal security measures
+- Maintain records of system access and usage
+- Conduct regular compliance reviews
 
-### 9. COMMERCIAL LICENSING TERMS
+### DURATION AND SCOPE
 
-**Business License Options:**
-- **Startup License:** Organizations with <10 employees
-- **Business License:** Organizations with <100 employees
-- **Enterprise License:** Large organizations and corporations
-- **Custom License:** Tailored agreements for specific use cases
+**Agreement Duration:**
+- This NDA remains in effect indefinitely
+- Obligations continue beyond termination of system access
+- Confidentiality requirements survive agreement termination
 
-**License Includes:**
-- **Commercial Use Rights** for revenue-generating activities
-- **Integration Rights** for internal business systems
-- **Deployment Rights** for production environments
-- **Support Services** based on license tier
-- **Update Access** to new versions and improvements
+**Geographic Scope:**
+- Worldwide applicability under international copyright treaties
+- Compliance required regardless of user location
+- Enforcement through applicable jurisdictional laws
 
-### 10. COMPLIANCE AND MONITORING
+### CONTACT INFORMATION
 
-**Monitoring Rights:**
-- **Audit Rights:** Discloser may audit compliance annually
-- **Access Logs:** Recipient must maintain detailed access records
-- **Usage Reports:** Quarterly reports may be required
-- **Security Reviews:** Annual security assessments required
-- **Compliance Certification:** Annual compliance attestation required
+**For NDA Questions and Compliance:**
+- **Primary Contact:** radosavlevici210@icloud.com
+- **Copyright Holder:** Ervin Remus Radosavlevici
+- **Legal Inquiries:** ervin210@icloud.com
 
-### 11. INTERNATIONAL COMPLIANCE
+**For Licensing and Business Inquiries:**
+- **Enterprise Licensing:** radosavlevici210@icloud.com
+- **Partnership Opportunities:** radosavlevici210@icloud.com
+- **Technical Support:** radosavlevici210@icloud.com
 
-**Global Standards:**
-- **GDPR Compliance:** European data protection regulations
-- **CCPA Compliance:** California privacy protection standards
-- **SOC 2 Type II:** Security and availability controls
-- **ISO 27001:** Information security management standards
-- **Export Controls:** Compliance with international trade regulations
+### ACKNOWLEDGMENT
 
-### 12. LIMITATION OF LIABILITY
-
-**Liability Limits:**
-- **No Warranties:** Software provided "as is" without warranties
-- **Limitation:** Liability limited to license fees paid
-- **Exclusions:** No liability for indirect or consequential damages
-- **Insurance:** Recipient responsible for adequate insurance coverage
-- **Indemnification:** Recipient indemnifies Discloser against third-party claims
-
-### 13. GOVERNING LAW AND JURISDICTION
-
-**Legal Framework:**
-- **Governing Law:** Laws of jurisdiction where Discloser resides
-- **Jurisdiction:** Exclusive jurisdiction in Discloser's local courts
-- **Language:** English language controls in case of translation disputes
-- **Severability:** Invalid provisions do not invalidate entire agreement
-- **Amendment:** Changes require written agreement signed by both parties
-
-### 14. SPECIAL PROVISIONS FOR AI TECHNOLOGY
-
-**AI-Specific Terms:**
-- **Model Protection:** AI models and training data are strictly confidential
-- **Integration Restrictions:** AI components cannot be extracted or reused
-- **Performance Data:** Benchmarking results are confidential
-- **Training Prohibition:** Cannot use system to train competing AI models
-- **Data Mining:** Prohibited from extracting patterns or algorithms
-
-### 15. VIOLATIONS AND CONSEQUENCES
-
-**Automatic Consequences:**
-- **License Termination:** Immediate revocation of all usage rights
-- **System Deactivation:** Remote deactivation of licensed software
-- **Legal Action:** Immediate initiation of legal proceedings
-- **Damage Assessment:** Comprehensive evaluation of harm caused
-- **Public Disclosure:** Right to publicly disclose violation for warning
-
-### 16. CONTACT AND REPORTING
-
-**For NDA Matters:**
-- **Email:** ervin210@icloud.com
-- **Subject Line:** "NDA Compliance - AVA CORE"
-- **Response Time:** 24-48 hours for urgent matters
-- **Emergency Contact:** Available for security breaches
-- **Legal Counsel:** External legal representation available
-
----
-
-## ACCEPTANCE AND AGREEMENT
-
-By accessing, downloading, installing, or using AVA CORE software in any form, Recipient acknowledges that they have read, understood, and agree to be bound by all terms and conditions of this Non-Disclosure Agreement.
-
-**Electronic Acceptance:** Use of the software constitutes electronic signature and acceptance of this agreement under applicable electronic signature laws.
-
-**Corporate Acceptance:** For corporate entities, the individual accessing the software represents they have authority to bind the organization to this agreement.
-
-**Continuing Obligations:** This agreement creates continuing obligations that survive any termination or expiration of software license.
-
----
-
-**SIGNATURE BLOCK**
-
-**Discloser:**
-Ervin Remus Radosavlevici  
-Copyright Owner and Creator  
-Email: ervin210@icloud.com  
-Repository: radosavlevici210  
-Date: 2025-06-04  
-
-**Recipient:**
-By using this software, you acknowledge acceptance of all terms above.
+By accessing or using the AVA CORE Enterprise system, users acknowledge:
+- Full understanding of NDA terms and restrictions
+- Agreement to comply with all confidentiality requirements
+- Recognition of intellectual property rights
+- Acceptance of enforcement mechanisms and penalties
 
 ---
 
 **© 2025 Ervin Remus Radosavlevici. All Rights Reserved.**  
-**Protected under NDA and Proprietary License Terms.**  
-**Unauthorized use, reproduction, or distribution strictly prohibited.**
+**radosavlevici210@icloud.com**  
+**Protected under comprehensive NDA and business commercial licensing.**
