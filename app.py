@@ -22,6 +22,7 @@ from voice_assistant import VoiceAssistant
 from production_config import ProductionConfig, EnterpriseLogger
 from network_control import NetworkDeviceController
 from ultimate_security import ultimate_security, require_ultimate_authorization
+from enterprise_analytics import enterprise_analytics
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
