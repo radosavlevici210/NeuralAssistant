@@ -1,13 +1,6 @@
 """
 AVA CORE Advanced AI Module
-Copyright and Trademark: Ervin Remus Radosavlevici (© ervin210@icloud.com)
-Timestamp: 2025-06-04 22:13:00 UTC
-Watermark: radosavlevici210@icloud.com
-
-NDA LICENSE AGREEMENT
-This software and its associated intellectual property are protected under
-Non-Disclosure Agreement and proprietary license terms. Unauthorized use,
-reproduction, or distribution is strictly prohibited.
+Copyright and Trademark: Ervin Radosavlevici
 
 Enhanced AI capabilities for natural conversations, advice, and task assistance
 """

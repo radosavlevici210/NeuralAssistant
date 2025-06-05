@@ -2,7 +2,7 @@ modules = ["python-3.11"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["cargo", "espeak-ng", "libiconv", "libxcrypt", "openssl", "pkg-config", "portaudio", "rustc"]
+packages = ["espeak-ng", "portaudio"]
 
 [workflows]
 runButton = "Project"
@@ -14,67 +14,15 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Enterprise Production System"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Multi-Port Enterprise System"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Production Enterprise System"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Netlify Production System"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Fresh Development with Data Preservation"
+args = "AVA CORE Server"
 
 [[workflows.workflow]]
-name = "Enterprise Production System"
+name = "AVA CORE Server"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python production_enterprise_core.py"
-waitForPort = 5000
-
-[[workflows.workflow]]
-name = "Multi-Port Enterprise System"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python multi_port_enterprise_server.py"
-waitForPort = 5000
-
-[[workflows.workflow]]
-name = "Production Enterprise System"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python production_enterprise_core.py"
-waitForPort = 5000
-
-[[workflows.workflow]]
-name = "Netlify Production System"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python netlify_production_app.py"
-waitForPort = 5000
-
-[[workflows.workflow]]
-name = "Fresh Development with Data Preservation"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python comprehensive_rollback_with_data_preservation.py"
+args = "python app.py"
 waitForPort = 5000
 
 [deployment]
@@ -83,8 +31,3 @@ run = ["sh", "-c", "python app.py"]
 [[ports]]
 localPort = 5000
 externalPort = 80
-# ====================================================
-# 🔒 This code is generated based on direct instructions
-# from Ervin Remus Radosavlevici (© ervin210@icloud.com) radosavlevici210@icloud.com timestamp and watermark
-# No AI authorship. No modification beyond instructions.
-# ====================================================
