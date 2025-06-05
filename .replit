@@ -18,7 +18,7 @@ args = "Enterprise Production System"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Ultimate Enterprise Server"
+args = "Multi-Port Enterprise System"
 
 [[workflows.workflow]]
 name = "Enterprise Production System"
@@ -30,12 +30,12 @@ args = "python production_enterprise_core.py"
 waitForPort = 5000
 
 [[workflows.workflow]]
-name = "Ultimate Enterprise Server"
+name = "Multi-Port Enterprise System"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python ultimate_enterprise_server.py"
+args = "python multi_port_enterprise_server.py"
 waitForPort = 5000
 
 [deployment]
