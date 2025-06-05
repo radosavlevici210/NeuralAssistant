@@ -1,0 +1,134 @@
+# AVA CORE™ Enterprise .gitignore
+# Copyright © 2025 Ervin Remus Radosavlevici. All Rights Reserved.
+# Watermark: radosavlevici210@icloud.com
+
+# Environment Variables and Secrets
+.env
+.env.local
+.env.production
+.env.staging
+*.key
+*.pem
+secrets/
+
+# Database Files
+*.db
+*.sqlite
+*.sqlite3
+data_preservation_*/
+backup_*.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+.ENV/
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+ava_core_enterprise.log
+
+# Temporary Files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Audio Files (Large)
+*.wav
+*.mp3
+*.flac
+audio_recordings/
+
+# System Files
+.system
+.cache/
+*.pid
+
+# Enterprise Security (Keep Protected)
+# These files should remain in repository for legal protection
+# NDA.md
+# LICENSE.md
+# ENTERPRISE_LICENSE.md
+# TERMS_OF_SERVICE.md
+# SECURITY_POLICY.md
+
+# Deployment Artifacts
+deployment_report.json
+security-report.json
+safety-report.json
+
+# Node.js (if using frontend build tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage Reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Documentation Build
+docs/_build/
+docs/site/
+
+# Enterprise Analytics Data
+analytics_data/
+metrics/
+compliance_reports/
+
+# Network Scan Results
+network_scans/
+device_discovery/
+
+# Backup Files
+*.bak
+*.backup
+*~
+
+# OS Generated Files
+.DS_Store?
+ehthumbs.db
+Icon?
+
+# Enterprise Watermark Protection - DO NOT REMOVE
+# radosavlevici210@icloud.com
