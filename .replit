@@ -14,15 +14,15 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Production AVA CORE"
+args = "Enterprise Production System"
 
 [[workflows.workflow]]
-name = "Production AVA CORE"
+name = "Enterprise Production System"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python production_ava.py"
+args = "python production_enterprise_core.py"
 waitForPort = 5000
 
 [deployment]
